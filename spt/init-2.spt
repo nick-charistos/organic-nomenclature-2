@@ -1,0 +1,23 @@
+ set antialiasDisplay on;
+
+ set labelOffset 0 0; 
+ font labels 18; 
+ color labels black;
+
+  font echo 28; 
+ color echo [xA4031F];
+
+ color selectionHalos[X66ff66] ;
+
+ select all and not _Xx; 
+ spacefill 24%; 
+ wireframe 0.13;
+
+ hover off;
+ 
+ background [xffffff]
+
+ frank off;
+
+ zoom 80;
+
