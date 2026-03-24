@@ -1954,11 +1954,11 @@ $(document).ready(function () {
         for (i = 0; i < highBonds3D.length; i++) {
             highAtoms3DArg += " atomno=" + highBonds3D[i][0] + ",  atomno=" + highBonds3D[i][1]
             if (i < highBonds3D.length - 1) { highAtoms3DArg += "," }
-            Jmol.script(jmolAppletNomeclature, "select atomno=" + highBonds3D[i][0] + ", atomno=" + highBonds3D[i][1] + " ; color bond [xff8566]  ");
+            Jmol.script(jmolAppletNomeclature, "select atomno=" + highBonds3D[i][0] + ", atomno=" + highBonds3D[i][1] + " ; color bond [X79dc6d]  ");
 
         }
 
-        Jmol.script(jmolAppletNomeclature, highAtoms3DArg + " ;color selectionHalos[Xff5c33]; selectionHalos on; color atoms [xff8566];  ");
+        Jmol.script(jmolAppletNomeclature, highAtoms3DArg + " ;color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d];  ");
 
         JmolSelection = highAtoms3DArg
 
