@@ -164,9 +164,9 @@ div {
 }
 
 .selectedLi {
-  background-color: var(--bgColor);
+  background-color: var(--guiColor);
   /* padding-left: 20px; */
-  color: #000;
+  color: #fff;
   transition: all 0.2s;
   font-weight: bold;
 }
@@ -222,6 +222,13 @@ div {
   cursor: pointer;
   background-color: var(--bgColor);
   color: #111;
+  transition: all 0.3s;
+}
+
+.menuLi.selectedLi:hover {
+  /* cursor: pointer; */
+  background-color: var(--guiColor);
+  color: #fff;
   transition: all 0.3s;
 }
 
@@ -832,7 +839,7 @@ div {
 
 .ruleRow.selected {
   font-weight: bold;
-  background-color: var(--bgColor);
+  background-color: var(--guiColor);
   /* color: var(--baseColor); */
   /* border-color: var(--cyanDarkNick); */
 }
@@ -904,7 +911,7 @@ div {
 
 .ruleRow.selected .ruleCase,
 .ruleRow.selected .ruleName {
-  color: #000;
+  color: #fff;
 }
 
 .rule1 .ruleCase,
