@@ -1037,9 +1037,17 @@ $(document).ready(function () {
         // Fix JSME bug: highlighted atom labels produce malformed XML:
         // fill="rgb(X,X,X) stroke=" black"="" stroke-width="11px"
         // → fill="rgb(X,X,X)" stroke="black" stroke-width="11px"
+        // Fix JSME C-type highlight bug: fill="rgb(...) stroke=" black"="" stroke-width="11px"
         svgData = svgData.replace(
             /fill="([^"]*?) stroke=" ([^"]*)"="" stroke-width="([^"]*)"/g,
             'fill="$1" stroke="$2" stroke-width="$3"'
+        )
+        // Fix JSME N-type highlight bug (e.g. NH2): XMLSerializer escapes > as &gt; inside
+        // the attribute value, producing: stroke-width="11px&gt;&lt;tspan&gt;...garbage..." sub"="">
+        // → stroke-width="11px">
+        svgData = svgData.replace(
+            /stroke-width="(\d+px?)&gt;[^"]*" [^>]*>/g,
+            'stroke-width="$1">'
         )
 
         let canvas = document.createElement("canvas")
