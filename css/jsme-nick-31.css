@@ -23,12 +23,15 @@
   --darkEarth: #dfa374;
   --lightEarth: #f6d1ba;
 
-
     --baseColor: #1b275d;
   --guiColor: #5FAD56;
    /* --highColor: var(--guiColor); */
   /* --highColor: var(--orangeNick); */
   --bgColor: #fff1de;
+
+   /* --guiColor: #fb8500; */
+
+  --highlightColor2: #ffdf20;
 }
 
 /* 
@@ -63,6 +66,14 @@ sub {
 
 div {
   box-sizing: border-box;
+}
+
+h1 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 700;
+  text-align: center;
+  color: var(--baseColor);
+  margin-top: 10px;
 }
 
 #panelContainer {
@@ -164,7 +175,7 @@ div {
 }
 
 .selectedLi {
-  background-color: var(--guiColor);
+  background-color: var(--lightBlue);
   /* padding-left: 20px; */
   color: #fff;
   transition: all 0.2s;
@@ -227,7 +238,7 @@ div {
 
 .menuLi.selectedLi:hover {
   /* cursor: pointer; */
-  background-color: var(--guiColor);
+  background-color: var(--lightBlue);
   color: #fff;
   transition: all 0.3s;
 }
@@ -285,7 +296,7 @@ div {
 }
 
 .JmolContainer {
-  width: 452px;
+  width: 480px;
   height: 220px;
   border-top: 0;
   z-index: 0;
@@ -752,7 +763,7 @@ div {
 }
 
 .nameCompBox {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: bold;
   color: #000;
   padding: 5px 8px;
@@ -820,7 +831,7 @@ div {
 }
 
 .namingRuleTable {
-  max-width: 320px;
+  /* max-width: 320px; */
   /* padding-bottom: 20px; */
 }
 
@@ -839,7 +850,7 @@ div {
 
 .ruleRow.selected {
   font-weight: bold;
-  background-color: var(--guiColor);
+  background-color: var(--lightBlue);
   /* color: var(--baseColor); */
   /* border-color: var(--cyanDarkNick); */
 }
@@ -847,7 +858,7 @@ div {
 .ruleRow.selectedA {
   font-weight: bold;
   color: var(--baseColor) !important;
-  background-color: var(--bgColor);
+  background-color: var(--veryLightBlue);
   position: relative;
 }
 
@@ -870,7 +881,7 @@ div {
 .ruleRow.selectedB {
   font-weight: bold;
   color: #fff !important;
-  background-color: var(--guiColor);
+  background-color: var(--lightBlue);
   position: relative;
 }
 
@@ -914,6 +925,11 @@ div {
   color: #fff;
 }
 
+.ruleRow.selected.selectedA .ruleCase,
+.ruleRow.selected.selectedA .ruleName {
+  color: var(--baseColor);
+}
+
 .rule1 .ruleCase,
 .rule1 .ruleName {
   text-align: center;
@@ -943,17 +959,17 @@ div {
 .rule4 .ruleCase {
   text-align: left;
   padding-left: 40px;
-  width: 50%;
+  width: 60%;
 }
 
 .rule4 .ruleName {
-  width: 50%;
+  width: 40%;
 }
 
 .ruleTable {
   box-sizing: border-box;
   width: 100%;
-  padding-left: 10px;
+  /* padding-left: 10px; */
   background-color: #fff;
   border: 1px solid var(--baseColor);
   border-top: 0;
@@ -1114,3 +1130,24 @@ div {
   background-color: var(--baseColor);
   width: 100%;
 }
+
+.saveImgBtn {
+    cursor: pointer;
+    padding: 0px;
+    margin-left: 8px;
+    opacity: 0.8;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+  transition: all 0.2s;
+}
+.saveImgBtn img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+.saveImgBtn:hover {
+    opacity: 1;
+    background-color: var(--veryLightBlue);
+}
+

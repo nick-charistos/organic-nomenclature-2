@@ -416,7 +416,7 @@ $(document).ready(function () {
                                                 theCarbon = atomConnectivityList[j]
                                                 if (atomValenceList[theCarbon] == 3) {
                                                     myFunctionalGroup = "aldehyde"
-                                                    molTaxonomy = "Αλδεΰδες"
+                                                    molTaxonomy = "Αλδεϋδες"
                                                 } else {
                                                     myFunctionalGroup = "ketone"
                                                     molTaxonomy = "Κετόνες"
@@ -976,6 +976,134 @@ $(document).ready(function () {
 
     });
 
+    /////////// Export PNG /////////////
+
+         /////////// Export PNG /////////////
+
+    function fGetNameBoxes() {
+        return Array.from(document.querySelectorAll('.nameCompContainer .nameCompBox'))
+            .map(function (el) { return { text: el.textContent.trim(), selected: el.classList.contains('selected') } })
+            .filter(function (b) { return b.text })
+    }
+
+    function fDrawNameBoxes(ctx, nameBoxes, canvasWidth, yTop) {
+        if (!nameBoxes.length) return
+        let font = 'bold 22px Arial, sans-serif'
+        ctx.font = font
+        let pad = 10
+        let boxH = 36
+        let gap = -2  // boxes overlap border like CSS margin-right: -2px
+        let totalW = nameBoxes.reduce(function (acc, b) {
+            return acc + ctx.measureText(b.text).width + pad * 2
+        }, 0) + gap * (nameBoxes.length - 1)
+        let x = Math.round((canvasWidth - totalW) / 2)
+        let y = yTop + 10
+        nameBoxes.forEach(function (b) {
+            let tw = ctx.measureText(b.text).width
+            let bw = Math.round(tw + pad * 2)
+            ctx.fillStyle = b.selected ? '#5FAD56' : '#ffffff'
+            ctx.fillRect(x, y, bw, boxH)
+            ctx.strokeStyle = b.selected ? '#5FAD56' : '#dddddd'
+            ctx.lineWidth = 2
+            ctx.strokeRect(x, y, bw, boxH)
+            ctx.fillStyle = b.selected ? '#ffffff' : '#000000'
+            ctx.textAlign = 'left'
+            ctx.textBaseline = 'middle'
+            ctx.fillText(b.text, x + pad, y + boxH / 2)
+            x += bw + gap
+        })
+    }
+
+    window.fSave2DPng = function () {
+        let svgEl = document.querySelector("#jsmeNomeclatureSVG svg")
+        if (!svgEl) return
+        let nameBoxes = fGetNameBoxes()
+        let bbox = svgEl.getBoundingClientRect()
+        let srcWidth = bbox.width || 450
+        let srcHeight = bbox.height || 200
+        let width = 800
+        let molHeight = Math.round(srcHeight * (width / srcWidth))
+        let labelHeight = nameBoxes.length ? 58 : 0
+
+        let svgClone = svgEl.cloneNode(true)
+        svgClone.setAttribute('width', srcWidth)
+        svgClone.setAttribute('height', srcHeight)
+
+        let svgData = new XMLSerializer().serializeToString(svgClone)
+        if (!svgData.includes('xmlns="http://www.w3.org/2000/svg"')) {
+            svgData = svgData.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
+        }
+
+        // Fix JSME bug: highlighted atom labels produce malformed XML:
+        // fill="rgb(X,X,X) stroke=" black"="" stroke-width="11px"
+        // → fill="rgb(X,X,X)" stroke="black" stroke-width="11px"
+        svgData = svgData.replace(
+            /fill="([^"]*?) stroke=" ([^"]*)"="" stroke-width="([^"]*)"/g,
+            'fill="$1" stroke="$2" stroke-width="$3"'
+        )
+
+        let canvas = document.createElement("canvas")
+        canvas.width = width
+        canvas.height = molHeight + labelHeight
+        let ctx = canvas.getContext("2d")
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        let img = new Image()
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0, width, molHeight)
+            fDrawNameBoxes(ctx, nameBoxes, width, molHeight)
+            canvas.toBlob(function (blob) {
+                if (!blob) { console.error('2D PNG: toBlob returned null'); return }
+                let a = document.createElement('a')
+                a.href = URL.createObjectURL(blob)
+                a.download = (molName || selectedMol || 'molecule').replace(/\s+/g, '_') + '_2D.png'
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
+                URL.revokeObjectURL(a.href)
+            })
+        }
+        img.onerror = function () {
+            console.error('[2D PNG] SVG failed to load. SVG content:')
+            console.log(svgData)
+        }
+
+        let svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
+        img.src = URL.createObjectURL(svgBlob)
+    }
+
+    window.fSaveJmolPng = function () {
+        let nameBoxes = fGetNameBoxes()
+        let filename = (molName || selectedMol || 'molecule').replace(/\s+/g, '_') + '_3D.png'
+        let jmolCanvas = document.querySelector('#nomeclature3D canvas')
+        if (!jmolCanvas) {
+            Jmol.script(jmolAppletNomeclature, "write IMAGE 800 PNG '" + filename + "';")
+            return
+        }
+        let srcWidth = jmolCanvas.width
+        let srcHeight = jmolCanvas.height
+        let width = 800
+        let molHeight = Math.round(srcHeight * (width / srcWidth))
+        let labelHeight = nameBoxes.length ? 58 : 0
+        let canvas = document.createElement("canvas")
+        canvas.width = width
+        canvas.height = molHeight + labelHeight
+        let ctx = canvas.getContext("2d")
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.drawImage(jmolCanvas, 0, 0, width, molHeight)
+        fDrawNameBoxes(ctx, nameBoxes, width, molHeight)
+        canvas.toBlob(function (blob) {
+            let a = document.createElement('a')
+            a.href = URL.createObjectURL(blob)
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            URL.revokeObjectURL(a.href)
+        })
+    }
     ///////////////  Name Analysis /////////////////
 
     function fInitTheory() {
@@ -1115,7 +1243,7 @@ $(document).ready(function () {
         </div>
         `;
 
-        let rulesTheory_1_8 = ["Η αρίθμηση της ανθρακικής αλυσίδας αρχίζει από το άκρο που είναι πλησιέστερα στην Χαρακτηριστική Ομάδα ή στον Πολλαπλό Δεσμό", "Η θέση της Χαρακτηριστικής Ομάδας ή του Πολλαπλού Δεσμού καθορίζεται με έναν αριθμό που γράφεται στην αρχή του ονόματος της ένωσης.", "Αλδεΰδες (-CH=O), καρβοξυλικά οξέα (-COOH) και νιτρίλια (-CN) είναι Χαρακτηριστικές Ομάδες που βρίσκονται υποχρεωτικά στην άκρη της ανθρακικής αλυσίδας και η αρίθμηση αρχίζει από τον άνθρακα της Χαρακτηριστικής Ομάδας.", "Αν στην οργανική ένωση έχουμε Χαρακτηριστική Ομάδα και Πολλαπλό Δεσμό τότε η θέση του του Πολλαπλού Δεσμού καθορίζεται πριν από το βασικό όνομα και η αρίθμηση για την Χαρακτηριστική Ομάδα πριν από το 3<sup>o</sup> συνθετικό που δηλώνει το όνομα της Χαρακτηριστικής Ομάδας", "Αν στην οργανική ένωση έχουμε διπλό δεσμό και τριπλό δεσμό που ισαπέχουν από τα δύο άκρα της ανθρακικής αλυσίδας, η αρίθμηση ξεκινά από το άκρο που είναι πλησιέστερα στον διπλό δεσμό.", "Οι δευτερεύουσες ομάδες αλογόνα (-Χ), αμινομάδα (-ΝΗ<sub>2</sub>), νιτροομάδα (-ΝΟ<sub>2</sub>) δεν δίνουν κατάληξη στο όνομα της ένωσης. Δηλώνονται ως πρόθεμα πριν το βασικό όνομα της ένωσης με την ανάλογη αρίθμηση.", "Όταν η οργανική ένωση διαθέτει 2 ή περισσότερες ίδιες Xαρακτηριστικές Oμάδες τότε πριν από το 3<sup>o</sup> συνθετικό βάζουμε το πρόθεμα δι- τρι- κ.λπ.", "Όταν η οργανική ένωση διαθέτει 2 ή περισσότερες διαφορετικές Χαρακτηριστικές Ομάδες τότε η ισχυρότερη ομάδα δίνει την κατάληξη στο όνομα της ένωσης και καθορίζει την αρίθμηση της ανθρακικής αλυσίδας."]
+        let rulesTheory_1_8 = ["Η αρίθμηση της ανθρακικής αλυσίδας αρχίζει από το άκρο που είναι πλησιέστερα στην Χαρακτηριστική Ομάδα ή στον Πολλαπλό Δεσμό", "Η θέση της Χαρακτηριστικής Ομάδας ή του Πολλαπλού Δεσμού καθορίζεται με έναν αριθμό που γράφεται στην αρχή του ονόματος της ένωσης.", "Αλδεϋδες (-CH=O), καρβοξυλικά οξέα (-COOH) και νιτρίλια (-CN) είναι Χαρακτηριστικές Ομάδες που βρίσκονται υποχρεωτικά στην άκρη της ανθρακικής αλυσίδας και η αρίθμηση αρχίζει από τον άνθρακα της Χαρακτηριστικής Ομάδας.", "Αν στην οργανική ένωση έχουμε Χαρακτηριστική Ομάδα και Πολλαπλό Δεσμό τότε η θέση του του Πολλαπλού Δεσμού καθορίζεται πριν από το βασικό όνομα και η αρίθμηση για την Χαρακτηριστική Ομάδα πριν από το 3<sup>o</sup> συνθετικό που δηλώνει το όνομα της Χαρακτηριστικής Ομάδας", "Αν στην οργανική ένωση έχουμε διπλό δεσμό και τριπλό δεσμό που ισαπέχουν από τα δύο άκρα της ανθρακικής αλυσίδας, η αρίθμηση ξεκινά από το άκρο που είναι πλησιέστερα στον διπλό δεσμό.", "Οι δευτερεύουσες ομάδες αλογόνα (-Χ), αμινομάδα (-ΝΗ<sub>2</sub>), νιτροομάδα (-ΝΟ<sub>2</sub>) δεν δίνουν κατάληξη στο όνομα της ένωσης. Δηλώνονται ως πρόθεμα πριν το βασικό όνομα της ένωσης με την ανάλογη αρίθμηση.", "Όταν η οργανική ένωση διαθέτει 2 ή περισσότερες ίδιες Xαρακτηριστικές Oμάδες τότε πριν από το 3<sup>o</sup> συνθετικό βάζουμε το πρόθεμα δι- τρι- κ.λπ.", "Όταν η οργανική ένωση διαθέτει 2 ή περισσότερες διαφορετικές Χαρακτηριστικές Ομάδες τότε η ισχυρότερη ομάδα δίνει την κατάληξη στο όνομα της ένωσης και καθορίζει την αρίθμηση της ανθρακικής αλυσίδας."]
 
         namingRules = {
             general: r0,
@@ -1427,13 +1555,13 @@ $(document).ready(function () {
                         myText = 'έναν διπλό δεσμο μεταξύ των ατόμων άνθρακα'
                         ruleTableHighlight = 2
                         break
-                    case 'ιν':
                     case 'ίν':
+                    case 'ιν':
                         myText = 'έναν τριπλό δεσμό μεταξύ των ατόμων άνθρακα'
                         ruleTableHighlight = 3
                         break
-                    case 'διεν':
                     case 'διέν':
+                    case 'διεν':
                         myText = 'δύο διπλούς δεσμούς μεταξύ των ατόμων άνθρακα'
                         ruleTableHighlight = 4
                         break
@@ -1860,9 +1988,21 @@ $(document).ready(function () {
             return;
         }
 
-        myScript = " set echo theGroupEcho" + (n + 1) + "{atomno = " + myAtom + "}; set echo offset {-1.1 1.1 0}; font echo  36 sansSerif bold; color echo[x193F8F];  echo  " + (n + 1) + ";"
+        let id = "theGroupEcho" + (n + 1)
+        let atom = "{atomno = " + myAtom + "}"
+        let num = (n + 1)
+        let d = 0.01  // stroke thickness in Å (tune this)
 
-        Jmol.script(jmolAppletNomeclature, myScript)
+        // Shadow echoes in 4 directions (black stroke)
+        let s = ""
+        s += " set echo " + id + " " + atom + "; set echo offset {-1.1 1.1 3}; font echo 42 sansSerif bold; color echo[x193f8f]; echo " + num + ";"
+
+        s += " set echo " + id + "s1 " + atom + "; set echo offset {" + (-1.1 + d) + " " + (1.1 - d) + " 3}; font echo 42 sansSerif bold; color echo black; echo " + num + ";"
+
+        Jmol.script(jmolAppletNomeclature, s)
+        // myScript = " set echo theGroupEcho" + (n + 1) + "{atomno = " + myAtom + "}; set echo offset {-1.1 1.1 3}; font echo  42 sansSerif bold; color echo[x19B702];  echo  " + (n + 1) + ";"
+
+        // Jmol.script(jmolAppletNomeclature, myScript)
     }
 
     function fHighlightMultiBonds(bondCompPos) {
@@ -2070,6 +2210,9 @@ $(document).ready(function () {
         fShowRuleTheory()
 
     });
+
+    // Select first rule by default on load
+    $(".menuNomeclature2Container .crossMenuLi").first().trigger("click");
 
     function showRadio(myLi) {
 
@@ -2291,6 +2434,5 @@ $(document).ready(function () {
         fUpdateSVG()
 
     })
-
 })
 
