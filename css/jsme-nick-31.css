@@ -324,6 +324,7 @@ h1 {
   cursor: pointer;
   font-family: "Roboto Condensed", sans-serif;
   font-size: 1rem;
+transition: all 0.3s;
 }
 
 .inactive {
@@ -346,29 +347,35 @@ h1 {
 
 .checkBoxContainer.unselectedCheck:hover .checkBox,
 .checkBoxContainer.unselectedCheck:hover::after {
-  border: 1px solid var(--guiColor);
+ 
+  color: var(--darkEarth);
+
   transition: all 0.3s;
 }
 
 .unselectedCheck::after {
-  content: " ";
+   content: "\2713";
   width: 18px;
   height: 18px;
   position: absolute;
   top: 0;
   left: 0;
-  color: #fff;
   background-color: var(--bgColor);
-  border-radius: 4px;
-  transition: all 0.3s;
-  border: 1px solid var(--baseColor);
+  color: transparent;
+  font-weight: bold;
+  /* padding: 0; */
+  font-family: "Roboto", sans-serif;
   line-height: 18px;
   font-size: 18px;
+  border-radius: 4px;
+  text-align: center;
+  border: 1px solid var(--baseColor);
+  transition: all 0.3s;
 }
 
 .unselectedCheck:hover::after {
   background-color: var(--bgColor);
-  /* border-color: */
+  
 }
 
 .selectedCheck::after {
@@ -429,7 +436,7 @@ h1 {
 }
 
 .radioCheckContainer.unselectedRadio:hover .radioCheck {
-  border: 1px solid #999;
+       /* border: 1px solid #999; */
   transition: all 0.3s;
 }
 
@@ -446,12 +453,12 @@ h1 {
 }
 
 .radioCheckContainer.unselectedRadio:hover .radioCheck::after {
-  background-color: var(--guiColor);
+  background-color: var(--darkEarth);
   transition: all 0.3s;
 }
 
 .radioCheckContainer.selectedRadio .radioCheck {
-  background-color: #fff;
+  background-color: var(--bgColor);
   border-color: var(--baseColor);
   transition: all 0.3s;
 }
@@ -1119,12 +1126,29 @@ h1 {
   display: flex;
   gap: 10px 10px;
   justify-content: center;
+  
+}
+
+.creditsContainer a {
+  color: var(--veryLightBlue);
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.2s;
+  display: inline-block;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 1px;
+}   
+
+.creditsContainer a:hover {
+  color:#FFF;
+  border-color: #fff;
+  transition: all 0.2s;
 }
 
 #creditsUs {
   /* position: fixed;
     bottom: 0; */
-  color: #fff;
+  color:var(--veryLightBlue);
   font-size: 0.85rem;
   padding: 10px;
   background-color: var(--baseColor);
@@ -1134,7 +1158,6 @@ h1 {
 .saveImgBtn {
     cursor: pointer;
     padding: 0px;
-    margin-left: 8px;
     opacity: 0.8;
     border-radius: 3px;
     display: flex;

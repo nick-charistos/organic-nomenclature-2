@@ -1901,7 +1901,7 @@ $(document).ready(function () {
                     y = parseInt(currAtomTextElement.attr('y')) + + numberOffset[1]
                     r = 220
                     // <circle id='circle" + i + "' cx='" + (x - 20 + r / 2) + "'  cy='" + (y - 0 - r / 2) + "'  r='" + r + "' fill='#fff' stroke='#2cfff6f82' stroke-width='0'  />
-                    numberString = "  <text id='number" + i + "' x='" + x + "' y='" + y + "' font-size='380px' font-weight='bold' font-family='Roboto Condensed' fill='#193F8F' stroke='white' stroke-width='60px' paint-order='stroke'>" + (i + 1) + "</text> "
+                    numberString = "  <text id='number" + i + "' x='" + x + "' y='" + y + "' font-size='380px' font-weight='bold' font-family='Arial, sans-serif' fill='#193F8F' stroke='white' stroke-width='60px' paint-order='stroke'>" + (i + 1) + "</text> "
                     numbersSVGElements[i] = numberString
                 }
                 break
@@ -1914,7 +1914,7 @@ $(document).ready(function () {
                     y = parseInt(currAtomTextElement.attr('y')) + + numberOffset[1]
                     r = 220
                     // <circle id='circle" + i + "' cx='" + (x - 20 + r / 2) + "'  cy='" + (y - 0 - r / 2) + "'  r='" + r + "' fill='#fff' stroke='#2cfff6f82' stroke-width='0'  />
-                    numberString = "  <text id='number" + i + "' x='" + x + "' y='" + y + "' font-size='380px' font-weight='bold' font-family='Roboto Condensed' fill='#193F8F' stroke='white' stroke-width='60px' paint-order='stroke'>" + (i + 1) + "</text> "
+                    numberString = "  <text id='number" + i + "' x='" + x + "' y='" + y + "' font-size='380px' font-weight='bold' font-family='Arial, sans-serif' fill='#193F8F' stroke='white' stroke-width='60px' paint-order='stroke'>" + (i + 1) + "</text> "
                     numbersSVGElements[i] = numberString
                 }
                 break
@@ -1943,7 +1943,7 @@ $(document).ready(function () {
                     }
 
                     r = 220
-                    numberString = "  <text id='number" + i + "' x='" + x + "' y='" + y + "' font-size='380px' font-weight='bold' font-family='Roboto Condensed' fill='#193F8F' stroke='white' stroke-width='60px' paint-order='stroke'>" + (i + 1) + "</text> "
+                    numberString = "  <text id='number" + i + "' x='" + x + "' y='" + y + "' font-size='380px' font-weight='bold' font-family='Arial, sans-serif' fill='#193F8F' stroke='white' stroke-width='60px' paint-order='stroke'>" + (i + 1) + "</text> "
                     numbersSVGElements[i] = numberString
                 }
                 break
@@ -2265,13 +2265,10 @@ $(document).ready(function () {
 
     $(".radioCheckContainer").on("click", function () {
         if ($(this).hasClass("unselectedRadio")) {
-            $(".radioCheckContainer").removeClass("selectedRadio");
-            $(".radioCheckContainer").addClass("unselectedRadio");
-            $(this).removeClass("unselectedRadio");
-            $(this).addClass("selectedRadio");
-
+            let group = $(this).closest(".radioGroupContainer").find(".radioCheckContainer");
+            group.removeClass("selectedRadio").addClass("unselectedRadio");
+            $(this).removeClass("unselectedRadio").addClass("selectedRadio");
         }
-
     });
 
     let dropState = false
@@ -2354,7 +2351,7 @@ $(document).ready(function () {
 
         myCredits = ""
         myCredits += "<div class='creditsContainer'>"
-        myCredits += "<div class=''>Αναστασία Θεοφανίδου, Βασίλης Κουταλάς, Νικόλας Χαριστός </div>"
+        myCredits += "<div class=''>Αναστασία Θεοφανίδου, Βασίλης Κουταλάς, <a href='https://nicharis.webpages.auth.gr/' target='_blank'> Νικόλας Χαριστός </a></div>"
         myCredits += "<div>|</div>"
         myCredits += "<div class=''>Τμήμα Χημείας</div>"
         myCredits += "<div>|</div>"

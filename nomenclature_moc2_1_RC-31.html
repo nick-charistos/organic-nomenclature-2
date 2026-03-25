@@ -67,13 +67,15 @@
                         <div id="jsmeNomeclatureSVG"></div>
                     </div>
                     <div id="radio2DMode" style="border: 1px solid var(--baseColor); border-top: 0; border-bottom: 0;">
-                        <div class='radioGroupContainer HFlex ' style='justify-content: center;'>
-                            <div class='radioCheckContainer selectedRadio'>Συνεπτυγμένος<span class='radioCheck'></span>
-                            </div>
-                            <div class='radioCheckContainer unselectedRadio'>Ανεπτυγμένος<span
-                                    class='radioCheck'></span>
-                            </div>
-                            <div class='radioCheckContainer unselectedRadio '>Σκελετικός<span class='radioCheck'></span>
+                        <div class='radioGroupContainer HFlex' style='justify-content: space-between; align-items: center; padding: 0 6px;'>
+                            <div class="HFlex" style="align-items: center;">
+                                <div class='radioCheckContainer selectedRadio'>Συνεπτυγμένος<span class='radioCheck'></span>
+                                </div>
+                                <div class='radioCheckContainer unselectedRadio'>Ανεπτυγμένος<span
+                                        class='radioCheck'></span>
+                                </div>
+                                <div class='radioCheckContainer unselectedRadio '>Σκελετικός<span class='radioCheck'></span>
+                                </div>
                             </div>
                             <div id="save2DBtn" class="saveImgBtn" onclick="fSave2DPng()" title="Αποθήκευση εικόνας 2D">
                                 <img src="imgs/image-svgrepo-Industrial-Sharp.svg">
@@ -89,19 +91,19 @@
                         </script>
                     </div>
                     <div id="3DControls" class="HFlex"
-                        style="border: 1px solid var(--baseColor); border-top:0; justify-content: center; ">
-
-                        <div id="atomSymbolsCheck" class="checkBoxContainer selectedCheck">Σύμβολα Ατόμων <span
-                                class="checkBox"></span>
+                        style="border: 1px solid var(--baseColor); border-top:0; justify-content: space-between; align-items: center; padding: 0 6px;">
+                        <div class="HFlex" style="align-items: center;">
+                            <div id="atomSymbolsCheck" class="checkBoxContainer selectedCheck">Σύμβολα Ατόμων <span
+                                    class="checkBox"></span>
+                            </div>
+                            <div id="rotateCheck" class="checkBoxContainer unselectedCheck">Περιστροφή <span
+                                    class="checkBox"></span>
+                            </div>
+                            <div id="dropMenu" style=" margin-top: 2px;"></div>
                         </div>
-                        <div id="rotateCheck" class="checkBoxContainer unselectedCheck">Περιστροφή <span
-                                class="checkBox"></span>
-                        </div>
-                        <div id="dropMenu" style=" margin-top: 2px;"></div>
                         <div id="save3DBtn" class="saveImgBtn" onclick="fSaveJmolPng()" title="Αποθήκευση εικόνας 3D">
                             <img src="imgs/image-svgrepo-Industrial-Sharp.svg">
                         </div>
-
                     </div>
                 </div>
 
