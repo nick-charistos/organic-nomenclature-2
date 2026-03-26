@@ -978,7 +978,7 @@ $(document).ready(function () {
 
     /////////// Export PNG /////////////
 
-         /////////// Export PNG /////////////
+    /////////// Export PNG /////////////
 
     function fGetNameBoxes() {
         return Array.from(document.querySelectorAll('.nameCompContainer .nameCompBox'))
@@ -1312,7 +1312,14 @@ $(document).ready(function () {
 
     }
 
-    $(document).on("click", ".nameCompBox", function () {
+    $(document).on("click", ".nameCompBox", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
+        const lockScroll = () => window.scrollTo(scrollX, scrollY);
+        window.addEventListener('scroll', lockScroll);
+        requestAnimationFrame(() => requestAnimationFrame(() => window.removeEventListener('scroll', lockScroll)));
         fClearHighlights()
         fUpdateSVG()
         if ($(this).hasClass('selected')) {
