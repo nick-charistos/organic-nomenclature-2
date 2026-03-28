@@ -26,8 +26,13 @@ homologues-seires.html
 nameing-tables.html
 table-FG-order.html
 
-# Older JS / data files not used by RC-30
+# Older JS / data files not used by RC-31
 js/jsme-nick-nomeclature-moc2-[0-9].js
+js/jsme-nick-nomeclature-moc2-30.js
+
+# Older CSS / HTML versions
+css/jsme-nick-30.css
+nomenclature_moc2_1_RC-30.html
 
 # Research / source assets (not needed for deployment)
 res/
