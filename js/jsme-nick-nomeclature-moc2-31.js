@@ -1021,7 +1021,7 @@ $(document).ready(function () {
         let bbox = svgEl.getBoundingClientRect()
         let srcWidth = bbox.width || 450
         let srcHeight = bbox.height || 200
-        let width = 800
+        let width = 1200
         let molHeight = Math.round(srcHeight * (width / srcWidth))
         let labelHeight = nameBoxes.length ? 58 : 0
 
@@ -1086,12 +1086,12 @@ $(document).ready(function () {
         let filename = (molName || selectedMol || 'molecule').replace(/\s+/g, '_') + '_3D.png'
         let jmolCanvas = document.querySelector('#nomeclature3D canvas')
         if (!jmolCanvas) {
-            Jmol.script(jmolAppletNomeclature, "write IMAGE 800 PNG '" + filename + "';")
+            Jmol.script(jmolAppletNomeclature, "write IMAGE 1200 1200 PNG '" + filename + "';")
             return
         }
         let srcWidth = jmolCanvas.width
         let srcHeight = jmolCanvas.height
-        let width = 800
+        let width = 1200
         let molHeight = Math.round(srcHeight * (width / srcWidth))
         let labelHeight = nameBoxes.length ? 58 : 0
         let canvas = document.createElement("canvas")
