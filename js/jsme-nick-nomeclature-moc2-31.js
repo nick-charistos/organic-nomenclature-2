@@ -1300,6 +1300,7 @@ $(document).ready(function () {
     function fClearHighlights() {
         clearInterval(myNumberingTimeout)
         currNumberEl = 0
+        if (!jsmeNomeclatureApplet) return
         jsmeNomeclatureApplet.resetAtomColors(0)
         jsmeNomeclatureApplet.resetBondColors(0)
         Jmol.script(jmolAppletNomeclature, "select all;  selectionHalos off; color bonds none; color atoms none;")
