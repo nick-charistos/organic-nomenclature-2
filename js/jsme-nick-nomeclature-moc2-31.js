@@ -130,7 +130,7 @@ $(document).ready(function () {
         Jmol.script(jmolAppletNomeclature, "zap");
 
         myMol2D = null;
-        jsmeNomeclatureApplet.reset()
+        if (jsmeNomeclatureApplet) jsmeNomeclatureApplet.reset()
         fUpdateSVG()
 
         $("#molName").html("")
@@ -885,6 +885,7 @@ $(document).ready(function () {
 
     function fUpdateSVG() {
 
+        if (!jsmeNomeclatureApplet) return
         let mySVG = jsmeNomeclatureApplet.getMolecularAreaGraphicsString()
         $("#jsmeNomeclatureSVG").html(mySVG);
         if (mode2D == 'condensed') {
