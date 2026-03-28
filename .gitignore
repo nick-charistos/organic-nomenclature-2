@@ -28,6 +28,9 @@ table-FG-order.html
 
 # Older JS / data files not used by RC-30
 js/jsme-nick-nomeclature-moc2-[0-9].js
+
+# Research / source assets (not needed for deployment)
+res/
 js/jsme-nick-nomeclature-moc2-1[0-9].js
 js/jsme-nick-nomeclature-moc2-2[0-9].js
 js/jsme-nick-nomeclature-moc2-data_[1-4].js
