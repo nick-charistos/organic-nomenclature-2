@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flowchart</title>
+</head>
+<body>
+
+    <h1>Διάγραμμα Ροής Κύριας Λειτουργίας</h1>
+
+    <!-- Εδώ βάζεις τον κώδικα του Mermaid -->
+    <div class="mermaid">
+        graph TD
+            subgraph "Κύρια Ροή"
+                A[Κλικ σε μόριο] --> B(fSelectMol);
+                B --> C[fInitProps: Καθαρισμός<br>προηγούμενης επιλογής];
+                C --> D(fLoadMol2D);
+                C --> E(fLoadMol3D);
+                
+                subgraph "Ανάλυση & Ονοματολογία (μέσα στο fLoadMol2D)"
+                    D --> D1(fAnalyseStructure: Ανάλυση<br>ατόμων, δεσμών, σθένους);
+                    D1 --> D2(fDetectMolType: Εντοπισμός<br>Χαρακτηριστικών Ομάδων);
+                    D2 --> D3(fGuessName: Σύνθεση<br>συστηματικού ονόματος);
+                    D3 --> D4(fUpdateSVG: Ενημέρωση<br>2D σχεδίου);
+                end
+
+                D4 --> F(fShowNameAnalysis: Εμφάνιση<br>ονόματος σε συνθετικά);
+                E --> F;
+            end
+    </div>
+
+    <!-- Script για να τρέξει το Mermaid -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+
+</body>
+</html>
