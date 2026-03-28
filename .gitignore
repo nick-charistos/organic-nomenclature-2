@@ -36,6 +36,16 @@ nomenclature_moc2_1_RC-30.html
 
 # Research / source assets (not needed for deployment)
 res/
+
+# Files not used by RC-31
+imgs/homologs-series.svg
+js/jsme-nick-nomeclature-moc2-28-ruleCenter.js
+js/jsme-nick-nomeclature-moc2-28-ruleInMenu.js
+spt/init-2.spt
+mols/1st-Molecules-3D.sdf
+mols/funGroups-3D.sdf
+mols/homo/
+mols/nomeclature/
 js/jsme-nick-nomeclature-moc2-1[0-9].js
 js/jsme-nick-nomeclature-moc2-2[0-9].js
 js/jsme-nick-nomeclature-moc2-data_[1-4].js
