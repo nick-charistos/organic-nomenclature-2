@@ -989,10 +989,10 @@ $(document).ready(function () {
 
     function fDrawNameBoxes(ctx, nameBoxes, canvasWidth, yTop) {
         if (!nameBoxes.length) return
-        let font = 'bold 22px Arial, sans-serif'
+        let font = 'bold 40px Arial, sans-serif'
         ctx.font = font
-        let pad = 10
-        let boxH = 36
+        let pad = 18
+        let boxH = 60
         let gap = -2  // boxes overlap border like CSS margin-right: -2px
         let totalW = nameBoxes.reduce(function (acc, b) {
             return acc + ctx.measureText(b.text).width + pad * 2
@@ -1024,7 +1024,7 @@ $(document).ready(function () {
         let srcHeight = bbox.height || 200
         let width = 1200
         let molHeight = Math.round(srcHeight * (width / srcWidth))
-        let labelHeight = nameBoxes.length ? 58 : 0
+        let labelHeight = nameBoxes.length ? 90 : 0
 
         let svgClone = svgEl.cloneNode(true)
         svgClone.setAttribute('width', srcWidth)
@@ -1083,35 +1083,25 @@ $(document).ready(function () {
     }
 
     window.fSaveJmolPng = function () {
-        let nameBoxes = fGetNameBoxes()
-        let filename = (molName || selectedMol || 'molecule').replace(/\s+/g, '_') + '_3D.png'
-        let jmolCanvas = document.querySelector('#nomeclature3D canvas')
-        if (!jmolCanvas) {
-            Jmol.script(jmolAppletNomeclature, "write IMAGE 1200 1200 PNG '" + filename + "';")
-            return
-        }
-        let srcWidth = jmolCanvas.width
-        let srcHeight = jmolCanvas.height
-        let width = 1200
-        let molHeight = Math.round(srcHeight * (width / srcWidth))
-        let labelHeight = nameBoxes.length ? 58 : 0
-        let canvas = document.createElement("canvas")
-        canvas.width = width
-        canvas.height = molHeight + labelHeight
-        let ctx = canvas.getContext("2d")
-        ctx.fillStyle = '#ffffff'
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(jmolCanvas, 0, 0, width, molHeight)
-        fDrawNameBoxes(ctx, nameBoxes, width, molHeight)
-        canvas.toBlob(function (blob) {
-            let a = document.createElement('a')
-            a.href = URL.createObjectURL(blob)
-            a.download = filename
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            URL.revokeObjectURL(a.href)
-        })
+        let assembledName = nameComponentsList
+            .filter(function (c) { return c != null && c !== '' && c !== undefined })
+            .join('')
+        let baseName = (assembledName || molName || selectedMol || 'molecule').replace(/\s+/g, '_')
+        let safeLabel = assembledName.replace(/'/g, '') || (molName || '').replace(/'/g, '')
+
+        // // File 1: without name label
+        // Jmol.script(jmolAppletNomeclature,
+        //     "write IMAGE 1200 1200 PNG '" + baseName + "_3D.png';"
+        // )
+
+        // File 2: with molecule name as echo label — delayed to allow first download to register
+        // setTimeout(function () {
+            Jmol.script(jmolAppletNomeclature,
+                "set echo  bottom center; color echo black; font echo 24 ; echo " + safeLabel + "|| ;" +
+                "write IMAGE 1200 1200 PNG '" + baseName + "_3D.png';" +
+                "set echo off;"
+            )
+        // }, 600)
     }
     ///////////////  Name Analysis /////////////////
 

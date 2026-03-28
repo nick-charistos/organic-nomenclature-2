@@ -1,5 +1,7 @@
  set antialiasDisplay on;
 
+ set antialiasImages ON;
+
  set labelOffset 0 0; 
  font labels 18; 
  color labels black;
