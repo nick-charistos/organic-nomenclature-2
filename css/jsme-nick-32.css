@@ -625,14 +625,14 @@ transition: all 0.3s;
 #dropLabel::after {
   content: "";
   position: absolute;
-  left: 5px;
-  bottom: 10px;
+  left: 3px;
+  bottom: 7px;
   display: block;
   width: 20px;
   height: 20px;
   border-radius: 50%;
   background-repeat: no-repeat;
-  background-size: 14px 14px;
+  background-size: 30px 30px;
   background-position: center;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231b275d' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   transition: all 0.3s;

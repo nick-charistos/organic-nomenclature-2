@@ -116,7 +116,7 @@ $(document).ready(function () {
     $(document).on('click', '.dropLi', function () {
         selectedLabel = $(this).html()
         $("#dropLabel").html(selectedLabel)
-        $("#dropLiContainer").slideToggle(100)
+        $("#dropLiContainer").slideUp(100)
         dropState = false
         $("#dropLabel").removeClass('open').addClass('closed')
     })
