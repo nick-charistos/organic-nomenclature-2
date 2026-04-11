@@ -40,6 +40,11 @@ const gFunctionalGroupsOrder = ["carboxylicAcid", "cyanide", "aldehyde", "ketone
 let molTaxonomy = ""
 let narrateAnalysisFlag = false
 
+const svgSpeaker = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z'/></svg>"
+const svgMute   = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 18l2 2L21 18.73l-1.27-1.27L4.27 3zM12 4L9.91 6.09 12 8.18V4z'/></svg>"
+const svgStop   = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M6 6h12v12H6z'/></svg>"
+const svgPlay   = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M8 5v14l11-7z'/></svg>"
+
 ///////// INIT JSME //////
 function jsmeOnLoad() {
     jsmeNomeclatureApplet = new JSApplet.JSME("jsmeNomeclature", "450px", "200px", {
@@ -68,7 +73,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#narrateAnalysisToggle', function () {
         narrateAnalysisFlag = !narrateAnalysisFlag
-        $(this).text(narrateAnalysisFlag ? '🔊' : '🔇')
+        $(this).html(narrateAnalysisFlag ? svgSpeaker : svgMute)
             .attr('title', narrateAnalysisFlag ? 'Αφήγηση ενεργή' : 'Αφήγηση ανενεργή')
         if (!narrateAnalysisFlag) {
             window.speechSynthesis.cancel()
@@ -1282,14 +1287,14 @@ $(document).ready(function () {
     function fShowRuleTheory() {
         window.speechSynthesis.cancel()
         ruleTitle = (selectedRule + 1) + "<sup>ος</sup> Κανόνας"
-        ruleTheory = "<div class='panelTitle'>" + ruleTitle + "<button id='narrateBtn' class='narrateBtn' title='Ανάγνωση κανόνα'>🔊</button></div><div class='ruleText'>" + namingRules.rulesTheory_1_8[selectedRule] + "</div>"
+        ruleTheory = "<div class='panelTitle'>" + ruleTitle + "<button id='narrateBtn' class='narrateBtn' title='Ανάγνωση κανόνα'>" + svgSpeaker + "</button></div><div class='ruleText'>" + namingRules.rulesTheory_1_8[selectedRule] + "</div>"
         $("#ruleTheory").html(ruleTheory)
     }
 
     function fNarrateRule() {
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel()
-            $('#narrateBtn').text('🔊')
+            $('#narrateBtn').html(svgSpeaker)
             return
         }
         const rawText = namingRules.rulesTheory_1_8[selectedRule]
@@ -1310,9 +1315,9 @@ $(document).ready(function () {
                          || greekVoices.find(v => !maleNames.test(v.name))
                          || greekVoices[0]
         if (femaleVoice) utterance.voice = femaleVoice
-        utterance.onstart = function () { $('#narrateBtn').text('⏹') }
-        utterance.onend = function () { $('#narrateBtn').text('🔊') }
-        utterance.onerror = function () { $('#narrateBtn').text('🔊') }
+        utterance.onstart = function () { $('#narrateBtn').html(svgStop) }
+        utterance.onend = function () { $('#narrateBtn').html(svgSpeaker) }
+        utterance.onerror = function () { $('#narrateBtn').html(svgSpeaker) }
         window.speechSynthesis.speak(utterance)
     }
 
@@ -1362,7 +1367,7 @@ $(document).ready(function () {
 
         compCount = nameComponentsList.length;
 
-        const toggleIcon = narrateAnalysisFlag ? '🔊' : '🔇'
+        const toggleIcon = narrateAnalysisFlag ? svgSpeaker : svgMute
         const toggleTitle = narrateAnalysisFlag ? 'Αφήγηση ενεργή' : 'Αφήγηση ανενεργή'
         const playDisabled = narrateAnalysisFlag ? '' : ' disabled'
         nameCompContainer = "<div class='panelTitle'>Επεξήγηση ονομασίας<button id='narrateAnalysisToggle' class='narrateBtn' title='" + toggleTitle + "'>" + toggleIcon + "</button></div>" +
@@ -1379,7 +1384,7 @@ $(document).ready(function () {
             nameCompContainer += compBox
         }
 
-        nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' title='Ανάγνωση ονόματος'" + playDisabled + ">▶</button></div>"
+        nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' title='Ανάγνωση ονόματος'" + playDisabled + ">" + svgPlay + "</button></div>"
 
         $("#nameAnalysis").html(nameCompContainer)
         fExplainNameComp()
