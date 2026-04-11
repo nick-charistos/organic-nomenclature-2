@@ -297,7 +297,8 @@ h1 {
 .crossMenuLi {
   font-family: "Roboto", sans-serif;
   font-weight: normal;
-  padding: 5px 0 5px 5px;
+  position: relative;
+  padding: 5px 5px 5px 32px;
   transition: all 0.3s;
   color: #333;
 }
@@ -334,27 +335,23 @@ h1 {
 }
 
 .crossMenuLi::before {
-  content: "\002B";
-  text-align: center;
+  content: "\203A";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   display: inline-block;
-  box-sizing: border-box;
-  width: 25px;
-  height: 25px;
-  /* border-radius: 50%; */
-  background-color: #fff;
-  /* margin-right: 3px; */
   transition: all 0.3s;
   color: #ccc;
-  padding: 0px 5px;
-  font-size: 1.25rem;
-  /* border: 1px solid #ddd; */
+  font-size: 1.75rem;
+  line-height: 1;
+  background-color: transparent;
 }
 
 .crossMenuLi:hover::before {
   color: var(--baseColor);
   transition: all 0.3s;
   background-color: transparent;
-  border-color: var(--baseColor);
 }
 
 .crossMenuLi:hover {
@@ -365,13 +362,16 @@ h1 {
 }
 
 .crossMenuLi.selectedLi::before {
-  content: "\268A";
+  content: "\203A";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
   transition: all 0.3s;
   background-color: transparent !important;
   color: #fff;
-  padding: 0px 5px;
-  font-size: 1rem;
-  /* border: 1px solid var(--baseColor); */
+  font-size: 1.75rem;
+  line-height: 1;
 }
 
 .crossMenuLi.selectedLi {
