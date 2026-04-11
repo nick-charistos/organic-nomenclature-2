@@ -89,6 +89,55 @@ $(document).ready(function () {
         fSpeakGreek(text)
     })
 
+    // ---- Drop menu: init early so upstream errors don't prevent it loading ----
+    let dropState = false
+    let selectedLabel
+
+    menuItmes = ["Σφαίρες και Ράβδοι", "Σφαίρες", "Ράβδοι"]
+    fCreateDropMenu(menuItmes)
+
+    $('html').on('click', function () {
+        $("#dropLiContainer").slideUp(100)
+        $("#dropLabel").removeClass('open').addClass('closed')
+        dropState = false
+    })
+
+    $(document).on('click', '#dropLabel', function (event) {
+        event.stopPropagation()
+        dropState = !dropState
+        $("#dropLiContainer").slideToggle(100)
+        if (dropState) {
+            $(this).removeClass('closed').addClass('open')
+        } else {
+            $(this).removeClass('open').addClass('closed')
+        }
+    })
+
+    $(document).on('click', '.dropLi', function () {
+        selectedLabel = $(this).html()
+        $("#dropLabel").html(selectedLabel)
+        $("#dropLiContainer").slideToggle(100)
+        dropState = false
+        $("#dropLabel").removeClass('open').addClass('closed')
+    })
+
+    $(document).on('click', '.molvis .dropLi', function () {
+        const myID = $(this).attr('id')
+        switch (myID) {
+            case 'dropLi0':
+                vis3D = 'ballnstick'
+                break
+            case 'dropLi1':
+                vis3D = 'spacefill'
+                break
+            case 'dropLi2':
+                vis3D = 'sticks'
+                break
+        }
+        fSetMolVis3D(vis3D)
+    })
+    // ---- End drop menu early init ----
+
     // Add data (2D structure files ) to nameExamples object
     function fInitData() {
         for (let prop in nameExamples) {
@@ -2379,12 +2428,6 @@ $(document).ready(function () {
         }
     });
 
-    let dropState = false
-    let selectedLabel
-
-    menuItmes = ["Σφαίρες και Ράβδοι", "Σφαίρες", "Ράβδοι"]
-    fCreateDropMenu(menuItmes)
-
     function fCreateDropMenu(myItems) {
 
         selectedLabel = myItems[0]
@@ -2396,59 +2439,6 @@ $(document).ready(function () {
         myHTML += "</div>"
         $("#dropMenu").html(myHTML)
     }
-
-    $('html').on('click', function () {
-        $("#dropLiContainer").slideUp(100)
-        $("#dropLabel").removeClass('open')
-        $("#dropLabel").addClass('closed')
-        dropState = false
-    });
-
-    $('#dropLabel').on('click', function (event) {
-        event.stopPropagation();
-    });
-
-    $("#dropLabel").on('click', function () {
-        dropState = !dropState
-        $("#dropLiContainer").slideToggle(100)
-
-        if (dropState) {
-            $("#dropLabel").removeClass('closed')
-            $("#dropLabel").addClass('open')
-        } else {
-            $("#dropLabel").removeClass('open')
-            $("#dropLabel").addClass('closed')
-        }
-
-    })
-
-    $(".dropLi").on('click', function () {
-        selectedLabel = $(this).html()
-        $("#dropLabel").html(selectedLabel)
-        $("#dropLiContainer").slideToggle(100)
-        dropState = false
-        $("#dropLabel").removeClass('open')
-        $("#dropLabel").addClass('closed')
-
-    })
-
-    $(".molvis .dropLi").on('click', function () {
-        myID = $(this).attr('id')
-        switch (myID) {
-            case 'dropLi0':
-                vis3D = 'ballnstick'
-                break
-            case 'dropLi1':
-                vis3D = 'spacefill'
-                break
-            case 'dropLi2':
-                vis3D = 'sticks'
-                break
-
-        }
-        fSetMolVis3D(vis3D)
-
-    })
 
     function fShowCreditLibs() {
         myCredits = "<div class='creditsContainer'>"
