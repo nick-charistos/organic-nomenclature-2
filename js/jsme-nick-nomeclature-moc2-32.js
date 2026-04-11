@@ -1516,7 +1516,7 @@ $(document).ready(function () {
 
             fExplainNameComp()
             if (narrateAnalysisFlag) {
-                const explainText = $('#nameAnalysisExplain').text()
+                const explainText = $('#nameAnalysisExplain').text().replace(/\bC\b/g, '')
                 fSpeakGreek(explainText)
             }
         }
