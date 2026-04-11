@@ -165,7 +165,7 @@ $(document).ready(function () {
             alcohol: { suffix: 'όλη', substitute: "υδροξυ" },
             aldehyde: { suffix: 'άλη', substitute: "οξο" },
             ketone: { suffix: 'όνη', substitute: "κετο" },
-            carboxylicAcid: { suffix: 'ικό οξύ', substitute: "καβροξυ" },
+            carboxylicAcid: { suffix: 'ικό οξύ', substitute: "καρβοξυ" },
             cyanide: { suffix: 'νιτρίλιο', substitute: "κυανο" },
             amine: { suffix: 'αμίνη', substitute: "αμινο" },
             nitro: { suffix: 'ιο', substitute: "νιτρο" }
