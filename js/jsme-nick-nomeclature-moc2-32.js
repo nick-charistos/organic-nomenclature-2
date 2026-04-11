@@ -74,7 +74,7 @@ $(document).ready(function () {
     $(document).on('click', '#narrateAnalysisToggle', function () {
         narrateAnalysisFlag = !narrateAnalysisFlag
         $(this).html(narrateAnalysisFlag ? svgSpeaker : svgMute)
-            .attr('title', narrateAnalysisFlag ? 'Αφήγηση ενεργή' : 'Αφήγηση ανενεργή')
+            .attr('data-tooltip', narrateAnalysisFlag ? 'Αφήγηση ενεργή' : 'Αφήγηση ανενεργή')
         if (!narrateAnalysisFlag) {
             window.speechSynthesis.cancel()
             $('#readNameBtn').prop('disabled', true)
@@ -1336,14 +1336,14 @@ $(document).ready(function () {
     function fShowRuleTheory() {
         window.speechSynthesis.cancel()
         ruleTitle = (selectedRule + 1) + "<sup>ος</sup> Κανόνας"
-        ruleTheory = "<div class='panelTitle'>" + ruleTitle + "<button id='narrateBtn' class='narrateBtn' title='Ανάγνωση κανόνα'>" + svgSpeaker + "</button></div><div class='ruleText'>" + namingRules.rulesTheory_1_8[selectedRule] + "</div>"
+        ruleTheory = "<div class='panelTitle'>" + ruleTitle + "<button id='narrateBtn' class='narrateBtn' data-tooltip='Ανάγνωση κανόνα'>" + svgPlay + "</button></div><div class='ruleText'>" + namingRules.rulesTheory_1_8[selectedRule] + "</div>"
         $("#ruleTheory").html(ruleTheory)
     }
 
     function fNarrateRule() {
         if (window.speechSynthesis.speaking) {
             window.speechSynthesis.cancel()
-            $('#narrateBtn').html(svgSpeaker)
+            $('#narrateBtn').html(svgPlay)
             return
         }
         const rawText = namingRules.rulesTheory_1_8[selectedRule]
@@ -1365,8 +1365,8 @@ $(document).ready(function () {
                          || greekVoices[0]
         if (femaleVoice) utterance.voice = femaleVoice
         utterance.onstart = function () { $('#narrateBtn').html(svgStop) }
-        utterance.onend = function () { $('#narrateBtn').html(svgSpeaker) }
-        utterance.onerror = function () { $('#narrateBtn').html(svgSpeaker) }
+        utterance.onend = function () { $('#narrateBtn').html(svgPlay) }
+        utterance.onerror = function () { $('#narrateBtn').html(svgPlay) }
         window.speechSynthesis.speak(utterance)
     }
 
@@ -1419,7 +1419,7 @@ $(document).ready(function () {
         const toggleIcon = narrateAnalysisFlag ? svgSpeaker : svgMute
         const toggleTitle = narrateAnalysisFlag ? 'Αφήγηση ενεργή' : 'Αφήγηση ανενεργή'
         const playDisabled = narrateAnalysisFlag ? '' : ' disabled'
-        nameCompContainer = "<div class='panelTitle'>Επεξήγηση ονομασίας<button id='narrateAnalysisToggle' class='narrateBtn' title='" + toggleTitle + "'>" + toggleIcon + "</button></div>" +
+        nameCompContainer = "<div class='panelTitle'>Επεξήγηση ονομασίας<button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button></div>" +
             "<div class='HFlex' style='justify-content:center;'><div class='nameCompContainer'>"
 
         for (i = 0; i < compCount; i++) {
@@ -1433,7 +1433,7 @@ $(document).ready(function () {
             nameCompContainer += compBox
         }
 
-        nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' title='Ανάγνωση ονόματος'" + playDisabled + ">" + svgPlay + "</button></div>"
+        nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' data-tooltip='Ανάγνωση ονόματος'" + playDisabled + ">" + svgPlay + "</button></div>"
 
         $("#nameAnalysis").html(nameCompContainer)
         fExplainNameComp()
