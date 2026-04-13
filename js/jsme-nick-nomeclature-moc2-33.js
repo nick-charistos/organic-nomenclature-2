@@ -1273,7 +1273,7 @@ window.fSave2DPng = function () {
             if (!blob) { console.error('2D PNG: toBlob returned null'); return }
             let a = document.createElement('a')
             a.href = URL.createObjectURL(blob)
-            a.download = (molName || selectedMol || 'molecule').replace(/\s+/g, '_') + '_2D.png'
+            a.download = (currentMolName || selectedMol || 'molecule').replace(/\s+/g, '_') + '_2D.png'
             document.body.appendChild(a)
             a.click()
             document.body.removeChild(a)
@@ -1293,8 +1293,8 @@ window.fSaveJmolPng = function () {
     let assembledName = nameComponentsList
         .filter(function (c) { return c != null && c !== '' && c !== undefined })
         .join('')
-    let baseName = (assembledName || molName || selectedMol || 'molecule').replace(/\s+/g, '_')
-    let safeLabel = assembledName.replace(/'/g, '') || (molName || '').replace(/'/g, '')
+    let baseName = (assembledName || currentMolName || selectedMol || 'molecule').replace(/\s+/g, '_')
+    let safeLabel = assembledName.replace(/'/g, '') || (currentMolName || '').replace(/'/g, '')
 
     // // File 1: without name label
     // Jmol.script(jmolAppletNomeclature,
