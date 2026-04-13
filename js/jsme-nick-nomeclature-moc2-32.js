@@ -635,7 +635,7 @@ $(document).ready(function () {
         comp2 = "" // 2ο Κυριο συνθετικό: αν/εν/ιν
         comp2b = "" // 2ο Κυριο συνθετικό: ιν (για περιπτωση διπλων και τριπλων δεσμων)
         bondPrefixDB = "" //Αρίθμηση διπλων δεσμών CC
-        bondPrefixΤB = "" //Αριθμιση τριπλών δεσμων CC
+        bondPrefixTB = "" //Αριθμιση τριπλών δεσμων CC
         if (multiBondListCC.length > 0) {
             // διπλοι δεσμοι
             sortedMultiDBonds = []
@@ -671,17 +671,17 @@ $(document).ready(function () {
                 sortedMultiTBonds.sort()
             }
             for (i = 0; i < sortedMultiTBonds.length; i++) {
-                bondPrefixΤB += sortedMultiTBonds[i]
+                bondPrefixTB += sortedMultiTBonds[i]
                 if (i < sortedMultiTBonds.length - 1) {
-                    bondPrefixΤB += ","
+                    bondPrefixTB += ","
                 } else {
-                    bondPrefixΤB += "-"
+                    bondPrefixTB += "-"
                 }
-                comp0 = bondPrefixΤB
+                comp0 = bondPrefixTB
             }
             if (mainChainAtomsList.length <= 3) { // Αν η κυρια αλυσιδα είναι μέχρι 3 άτομα C, τότε χωρις αρίθμηση πολλαπλών δεσμων
                 bondPrefixDB = ""
-                bondPrefixΤB = ""
+                bondPrefixTB = ""
                 comp0 = null
             }
 
@@ -692,7 +692,7 @@ $(document).ready(function () {
             } else if (sortedMultiDBonds.length > 0 && sortedMultiTBonds.length > 0) { // διπλοι και τριπλοι δεσμοι
                 comp0 = bondPrefixDB
                 comp2 += nameMultiPrefix[sortedMultiDBonds.length - 1] + "εν"
-                comp3 = "-" + bondPrefixΤB
+                comp3 = "-" + bondPrefixTB
                 comp2b = "ιν"
             }
         } else {  // μόνο απλοι δεσμοι
