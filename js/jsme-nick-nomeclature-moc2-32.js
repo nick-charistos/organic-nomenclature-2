@@ -1372,7 +1372,8 @@ $(document).ready(function () {
 
     function fSpeakGreek(text) {
         window.speechSynthesis.cancel()
-        const utterance = new SpeechSynthesisUtterance(text)
+        const cleanText = text.replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
+        const utterance = new SpeechSynthesisUtterance(cleanText)
         utterance.lang = 'el-GR'
         utterance.rate = 0.9
         const voices = window.speechSynthesis.getVoices()
@@ -1400,7 +1401,7 @@ $(document).ready(function () {
         let idx = 0
         function speakNext() {
             if (idx >= parts.length) return
-            const text = parts[idx].replace(/<[^>]*>/g, '')
+            const text = parts[idx].replace(/<[^>]*>/g, '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim()
             idx++
             const utt = new SpeechSynthesisUtterance(text)
             utt.lang = 'el-GR'
