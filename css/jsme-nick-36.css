@@ -1085,6 +1085,8 @@ transition: all 0.3s;
   background-color: #fff;
   border: 1px solid var(--baseColor);
   border-top: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .ruleTile {
@@ -1318,7 +1320,7 @@ transition: all 0.3s;
     width: 350px;
     min-width: 300px;
     flex-shrink: 0;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Collapsible menu drawer */
@@ -1391,7 +1393,7 @@ transition: all 0.3s;
     h1 { display: none; }
     #panelContainer { margin-top: 6px; margin-bottom: 6px; }
     #menuCol     { width: 150px; min-width: 120px; margin-right: 0 !important; }
-    #analysisCol { width: 300px; min-width: 300px; margin-left: 0 !important; }
+    #analysisCol { width: 350px; min-width: 350px; margin-left: 0 !important; }
     .menuLi {
         font-size: 0.82rem;
         padding-left: 8px;
