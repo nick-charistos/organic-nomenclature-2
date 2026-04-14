@@ -46,10 +46,13 @@ body {
   font-size: 1rem;
   padding: 0;
   margin: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 html,
 body {
+  overflow-x: hidden;
   height: 100%;
 }
 
@@ -81,6 +84,7 @@ h1 {
   margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
+  overflow-x: hidden;
 }
 
 #pageContainer {
@@ -235,6 +239,8 @@ h1 {
 .HFlex {
   display: flex;
   flex-direction: row;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 
@@ -1302,6 +1308,11 @@ transition: all 0.3s;
     min-width: 120px;   /* never collapses below this */
     flex-shrink: 0;
 }
+#viewerCol {
+    flex: 1 1 0;        /* fills remaining space; never pushes row past viewport */
+    min-width: 0;       /* overrides flex default min-width:auto */
+    overflow: hidden;
+}
 #analysisCol {
     width: 350px;
     min-width: 300px;
@@ -1373,8 +1384,8 @@ transition: all 0.3s;
 }
 #rotatePromptDismiss:hover { background: rgba(255,255,255,0.28); }
 
-/* ── Landscape ≤899px: 3-column, scaled down (tablets / large phones) ── */
-@media (max-width: 899px) and (orientation: landscape) {
+/* ── Landscape ≤999px: 3-column, scaled down (tablets / large phones & Galaxy A14) ── */
+@media (max-width: 999px) and (orientation: landscape) {
     #menuCol     { width: 150px; min-width: 120px; }
     #analysisCol { width: 300px; min-width: 300px; }
     .menuLi {
