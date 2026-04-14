@@ -860,6 +860,7 @@ transition: all 0.3s;
 
 .nameCompContainer {
   display: flex;
+  flex-wrap: wrap;
   margin-top: 10px;
   align-items: center;
   justify-content: center;
@@ -1317,6 +1318,7 @@ transition: all 0.3s;
     width: 350px;
     min-width: 300px;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 /* Collapsible menu drawer */
@@ -1386,8 +1388,10 @@ transition: all 0.3s;
 
 /* ── Landscape ≤999px: 3-column, scaled down (tablets / large phones & Galaxy A14) ── */
 @media (max-width: 999px) and (orientation: landscape) {
-    #menuCol     { width: 150px; min-width: 120px; }
-    #analysisCol { width: 300px; min-width: 300px; }
+    h1 { display: none; }
+    #panelContainer { margin-top: 6px; margin-bottom: 6px; }
+    #menuCol     { width: 150px; min-width: 120px; margin-right: 0 !important; }
+    #analysisCol { width: 300px; min-width: 300px; margin-left: 0 !important; }
     .menuLi {
         font-size: 0.82rem;
         padding-left: 8px;
@@ -1396,12 +1400,15 @@ transition: all 0.3s;
         height: auto;
         max-height: calc(100vh - 100px);
     }
+    #creditsUs  { font-size: 0.70rem; padding: 4px 10px; }
+    #creditsLib { font-size: 0.70rem; padding: 4px 10px; }
+    .creditsContainer { gap: 4px 6px; }
 }
 
 /* ── Landscape ≤599px: compact 3-column (small phones) ──────────────── */
 @media (max-width: 599px) and (orientation: landscape) {
-    #menuCol     { width: 120px; min-width: 100px; }
-    #analysisCol { width: 300px; min-width: 300px; }
+    #menuCol     { width: 120px; min-width: 100px; margin-right: 0 !important; }
+    #analysisCol { width: 300px; min-width: 300px; margin-left: 0 !important; }
     .menuLi {
         font-size: 0.76rem;
         padding-left: 6px;
