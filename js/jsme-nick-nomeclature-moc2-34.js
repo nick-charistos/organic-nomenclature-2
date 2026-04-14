@@ -1372,11 +1372,8 @@ window.fSave2DPng = function () {
 }
 
 window.fSaveJmolPng = function () {
-    let assembledName = nameComponentsList
-        .filter(function (c) { return c != null && c !== '' && c !== undefined })
-        .join('')
-    let baseName = (assembledName || currentMolName || selectedMol || 'molecule').replace(/\s+/g, '_')
-    let safeLabel = assembledName.replace(/'/g, '') || (currentMolName || '').replace(/'/g, '')
+    let baseName = (currentMolName || selectedMol || 'molecule').replace(/\s+/g, '_')
+    let safeLabel = (currentMolName || '').replace(/'/g, '')
 
     // // File 1: without name label
     // Jmol.script(jmolAppletNomeclature,
@@ -1387,9 +1384,11 @@ window.fSaveJmolPng = function () {
     // setTimeout(function () {
         Jmol.script(jmolAppletNomeclature,
             "set echo  bottom center; color echo black; font echo 24 ; echo " + safeLabel + "|| ;" +
-            "write IMAGE 1200 1200 PNG '" + baseName + "_3D.png';" +
-            "set echo off;"
+            "write IMAGE 1200 1200 PNG '" + baseName + "_3D.png';"
         )
+        setTimeout(function () {
+            Jmol.script(jmolAppletNomeclature, "set echo off;")
+        }, 500)
     // }, 600)
 }
 
