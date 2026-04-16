@@ -80,11 +80,11 @@ h1 {
 }
 
 #panelContainer {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 #pageContainer {
@@ -131,6 +131,81 @@ h1 {
   color: #fff;
   font-size: 1rem;
   min-height: 22px;
+  overflow: visible;
+}
+
+/* ── Settings button in panelTitle ───────────────────────────────────────── */
+.settingsBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bgColor);
+  border: none;
+  color: var(--baseColor);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 6px 8px;
+  line-height: 1;
+  border-radius: 3px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  z-index: 300;
+}
+.settingsBtn:hover,
+.settingsBtn.active {
+  background: var(--darkEarth);
+  color: #fff;
+}
+
+/* ── Settings dropdown panel ─────────────────────────────────────────────── */
+#viewerSettingsPanel {
+	position: absolute;
+	top: 100%;
+	left: 0px;
+	right: 0px;
+	z-index: 50;
+	background: #fff;
+	border: 1px solid var(--baseColor);
+	border-top: 0;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.22s ease, padding 0.22s ease;
+	padding: 0 8px;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+	background-color: #f0f0f0;
+	border-left: 1px solid var(--baseColor);
+	border-right: 1px solid var(--baseColor);
+}
+#viewerSettingsPanel.open {
+  max-height: 200px;
+  padding: 6px 8px;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-height: 36px;
+}
+
+.settingTitle {
+	font-family: "Roboto Condensed", sans-serif;
+	font-weight: 600;
+	color: #fff;
+	font-size: 0.938rem;
+	background: var(--darkEarth);
+	padding: 2px;
+	margin-bottom: 10px;
+	border-radius: 2px;
+}
+.settingLabel {
+	font-size: 0.78rem;
+	color: #333;
+	margin-right: 4px;
+	margin-left: 10px;
 }
 
 .narrateBtn {
@@ -179,8 +254,8 @@ h1 {
   cursor: default;
 }
 
-/* Custom tooltips for narrate/read/save buttons */
-.narrateBtn[data-tooltip]::after, .readNameBtn[data-tooltip]::after, .saveImgBtn[data-tooltip]::after {
+/* Custom tooltips for narrate/read/save/settings buttons */
+.narrateBtn[data-tooltip]::after, .readNameBtn[data-tooltip]::after, .saveImgBtn[data-tooltip]::after, .settingsBtn[data-tooltip]::after {
 	content: attr(data-tooltip);
 	position: absolute;
 	top: calc(100% + 10px);
@@ -200,11 +275,11 @@ h1 {
 	opacity: 0;
 	transition: opacity 0.15s ease 0s;
 }
-.narrateBtn[data-tooltip]:hover::after, .readNameBtn[data-tooltip]:hover::after, .saveImgBtn[data-tooltip]:hover::after {
+.narrateBtn[data-tooltip]:hover::after, .readNameBtn[data-tooltip]:hover::after, .saveImgBtn[data-tooltip]:hover::after, .settingsBtn[data-tooltip]:hover::after {
 	opacity: 1;
 	transition: opacity 0.15s ease 0.5s;
 }
-.narrateBtn[data-tooltip]::before, .readNameBtn[data-tooltip]::before, .saveImgBtn[data-tooltip]::before {
+.narrateBtn[data-tooltip]::before, .readNameBtn[data-tooltip]::before, .saveImgBtn[data-tooltip]::before, .settingsBtn[data-tooltip]::before {
 	content: '';
 	position: absolute;
 	top: 100%;
@@ -217,9 +292,31 @@ h1 {
 	opacity: 0;
 	transition: opacity 0.15s ease 0s;
 }
-.narrateBtn[data-tooltip]:hover::before, .readNameBtn[data-tooltip]:hover::before, .saveImgBtn[data-tooltip]:hover::before {
+.narrateBtn[data-tooltip]:hover::before, .readNameBtn[data-tooltip]:hover::before, .saveImgBtn[data-tooltip]:hover::before, .settingsBtn[data-tooltip]:hover::before {
 	opacity: 1;
 	transition: opacity 0.15s ease 0.5s;
+}
+
+/* Settings button tooltip: appear to the left of the button */
+.settingsBtn[data-tooltip]::after {
+	top: 50%;
+	bottom: auto;
+	left: auto;
+	right: calc(100% + 10px);
+	transform: translateY(-50%);
+	z-index: 400;
+}
+.settingsBtn[data-tooltip]::before {
+	top: 50%;
+	bottom: auto;
+	left: auto;
+	right: 100%;
+	transform: translateY(-50%);
+	border-bottom-color: transparent;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-left-color: var(--lightBlue);
+	z-index: 400;
 }
 
 .panelTitleSpan {
@@ -239,7 +336,7 @@ h1 {
 .HFlex {
   display: flex;
   flex-direction: row;
-  width: 100%;
+  /* width: 100%; */
   box-sizing: border-box;
 }
 
@@ -413,14 +510,16 @@ h1 {
 }
 
 .checkBoxContainer {
-  display: block;
-  position: relative;
-  padding-left: 25px;
-  margin: 12px 0 12px 12px;
-  cursor: pointer;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 1rem;
-transition: all 0.3s;
+	display: block;
+	position: relative;
+	padding-left: 25px;
+	margin: 12px 0 12px 12px;
+	cursor: pointer;
+	font-family: "Roboto Condensed", sans-serif;
+	font-size: 0.85rem;
+	transition: all 0.3s;
+	color: #333;
+	font-weight: normal;
 }
 
 .inactive {
@@ -511,7 +610,9 @@ transition: all 0.3s;
   margin: 5px 0 5px 12px;
   cursor: pointer;
   font-family: "Roboto Condensed", sans-serif;
-  /* font-size: 1.125rem; */
+  color: #333;
+  font-weight: normal;
+  font-size: 0.85rem;
   padding-left: 24px;
   display: inline-block;
   transition: all 0.3s;
@@ -653,17 +754,15 @@ transition: all 0.3s;
 }
 
 #dropLabel {
-  /* block-size: fit-content; */
-  /* width: fit-content; */
-  position: relative;
-  padding: 10px;
-  padding-left: 30px;
-  /* margin: 12px 0 12px 12px; */
-  cursor: pointer;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 1rem;
-  /* background-color: #f0f0fa; */
-  padding-right: 5px;
+	position: relative;
+	padding: 10px;
+	padding-left: 30px;
+	padding-right: 5px;
+	cursor: pointer;
+	font-family: "Roboto Condensed", sans-serif;
+	font-size: 0.85rem;
+	color: #333;
+	font-weight: normal;
 }
 
 #dropLabel.open::after,
@@ -694,6 +793,10 @@ transition: all 0.3s;
   border-left: 0;
   border-right: 0;
   padding: 10px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
 }
 
 .dropLi:hover {
@@ -816,8 +919,6 @@ transition: all 0.3s;
   /* font-family: 'Roboto Condensed', sans-serif; */
 }
 
-
-
 .homo.formula {
   font-family: "Roboto", sans-serif;
   font-size: 1.375rem;
@@ -849,7 +950,7 @@ transition: all 0.3s;
 
 .nameCompContainer {
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   margin-top: 10px;
   align-items: center;
   justify-content: center;
@@ -1303,7 +1404,7 @@ transition: all 0.3s;
 #viewerCol {
     flex: 1 1 0;        /* fills remaining space; never pushes row past viewport */
     min-width: 0;       /* overrides flex default min-width:auto */
-    overflow: hidden;
+    overflow: visible;
 }
 #analysisCol {
     width: 350px;
