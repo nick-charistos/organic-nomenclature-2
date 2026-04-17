@@ -859,7 +859,7 @@ function fValidateMainChain() {
     let sameDir = true
     for (let i = 0; i < calc.length; i++) { if (calc[i] !== stored[i]) { sameDir = false; break } }
     if (sameDir) {
-        console.log('[fCalcMainChain] \u2713  "' + selectedMol + '"  [' + calc + ']')
+        // console.log('[fCalcMainChain] \u2713  "' + selectedMol + '"  [' + calc + ']')
         return
     }
 
@@ -886,7 +886,7 @@ function fValidateMainChain() {
             return locs.join(',')
         }
         if (_locants(calc) === _locants(stored)) {
-            console.log('[fCalcMainChain] \u2713  "' + selectedMol + '"  [' + calc + ']  (equivalent direction)')
+            // console.log('[fCalcMainChain] \u2713  "' + selectedMol + '"  [' + calc + ']  (equivalent direction)')
         } else {
             console.warn('[fCalcMainChain] DIRECTION MISMATCH  "' + selectedMol + '"' +
                 '  calc=[' + calc + ']  (reversed would match)  stored=[' + stored + ']')
@@ -1222,7 +1222,7 @@ function fValidateMainChain3D() {
     let sameDir3D = true
     for (let i = 0; i < calc3D.length; i++) { if (calc3D[i] !== stored3D[i]) { sameDir3D = false; break } }
     if (sameDir3D) {
-        console.log('[fCalcMainChain3D] \u2713  "' + selectedMol + '"  [' + calc3D + ']')
+        // console.log('[fCalcMainChain3D] \u2713  "' + selectedMol + '"  [' + calc3D + ']')
         return
     }
 
@@ -1246,7 +1246,7 @@ function fValidateMainChain3D() {
             return locs.join(',')
         }
         if (_locants3D(calc3D) === _locants3D(stored3D)) {
-            console.log('[fCalcMainChain3D] \u2713  "' + selectedMol + '"  [' + calc3D + ']  (equivalent direction)')
+            // console.log('[fCalcMainChain3D] \u2713  "' + selectedMol + '"  [' + calc3D + ']  (equivalent direction)')
         } else {
             console.warn('[fCalcMainChain3D] DIRECTION MISMATCH  "' + selectedMol + '"' +
                 '  calc=[' + calc3D + ']  (reversed would match)  stored=[' + stored3D + ']')

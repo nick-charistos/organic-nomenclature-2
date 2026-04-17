@@ -327,7 +327,11 @@ function fLoadMol3D() {
     if (!selectedExample) { return }
 
     let myMol3D = selectedExample.file3D
-    Jmol.script(jmolAppletNomeclature, "frank off;load " + myMol3D + ";  select all; center selected;" + selectedExample.moveto + "; script spt/init-3.spt;");
+    let movetoCmd = (selectedExample.hasOwnProperty('moveto') && selectedExample.moveto) ? (selectedExample.moveto + "; ") : ""
+    Jmol.script(
+        jmolAppletNomeclature,
+        "frank off;load " + myMol3D + ";  select all; center selected;" + movetoCmd + "script spt/init-3.spt;"
+    );
     fSetMolVis3D()
 }
 
@@ -1469,7 +1473,7 @@ function fShowNumber3D(n) {
     let atom = "{atomno = " + myAtom + "}"
     let num = (n + 1)
     let d = 0.01  // stroke thickness in Å (tune this)
-
+great 
     // Shadow echoes in 4 directions (black stroke)
     let s = ""
     s += " set echo " + id + " " + atom + "; set echo offset {-1.1 1.1 3}; font echo 42 sansSerif bold; color echo[x193f8f]; echo " + num + ";"
