@@ -80,9 +80,9 @@
                   d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.02 7.02 0 0 0-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54a7.02 7.02 0 0 0-1.62.94l-2.39-.96a.47.47 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.36 1.04.67 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7.02 7.02 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.47.47 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 0 1 8.4 12 3.6 3.6 0 0 1 12 8.4a3.6 3.6 0 0 1 3.6 3.6 3.6 3.6 0 0 1-3.6 3.6z" />
               </svg></button>
             <div id="viewerSettingsPanel">
-               <div class="settingTitle">Ρυθμίσεις</div>
+              <div class="settingTitle">Ρυθμίσεις</div>
               <div id="radioChainMode" class="settingRow">
-               
+
                 <div class="settingLabel">Υπολογισμός κύριας αλυσίδας:</div>
                 <div class="radioGroupContainer HFlex" style="align-items:center; gap:0">
                   <div class="radioCheckContainer unselectedRadio">
@@ -191,12 +191,12 @@
     <div id="creditsUs"></div>
   </div>
 
+  <script src="jsme/96E40B969193BD74B8A621486920E79C.cache.js"></script>
   <script src="js/jsme-nick-nomeclature-moc2-data_37.js"></script>
   <script src="js/mulermoc-nom-core-37.js"></script>
   <script src="js/mulermoc-nom-molview-37.js"></script>
   <script src="js/mulermoc-nom-teaching-37.js"></script>
-  <script src="jsme/96E40B969193BD74B8A621486920E79C.cache.js"></script>
-
+  
   <script>
     function fToggleMenu() {
       var drawer = document.getElementById('menuDrawer');
@@ -213,6 +213,15 @@
       var el = document.getElementById('rotatePrompt');
       if (el) el.style.display = 'none';
     }
+  </script>
+
+  <!-- Ensure JSME applet is initialized after DOM and scripts are loaded -->
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      if (typeof jsmeOnLoad === 'function') {
+        jsmeOnLoad();
+      }
+    });
   </script>
 </body>
 

@@ -80,6 +80,10 @@ function fAnalyseStructure() {
     carbons = 0
     atomTypeObj = {}
     atomTypes = []
+    if (!jsmeNomeclatureApplet) {
+        console.error("jsmeNomeclatureApplet is not initialized.");
+        return;
+    }
     atomsCount = jsmeNomeclatureApplet.totalNumberOfAtoms();
     bondsCount = jsmeNomeclatureApplet.totalNumberOfBonds();
     allAtomsTypeList = Array(atomsCount)
@@ -94,7 +98,6 @@ function fAnalyseStructure() {
         } else {
             atomTypeObj[currAtomType] = 1
         }
-
     }
 
     //// calculate the valencce and connectivity of each atom
