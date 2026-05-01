@@ -573,8 +573,6 @@ $(document).ready(function () {
 
     // Select first rule by default on load
     $(".menuNomeclature2Container .crossMenuLi").first().trigger("click");
-    // Select first molecule by default on load
-    $(".menuLi").first().trigger("click");
 
     //////////////////////////////////////////////////////////
 

@@ -48,6 +48,9 @@ function jsmeOnLoad() {
     jsmeNomeclatureApplet.setBackGroundColorPalette(bgAtom);
 
     carbonHydrogens = Array(jsmeNomeclatureApplet.totalNumberOfAtoms())
+
+    // Auto-select first molecule once the applet is ready
+    $(".menuLi").first().trigger("click");
 }
 
 // ── fToggleViewerSettings ────────────────────────────────────────────────

@@ -191,12 +191,13 @@
     <div id="creditsUs"></div>
   </div>
 
-  <script src="jsme/96E40B969193BD74B8A621486920E79C.cache.js"></script>
   <script src="js/jsme-nick-nomeclature-moc2-data_37.js"></script>
   <script src="js/mulermoc-nom-core-37.js"></script>
   <script src="js/mulermoc-nom-molview-37.js"></script>
   <script src="js/mulermoc-nom-teaching-37.js"></script>
-  
+  <script>window.JSApplet = window.JSApplet || {};</script>
+  <script src="jsme/96E40B969193BD74B8A621486920E79C.cache.js"></script>
+
   <script>
     function fToggleMenu() {
       var drawer = document.getElementById('menuDrawer');
@@ -215,14 +216,6 @@
     }
   </script>
 
-  <!-- Ensure JSME applet is initialized after DOM and scripts are loaded -->
-  <script>
-    window.addEventListener('DOMContentLoaded', function() {
-      if (typeof jsmeOnLoad === 'function') {
-        jsmeOnLoad();
-      }
-    });
-  </script>
 </body>
 
 </html>
