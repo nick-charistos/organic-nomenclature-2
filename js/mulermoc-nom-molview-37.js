@@ -804,8 +804,13 @@ function fExplainNameComp() {
             nStyle = ""
             myClass = ''
             numberingFlag = false
-            fHighlightMultiBonds(1)
-            fHighlightMultiBonds3D(1)
+            if (nameComponentsList[6] === 'αν' || nameComponentsList[6] === 'άν') {
+                fHighlightSingleBondsCC()
+                fHighlightSingleBondsCC3D()
+            } else {
+                fHighlightMultiBonds(1)
+                fHighlightMultiBonds3D(1)
+            }
             $("#ruleTheoryContainer").show()
             break;
         case 'compBondType2':
@@ -1580,6 +1585,61 @@ function fHighlightMultiBonds3D(bondCompPos) {
             Jmol.script(jmolAppletNomeclature, "select atomno=" + ba1 + ", atomno=" + ba2 + "; color bond cpk;")
         }
     }
+
+    JmolSelection = highAtoms3DArg
+}
+
+// ── fHighlightSingleBondsCC ───────────────────────────────────────────────
+
+function fHighlightSingleBondsCC() {
+    if (nameAnalysisMode === 'none') { return }
+
+    let highAtomsArg = ''
+    let highBondsArg = ''
+    const bondArgs = []
+    const atomArgs = []
+    for (let i = 0; i < bondList.length; i++) {
+        const bOrder = bondList[i][2]
+        if (bOrder !== 1) { continue }
+        const a1 = bondList[i][0]   // 1-based
+        const a2 = bondList[i][1]   // 1-based
+        if (allAtomsTypeList[a1 - 1] !== 'C' || allAtomsTypeList[a2 - 1] !== 'C') { continue }
+        bondArgs.push((i + 1) + ',9')
+        atomArgs.push(a1 + ',9,' + a2 + ',9')
+    }
+    if (bondArgs.length === 0) { return }
+    highBondsArg = bondArgs.join(',')
+    highAtomsArg = atomArgs.join(',')
+
+    jsmeNomeclatureApplet.setBondBackgroundColors(0, highBondsArg)
+    jsmeNomeclatureApplet.setAtomBackgroundColors(0, highAtomsArg)
+    fUpdateSVG()
+}
+
+// ── fHighlightSingleBondsCC3D ─────────────────────────────────────────────
+
+function fHighlightSingleBondsCC3D() {
+    if (!bondList3D || bondList3D.length === 0) { return }
+
+    const highBonds3D = []
+    for (let i = 0; i < bondList3D.length; i++) {
+        if (!bondList3D[i]) { continue }
+        const bOrder = bondList3D[i][2]
+        if (bOrder !== 1) { continue }
+        const a1 = bondList3D[i][0]   // SDF 1-based
+        const a2 = bondList3D[i][1]
+        if (allAtomsTypeList3D[a1 - 1] !== 'C' || allAtomsTypeList3D[a2 - 1] !== 'C') { continue }
+        highBonds3D.push([a1, a2])
+    }
+    if (highBonds3D.length === 0) { return }
+
+    let highAtoms3DArg = 'select'
+    for (let i = 0; i < highBonds3D.length; i++) {
+        highAtoms3DArg += ' atomno=' + highBonds3D[i][0] + ', atomno=' + highBonds3D[i][1]
+        if (i < highBonds3D.length - 1) { highAtoms3DArg += ',' }
+        Jmol.script(jmolAppletNomeclature, 'select atomno=' + highBonds3D[i][0] + ', atomno=' + highBonds3D[i][1] + '; color bond [X79dc6d];')
+    }
+    Jmol.script(jmolAppletNomeclature, highAtoms3DArg + '; color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d];')
 
     JmolSelection = highAtoms3DArg
 }
