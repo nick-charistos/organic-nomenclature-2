@@ -417,16 +417,18 @@ $(document).ready(function () {
             case 0:
                 mode2D = 'condensed'
                 modeSuffix = ''
+                $("#zigzagCheck").hide().removeClass('selectedCheck').addClass('unselectedCheck')
                 break;
             case 1:
                 mode2D = 'expanded'
                 modeSuffix = '_E'
+                $("#zigzagCheck").hide().removeClass('selectedCheck').addClass('unselectedCheck')
                 break;
             case 2:
                 mode2D = 'diagramatic'
                 modeSuffix = '_diagr2D'
+                $("#zigzagCheck").show().removeClass('selectedCheck').addClass('unselectedCheck')
                 break;
-
         }
 
         if (!selectedMol || !nameExamples[selectedMol]) { return }
@@ -435,6 +437,21 @@ $(document).ready(function () {
         currNumberEl = 0
         fShowNameAnalysis()
 
+    });
+
+    $("#zigzagCheck").on("click", function () {
+        // Generic .checkBoxContainer handler fires after this and toggles the class,
+        // so read the CURRENT class to determine what state we are moving TO.
+        if ($(this).hasClass('unselectedCheck')) {
+            mode2D = 'condensedZigZag'
+        } else {
+            mode2D = 'diagramatic'
+        }
+        modeSuffix = '_diagr2D'
+        if (!selectedMol || !nameExamples[selectedMol]) { return }
+        fLoadMol2D()
+        currNumberEl = 0
+        fShowNameAnalysis()
     });
 
     $("#radioChainMode").on("click", ".radioCheckContainer", function () {

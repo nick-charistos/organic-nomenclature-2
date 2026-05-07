@@ -97,16 +97,46 @@ function fInitData() {
 
 }
 
+// ── fMakeAnnotatedSkeletal ────────────────────────────────────────────────
+// Takes a V2000 skeletal MOL string and makes every carbon atom visible
+// by replacing the 3-char atom-symbol field 'C  ' with '[C]'.
+// JSME renders [C] atoms with a visible 'C' label, so fAddHydrogens2SVG
+// can then annotate each with its hydrogen count.
+
+function fMakeAnnotatedSkeletal(molStr) {
+    if (!molStr) { return molStr }
+    const lines = molStr.split('\n')
+    if (lines.length < 4) { return molStr }
+    const atomCount = parseInt(lines[3].substring(0, 3))
+    if (isNaN(atomCount)) { return molStr }
+    for (let i = 4; i < 4 + atomCount && i < lines.length; i++) {
+        if (lines[i].substring(31, 34) === 'C  ') {
+            lines[i] = lines[i].substring(0, 31) + '[C]' + lines[i].substring(34)
+        }
+    }
+    return lines.join('\n')
+}
+
 // ── fUpdateDiagr2DButton ──────────────────────────────────────────────────
 
 function fUpdateDiagr2DButton() {
     const $diagrBtn = $("#radio2DMode .radioCheckContainer").eq(2);
+    const $zigzagCheck = $("#zigzagCheck");
     const hasDiagr2D = selectedMol && !!nameExamples[selectedMol]?.structure2D_D;
     if (hasDiagr2D) {
         $diagrBtn.show();
+        if (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') {
+            $zigzagCheck.show();
+            if (mode2D === 'condensedZigZag') {
+                $zigzagCheck.removeClass('unselectedCheck').addClass('selectedCheck');
+            } else {
+                $zigzagCheck.removeClass('selectedCheck').addClass('unselectedCheck');
+            }
+        }
     } else {
         $diagrBtn.hide();
-        if (mode2D === 'diagramatic') {
+        $zigzagCheck.hide().removeClass('selectedCheck').addClass('unselectedCheck');
+        if (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') {
             mode2D = 'condensed';
             modeSuffix = '';
             $("#radio2DMode .radioCheckContainer").removeClass("selectedRadio").addClass("unselectedRadio");
@@ -202,6 +232,9 @@ function fLoadMol2D() {
         case 'diagramatic':
             myMol2D = selectedExample.structure2D_D
             break;
+        case 'condensedZigZag':
+            myMol2D = fMakeAnnotatedSkeletal(selectedExample.structure2D_D)
+            break;
         default:
             myMol2D = selectedExample.structure2D
     }
@@ -288,7 +321,7 @@ function fUpdateSVG() {
     if (!jsmeNomeclatureApplet) return
     let mySVG = jsmeNomeclatureApplet.getMolecularAreaGraphicsString()
     $("#jsmeNomeclatureSVG").html(mySVG);
-    if (mode2D == 'condensed') {
+    if (mode2D == 'condensed' || mode2D == 'condensedZigZag') {
         fAddHydrogens2SVG()
     }
     molSnap = Snap("#jsmeNomeclatureSVG svg")
@@ -1357,6 +1390,7 @@ function fShowNumbering(time) {
     molSnap = Snap("#jsmeNomeclatureSVG svg");
     switch (mode2D) {
         case 'condensed':
+        case 'condensedZigZag':
             highAtoms = mainChainMode === 'algorithmic'
                 ? mainChainAtomsList
                 : nameExamples[selectedMol]['mainChain']
