@@ -122,9 +122,9 @@ function fMakeAnnotatedSkeletal(molStr) {
 function fUpdateDiagr2DButton() {
     const $diagrBtn = $("#radio2DMode .radioCheckContainer").eq(2);
     const $zigzagCheck = $("#zigzagCheck");
-    const hasDiagr2D = selectedMol && !!nameExamples[selectedMol]?.structure2D_D;
+    const hasDiagr2D = !selectedMol || !!nameExamples[selectedMol]?.structure2D_D;
     if (hasDiagr2D) {
-        $diagrBtn.show();
+        $diagrBtn.removeClass('disabledRadio');
         if (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') {
             $zigzagCheck.show();
             if (mode2D === 'condensedZigZag') {
@@ -134,7 +134,7 @@ function fUpdateDiagr2DButton() {
             }
         }
     } else {
-        $diagrBtn.hide();
+        $diagrBtn.addClass('disabledRadio');
         $zigzagCheck.hide().removeClass('selectedCheck').addClass('unselectedCheck');
         if (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') {
             mode2D = 'condensed';

@@ -672,6 +672,12 @@ h1 {
   transition: all 0.3s;
 }
 
+.radioCheckContainer.disabledRadio {
+  opacity: 0.35;
+  pointer-events: none;
+  cursor: default;
+}
+
 .radioNoneContainer {
   display: block;
   position: relative;
