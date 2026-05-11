@@ -7,6 +7,7 @@
 let selectedMol
 let jsmeNomeclatureApplet
 let atomSymbols3DFlag = true
+let hydrogens3DFlag = true
 let rotateFlag = false
 let mode2D = 'condensed'
 let modeSuffix = ''
@@ -159,6 +160,7 @@ function fSelectMol() {
     fFetchAndParse3D()
 
     showAtomSymbols3D();
+    showHydrogens3D();
     rotate3D()
 
     // fShowMolName()
@@ -396,6 +398,20 @@ function showAtomSymbols3D() {
         Jmol.script(jmolAppletNomeclature, "select all; labels %e;" + JmolSelection + ";")
     } else {
         Jmol.script(jmolAppletNomeclature, "select all; labels off;" + JmolSelection + ";")
+    }
+
+    if (nameAnalysisMode == 'compCarbonsCount') {
+        fShowNumbering3D()
+    }
+}
+
+// ── showHydrogens3D ─────────────────────────────────────────────────────
+
+function showHydrogens3D() {
+    if (hydrogens3DFlag) {
+        Jmol.script(jmolAppletNomeclature, "hide none;")
+    } else {
+        Jmol.script(jmolAppletNomeclature, "select _H and connected(_C); hide selected;" + JmolSelection + ";")
     }
 
     if (nameAnalysisMode == 'compCarbonsCount') {
