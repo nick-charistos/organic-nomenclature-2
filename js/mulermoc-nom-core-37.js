@@ -1286,8 +1286,11 @@ function fGuessName() {
     // Compute and validate main chain (result overwritten below until integration is complete)
     fCalcMainChain()
     if (mainChainMode !== 'algorithmic') {
-        mainChainAtomsList = nameExamples[selectedMol]['mainChain' + theSuffix]
-        mainChainAtoms3D = nameExamples[selectedMol].mainChain3D // for 3D highlighting and multiBond detection
+        const _dChain = nameExamples[selectedMol]['mainChain' + theSuffix]
+        if (_dChain && _dChain.length) mainChainAtomsList = _dChain
+        const _d3Chain = nameExamples[selectedMol].mainChain3D
+        if (_d3Chain && _d3Chain.length) mainChainAtoms3D = _d3Chain
+        // fall through to algorithmic result when suffix-specific data is absent
     }
 
     guessNameObj = {}

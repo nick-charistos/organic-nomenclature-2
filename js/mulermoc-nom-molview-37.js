@@ -118,6 +118,23 @@ function fMakeAnnotatedSkeletal(molStr) {
     return lines.join('\n')
 }
 
+// ── fUpdateChainModeButton ────────────────────────────────────────────────
+
+function fUpdateChainModeButton() {
+    const $dataBtn = $("#radioChainMode .radioCheckContainer").eq(0);
+    const hasChainData = !selectedMol || !!(nameExamples[selectedMol]?.['mainChain' + modeSuffix]);
+    if (hasChainData) {
+        $dataBtn.removeClass('disabledRadio');
+    } else {
+        $dataBtn.addClass('disabledRadio');
+        if (mainChainMode === 'data') { mainChainMode = 'algorithmic'; }
+    }
+    // Always sync radio visuals to current mainChainMode
+    const algoIdx = mainChainMode === 'algorithmic' ? 1 : 0;
+    $("#radioChainMode .radioCheckContainer").removeClass("selectedRadio").addClass("unselectedRadio");
+    $("#radioChainMode .radioCheckContainer").eq(algoIdx).removeClass("unselectedRadio").addClass("selectedRadio");
+}
+
 // ── fUpdateDiagr2DButton ──────────────────────────────────────────────────
 
 function fUpdateDiagr2DButton() {
@@ -155,6 +172,7 @@ function fSelectMol() {
     fInitProps()
     fClearHighlights()
     fUpdateDiagr2DButton()
+    fUpdateChainModeButton()
     fLoadMol2D()
     fLoadMol3D()
     fFetchAndParse3D()
@@ -188,6 +206,7 @@ function fDeselectMol() {
     $("#molName").html("")
     $("#nameAnalysis").html("")
     fUpdateDiagr2DButton()
+    fUpdateChainModeButton()
 
 }
 
@@ -1064,7 +1083,7 @@ function fAdjustRuleContainerHeight() {
 function fHighLightMainChain() {
     if (nameAnalysisMode == 'none') { return }
 
-    highAtoms = mainChainMode === 'algorithmic'
+    highAtoms = (mainChainMode === 'algorithmic' || !nameExamples[selectedMol]['mainChain' + modeSuffix])
         ? mainChainAtomsList
         : nameExamples[selectedMol]['mainChain' + modeSuffix]
 
@@ -1407,7 +1426,7 @@ function fShowNumbering(time) {
     switch (mode2D) {
         case 'condensed':
         case 'condensedZigZag':
-            highAtoms = mainChainMode === 'algorithmic'
+            highAtoms = (mainChainMode === 'algorithmic' || !nameExamples[selectedMol]['mainChain'])
                 ? mainChainAtomsList
                 : nameExamples[selectedMol]['mainChain']
             numberOffset = [20, -280]
@@ -1421,7 +1440,7 @@ function fShowNumbering(time) {
             }
             break
         case 'expanded':
-            highAtoms = mainChainMode === 'algorithmic'
+            highAtoms = (mainChainMode === 'algorithmic' || !nameExamples[selectedMol]['mainChain_E'])
                 ? mainChainAtomsList
                 : nameExamples[selectedMol]['mainChain_E']
             numberOffset = [-120, -280]
@@ -1436,7 +1455,7 @@ function fShowNumbering(time) {
             break
 
         case 'diagramatic':
-            highAtoms = mainChainMode === 'algorithmic'
+            highAtoms = (mainChainMode === 'algorithmic' || !nameExamples[selectedMol]['mainChain_diagr'])
                 ? mainChainAtomsList
                 : nameExamples[selectedMol]['mainChain_diagr']
             numberOffset = [-50, -180]

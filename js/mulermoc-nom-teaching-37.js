@@ -488,6 +488,7 @@ $(document).ready(function () {
         break;
     }
 
+    fUpdateChainModeButton();
     if (!selectedMol || !nameExamples[selectedMol]) {
       return;
     }
@@ -506,6 +507,7 @@ $(document).ready(function () {
       mode2D = "diagramatic";
     }
     modeSuffix = "_diagr2D";
+    fUpdateChainModeButton();
     if (!selectedMol || !nameExamples[selectedMol]) {
       return;
     }
@@ -515,6 +517,7 @@ $(document).ready(function () {
   });
 
   $("#radioChainMode").on("click", ".radioCheckContainer", function () {
+    if ($(this).hasClass("disabledRadio")) { return; }
     const idx = $(this).parent().children(".radioCheckContainer").index(this);
     mainChainMode = idx === 1 ? "algorithmic" : "data";
 
