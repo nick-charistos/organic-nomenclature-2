@@ -122,7 +122,10 @@ function fMakeAnnotatedSkeletal(molStr) {
 
 function fUpdateChainModeButton() {
     const $dataBtn = $("#radioChainMode .radioCheckContainer").eq(0);
-    const hasChainData = !selectedMol || !!(nameExamples[selectedMol]?.['mainChain' + modeSuffix]);
+    // modeSuffix is '_diagr2D' for diagramatic but the data key is 'mainChain_diagr'
+    const chainKeySuffix = (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') ? '_diagr'
+        : (mode2D === 'expanded') ? '_E' : '';
+    const hasChainData = !selectedMol || !!(nameExamples[selectedMol]?.['mainChain' + chainKeySuffix]);
     if (hasChainData) {
         $dataBtn.removeClass('disabledRadio');
     } else {
