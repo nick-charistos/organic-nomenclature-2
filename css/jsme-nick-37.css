@@ -744,7 +744,7 @@ h1 {
 /* ///////////////////   DROP MENU ////////////////////////////////// */
 #dropMenu {
   position: relative;
-  /* width: 170px; */
+  width: 150px;
   margin-left: 5px;
 }
 
