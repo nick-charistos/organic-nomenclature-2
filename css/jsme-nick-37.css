@@ -1210,9 +1210,12 @@ h1 {
   border-bottom: 1px solid #ddd;
 }
 
-.ruleTile::before {
+.ruleTile::before,
+#ruleTheory .ruleTheoryTitle::before {
   content: "";
   font-weight: normal;
+  background: var(--bgColor);
+  border-radius: 2px;
   position: absolute;
   left: 4px;
   top: 8px;
@@ -1227,16 +1230,32 @@ h1 {
   transition: all 0.3s;
 }
 
-.ruleTile.closed::before {
+.ruleTile:hover::before,
+#ruleTheory .ruleTheoryTitle:has(.ruleTheoryToggleBtn:hover)::before {
+  background-color: var(--darkEarth);
+  color: #fff;
+}
+
+/* dark panelTitle: invert indicator colors */
+#ruleTheory .ruleTheoryTitle::before {
+  left: 8px;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.ruleTile.closed::before,
+#ruleTheory .ruleTheoryTitle.closed::before {
   content: "+";
   /* border-radius: 50%; */
   /* animation: blink 3s ease-out 1s infinite; */
+}
+
+.ruleTile.closed::before {
   border-color: var(--baseColor);
 }
 
 .ruleTile.closed:hover:before {
   /* animation: none; */
-  background-color: var(--baseColor);
+  background-color: var(--darkEarth);
   color: #fff;
 }
 
@@ -1256,9 +1275,13 @@ h1 {
   }
 }
 
-.ruleTile.open::before {
+.ruleTile.open::before,
+#ruleTheory .ruleTheoryTitle.open::before {
   content: "\2014";
   /* border-radius: 50%; */
+}
+
+.ruleTile.open::before {
   border-color: var(--baseColor);
 }
 
@@ -1268,7 +1291,7 @@ h1 {
 
   border-color: var(--baseColor);
   color: #fff;
-  background-color: var(--baseColor);
+  background-color: var(--darkEarth);
 }
 
 .ruleTextMenu {
@@ -1303,6 +1326,24 @@ h1 {
   font-size: 0.969rem;
 
   /* border-top: 0; */
+}
+
+/* ── ruleTheory accordion ──────────────────────────────────────────────── */
+#ruleTheory .ruleTheoryTitle {
+  padding-left: 28px;
+}
+
+#ruleTheory .ruleTheoryToggleBtn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1;
 }
 
 .ruleTableTitle {

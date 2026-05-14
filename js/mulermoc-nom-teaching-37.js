@@ -195,7 +195,8 @@ function fShowRuleTheory() {
   window.speechSynthesis.cancel();
   ruleTitle = selectedRule + 1 + "<sup>ος</sup> Κανόνας";
   ruleTheory =
-    "<div class='panelTitle'>" +
+    "<div class='panelTitle ruleTheoryTitle open'>" +
+    "<button class='ruleTheoryToggleBtn' data-tooltip='Εμφάνιση/Απόκρυψη'></button>" +
     ruleTitle +
     "<button id='narrateBtn' class='narrateBtn' data-tooltip='Ανάγνωση κανόνα'>" +
     svgPlay +
@@ -381,6 +382,12 @@ $(document).ready(function () {
   fShowCreditLibs();
 
   $(document).on("click", "#narrateBtn", fNarrateRule);
+
+  $(document).on("click", "#ruleTheory .ruleTheoryToggleBtn", function () {
+    const $title = $(this).closest(".ruleTheoryTitle");
+    $title.toggleClass("open closed");
+    $title.next(".ruleText").slideToggle(200);
+  });
 
   $(document).on("click", "#narrateAnalysisToggle", function () {
     narrateAnalysisFlag = !narrateAnalysisFlag;
