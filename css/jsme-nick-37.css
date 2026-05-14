@@ -749,10 +749,10 @@ h1 {
 
 #dropLiContainer {
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid var(--lightBlue);
   position: absolute;
   box-shadow: 1px 1px 6px -2px rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
+  border-radius: 2px;
   left: 50%;
   top: -55px;
   width: 100%;
@@ -786,8 +786,11 @@ h1 {
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  border: 1px solid var(--baseColor);
+  box-sizing: border-box;
+  background-color: var(--bgColor);
   background-repeat: no-repeat;
-  background-size: 30px 30px;
+  background-size: 25px 30px;
   background-position: center;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%231b275d' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   transition: all 0.3s;
@@ -795,7 +798,7 @@ h1 {
 
 .dropLi {
   background-color: #fff;
-  border: 1px solid var(--bgColor);
+  border-bottom: 1px solid var(--lightBlue);
   border-left: 0;
   border-right: 0;
   padding: 10px;

@@ -409,7 +409,7 @@ $(document).ready(function () {
   let dropState = false;
   let selectedLabel;
 
-  menuItmes = ["Σφαίρες και Ράβδοι", "Σφαίρες", "Ράβδοι"];
+  menuItmes = ["Σφαίρες και Ράβδοι", "Χωροπληρωτικό", "Ράβδοι"];
   fCreateDropMenu(menuItmes);
 
   $("html").on("click", function () {
@@ -664,8 +664,6 @@ $(document).ready(function () {
     showAtomSymbols3D();
   });
 
-
-
   $("#hydrogensCheck").on("click", function () {
     hydrogens3DFlag = !hydrogens3DFlag;
     showHydrogens3D();
@@ -749,3 +747,4 @@ $(document).ready(function () {
     fUpdateSVG();
   });
 });
+
