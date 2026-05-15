@@ -33,6 +33,7 @@ let carbons = 0
 // ── fCalcMainChain shared state (read by fValidateMainChain) ──────────────────
 let anchorCarbons = {}       // all FG-bearing C atoms (used for scoring + substituent tier)
 let principalFgCarbons = {}  // subset: alcohol/ketone/amine — priority over multi-bonds
+let anchorSubstName = {}     // Greek prefix-substituent names per anchor C (halogen/nitro); Tier-4 tiebreaker
 let ccDoubleBondKeys = {}
 let ccTripleBondKeys = {}
 
@@ -562,6 +563,7 @@ function fCalcMainChain() {
 
     anchorCarbons = {}       // all FG-bearing C atoms — also read by fValidateMainChain
     principalFgCarbons = {}  // subset: alcohol/ketone/amine (beat multi-bonds in orientation)
+    anchorSubstName = {}     // reset: rebuilt each call for Tier-4 tiebreaker
     const terminalFgCarbons = {} // sub-set: aldehyde/acid/cyanide — forced to C1 (Rule A)
 
     const fgKeys = Object.keys(functionalGroupObj)
@@ -599,7 +601,17 @@ function fCalcMainChain() {
                         // Principal characteristic groups: suffix FGs that rank above multi-bonds
                         principalFgCarbons[anchorC] = true
                     }
-                    // halogen / nitro stay only in anchorCarbons — they rank below multi-bonds
+                    // halogen / nitro: also store Greek name for Tier-4 alphabetical tiebreaker
+                    if (fg === 'halogen') {
+                        const gName = nameMainCompObj3.halogen.substitute[heteroKeys[hi]]
+                        if (gName) {
+                            if (!anchorSubstName[anchorC]) anchorSubstName[anchorC] = []
+                            anchorSubstName[anchorC].push(gName)
+                        }
+                    } else if (fg === 'nitro') {
+                        if (!anchorSubstName[anchorC]) anchorSubstName[anchorC] = []
+                        anchorSubstName[anchorC].push(nameMainCompObj3.nitro.substitute)
+                    }
                 }
             }
         }
@@ -794,7 +806,40 @@ function fCalcMainChain() {
                     // Tier 2b tied → Tier 3: substituent (halogen/nitro) locants
                     const fwdSub = getSubstituentLocantSet(oriented)
                     const revSub = getSubstituentLocantSet(rev)
-                    if (lexLess(revSub, fwdSub)) useForward = false
+                    if (lexLess(revSub, fwdSub)) {
+                        useForward = false
+                    } else if (!lexLess(fwdSub, revSub)) {
+                        // Tier 4: alphabetical priority — give lowest locant to the
+                        // alphabetically-first substituent name (IUPAC; Greek alphabet here).
+                        // e.g. βρωμο < χλωρο → Br must get the lower locant.
+                        function getSubstituentAlphaList(path) {
+                            const pairs = []
+                            const acKeys = Object.keys(anchorSubstName)
+                            for (let ai = 0; ai < acKeys.length; ai++) {
+                                const ac = parseInt(acKeys[ai])
+                                if (principalFgCarbons[ac]) continue
+                                const pos = path.indexOf(ac)
+                                if (pos < 0) continue
+                                const names = anchorSubstName[ac]
+                                for (let ni = 0; ni < names.length; ni++) {
+                                    pairs.push([names[ni], pos + 1])
+                                }
+                            }
+                            pairs.sort(function(a, b) {
+                                if (a[0] < b[0]) return -1
+                                if (a[0] > b[0]) return 1
+                                return a[1] - b[1]
+                            })
+                            return pairs
+                        }
+                        const fwdAlpha = getSubstituentAlphaList(oriented)
+                        const revAlpha = getSubstituentAlphaList(rev)
+                        for (let ai = 0; ai < fwdAlpha.length && ai < revAlpha.length; ai++) {
+                            if (fwdAlpha[ai][0] !== revAlpha[ai][0]) break
+                            if (revAlpha[ai][1] < fwdAlpha[ai][1]) { useForward = false; break }
+                            if (fwdAlpha[ai][1] < revAlpha[ai][1]) break
+                        }
+                    }
                 }
             }
         }
