@@ -9,6 +9,7 @@ let jsmeNomeclatureApplet
 let atomSymbols3DFlag = true
 let hydrogens3DFlag = true
 let rotateFlag = false
+let svgHydrogensColorDimmed = false
 let mode2D = 'condensed'
 let modeSuffix = ''
 let molSnap
@@ -322,7 +323,10 @@ function fAddHydrogens2SVG() {
             }
 
             currString = tmpTexts[i].toString();
-            newString = currString.replace((['>C</text>']), 'class="svgAtomLabel" id="' + currID + '"><tspan >' + myLabel + '<tspan dy="70" font-size=".8em">' + myNo + '</tspan></tspan></text>');
+            const hydrogenTspan = (myLabel === 'CH')
+                ? '<tspan class="svgHydrogenPart">H' + (myNo !== '' ? '<tspan dy="70" font-size=".8em">' + myNo + '</tspan>' : '') + '</tspan>'
+                : '';
+            newString = currString.replace((['>C</text>']), 'class="svgAtomLabel" id="' + currID + '"><tspan>C</tspan>' + hydrogenTspan + '</text>');
             newStringElement = Snap.parse(newString)
             tmpTexts[i].remove()
             molSnap.select("g").append(newStringElement)
@@ -338,6 +342,16 @@ function fAddHydrogens2SVG() {
 
 }
 
+// ── fMarkExpandedHydrogens ───────────────────────────────────────────────
+
+function fMarkExpandedHydrogens() {
+    molSnap.selectAll('text').forEach(function (el) {
+        if (String(el.attr('text')).trim() === 'H') {
+            el.addClass('svgHydrogenPart');
+        }
+    });
+}
+
 // ── fUpdateSVG ────────────────────────────────────────────────────────────
 
 function fUpdateSVG() {
@@ -351,6 +365,9 @@ function fUpdateSVG() {
     molSnap = Snap("#jsmeNomeclatureSVG svg")
     snapLogo = molSnap.select('polygon:last-of-type')
     snapLogo.remove()
+    if (mode2D === 'expanded') {
+        fMarkExpandedHydrogens()
+    }
 
 }
 

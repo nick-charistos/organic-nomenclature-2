@@ -681,6 +681,11 @@ $(document).ready(function () {
     rotate3D();
   });
 
+  $("#svgHydrogenColorCheck").on("click", function () {
+    svgHydrogensColorDimmed = !svgHydrogensColorDimmed;
+    $("#jsmeNomeclatureSVG").toggleClass("svgHydrogensDimmed", svgHydrogensColorDimmed);
+  });
+
   $(".checkBoxContainer").on("click", function () {
     if ($(this).hasClass("unselectedCheck")) {
       $(this).removeClass("unselectedCheck");

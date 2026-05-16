@@ -208,6 +208,8 @@ h1 {
 	margin-left: 10px;
 }
 
+.svgHydrogensDimmed .svgHydrogenPart { fill: #aaa; }
+
 .narrateBtn {
 	position: absolute;
 	right: 8px;
