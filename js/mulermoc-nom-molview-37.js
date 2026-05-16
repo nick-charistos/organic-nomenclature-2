@@ -358,6 +358,17 @@ function fUpdateSVG() {
 
     if (!jsmeNomeclatureApplet) return
     let mySVG = jsmeNomeclatureApplet.getMolecularAreaGraphicsString()
+    // Fix JSME highlight malformation BEFORE HTML parsing
+    // Bug 1: fill/stroke attributes corrupted for all highlighted atoms
+    mySVG = mySVG.replace(
+        /fill="([^"]*?) stroke=" ([^"]*)"="" stroke-width="([^"]*)"/g,
+        'fill="$1" stroke="$2" stroke-width="$3"'
+    )
+    // Bug 2 (N-type: stroke-width absorbs atom label via literal >) is NOT sanitised
+    // here — the absorbed content may contain double-quoted tspan attributes (e.g.
+    // font-size="80%") which break any [^"]* regex on the raw string.  The DOM
+    // representation leaves the stray '>' inside the attribute value, which
+    // patchtheNitrogen detects via getAttribute('stroke-width').indexOf('>').
     $("#jsmeNomeclatureSVG").html(mySVG);
     if (mode2D == 'condensed' || mode2D == 'condensedZigZag') {
         fAddHydrogens2SVG()
@@ -368,6 +379,7 @@ function fUpdateSVG() {
     if (mode2D === 'expanded') {
         fMarkExpandedHydrogens()
     }
+    patchtheNitrogen()
 
 }
 
@@ -377,10 +389,34 @@ function patchtheNitrogen() {
     ////// NH2 special case PATCH //////    
     if (functionalGroupObj.hasOwnProperty("amine")) {
         molSnap.selectAll('text').forEach(function (el) {
-            var txt = el.attr('text') || '';
-            if (String(txt).trim() === '2') {
-                el.attr({ text: 'NH2' });
-            }
+            var snapText = String(el.attr('text') || '').trim();
+            var rawText  = (el.node.textContent || '').replace(/\s+/g, '');
+            // JSME Bug 2: stroke-width absorbed the label → DOM value contains '>'
+            var swAttr  = el.node.getAttribute('stroke-width') || '';
+            var hasBug2 = swAttr.indexOf('>') !== -1;
+            var isTarget = (snapText === '2' || rawText === '2' || rawText === 'NH2' || hasBug2);
+            if (!isTarget) { return; }
+            // Rebuild from scratch — only use clean positional/style attributes.
+            // Do NOT use el.toString(): it carries the malformed stroke-width into
+            // the string, so the boundary regex matches inside the attribute value.
+            var x = el.node.getAttribute('x');
+            var y = el.node.getAttribute('y');
+            if (!x || !y) { return; }
+            var fontSize   = el.node.getAttribute('font-size');
+            var textAnchor = el.node.getAttribute('text-anchor');
+            var fill       = el.node.getAttribute('fill');
+            var stroke     = el.node.getAttribute('stroke');
+            var strokeW    = swAttr.replace(/>[\s\S]*$/, '');  // "11px>NH2" → "11px"
+            var attrs = 'x="' + x + '" y="' + y + '"';
+            if (fontSize)          { attrs += ' font-size="'   + fontSize   + '"'; }
+            if (textAnchor)        { attrs += ' text-anchor="' + textAnchor + '"'; }
+            if (fill)              { attrs += ' fill="'        + fill       + '"'; }
+            if (stroke && strokeW) { attrs += ' stroke="' + stroke + '" stroke-width="' + strokeW + '"'; }
+            var newString = '<text ' + attrs + '>NH<tspan dy="70" font-size=".8em">2</tspan></text>';
+            var newEl;
+            try { newEl = Snap.parse(newString); } catch (e) { return; }
+            el.remove();
+            molSnap.select('g').append(newEl);
         });
     }
     ////// NO2 special case PATCH //////    
@@ -1278,7 +1314,6 @@ function fHighlightFG(FGno) {
 
     if (highBondsFG.length === 0) {
         fUpdateSVG()
-        patchtheNitrogen()
         return
     }
 
@@ -1289,7 +1324,6 @@ function fHighlightFG(FGno) {
     }
     jsmeNomeclatureApplet.setBondBackgroundColors(0, highBondsArg)
     fUpdateSVG()
-    patchtheNitrogen()
 
 }
 
