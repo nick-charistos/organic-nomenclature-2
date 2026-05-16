@@ -524,6 +524,15 @@ window.fSave2DPng = function () {
     svgClone.setAttribute('width', srcWidth)
     svgClone.setAttribute('height', srcHeight)
 
+    // Export uses a serialized standalone SVG blob, so page CSS selectors
+    // (e.g. .svgHydrogensDimmed .svgHydrogenPart) are not available there.
+    // Inline the dimmed hydrogen fill when the toggle is active.
+    if (document.querySelector("#jsmeNomeclatureSVG")?.classList.contains("svgHydrogensDimmed")) {
+        svgClone.querySelectorAll('.svgHydrogenPart').forEach(function (el) {
+            el.setAttribute('fill', '#aaa')
+        })
+    }
+
     let svgData = new XMLSerializer().serializeToString(svgClone)
     if (!svgData.includes('xmlns="http://www.w3.org/2000/svg"')) {
         svgData = svgData.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
