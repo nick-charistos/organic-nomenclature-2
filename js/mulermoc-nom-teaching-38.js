@@ -681,8 +681,9 @@ $(document).ready(function () {
     rotate3D();
   });
 
-  svgAtomColors2DFlag = $("#svgAtomColorCheck").hasClass("selectedCheck");
-  $("#jsmeNomeclatureSVG").toggleClass("svgAtomsColorized", svgAtomColors2DFlag);
+  svgAtomColors2DFlag = false;
+  $("#svgAtomColorCheck").removeClass("selectedCheck").addClass("unselectedCheck");
+  $("#jsmeNomeclatureSVG").removeClass("svgAtomsColorized");
 
   $("#svgAtomColorCheck").on("click", function () {
     svgAtomColors2DFlag = !svgAtomColors2DFlag;

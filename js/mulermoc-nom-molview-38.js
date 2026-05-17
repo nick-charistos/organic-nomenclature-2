@@ -9,7 +9,7 @@ let jsmeNomeclatureApplet
 let atomSymbols3DFlag = true
 let hydrogens3DFlag = true
 let rotateFlag = false
-let svgAtomColors2DFlag = true
+let svgAtomColors2DFlag = false
 let mode2D = 'condensed'
 let modeSuffix = ''
 let molSnap
