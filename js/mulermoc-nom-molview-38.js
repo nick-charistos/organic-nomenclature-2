@@ -1466,6 +1466,8 @@ function fUpdateSVG() {
 // ── patchtheNitrogen ──────────────────────────────────────────────────────
 
 function patchtheNitrogen() {
+    if (!functionalGroupObj || !molSnap) { return }
+
     ////// NH2 special case PATCH //////    
     if (functionalGroupObj.hasOwnProperty("amine")) {
         molSnap.selectAll('text').forEach(function (el) {
