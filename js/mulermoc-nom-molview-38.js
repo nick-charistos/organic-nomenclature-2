@@ -72,8 +72,8 @@ const svgPlay = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentCo
 // ── jsmeOnLoad ────────────────────────────────────────────────────────────
 
 function jsmeOnLoad() {
-    jsmeNomeclatureApplet = new JSApplet.JSME("jsmeNomeclature", "590px", "200px", {
-        'options': "nozoom,depict,marker",
+    jsmeNomeclatureApplet = new JSApplet.JSME("jsmeNomeclature", "590px", "240px", {
+        'options': "depict, marker",
         'depictbg': '#fff',
         'atombgsize': '0.6',
     });
@@ -285,10 +285,10 @@ function fLoadMol2D() {
 
     switch (mode2D) {
         case 'condensed':
-            myMol2D = selectedExample.structure2D
+            myMol2D = fMakeAnnotatedSkeletal(selectedExample.structure2D)
             break;
         case 'expanded':
-            myMol2D = selectedExample.structure2D_E
+            myMol2D = fMakeAnnotatedSkeletal(selectedExample.structure2D_E)
             break;
         case 'diagramatic':
             myMol2D = selectedExample.structure2D_D
@@ -1462,8 +1462,8 @@ function fUpdateSVG() {
         fAddHydrogens2SVG()
     }
     molSnap = Snap("#jsmeNomeclatureSVG svg")
-    snapLogo = molSnap.select('polygon:last-of-type')
-    snapLogo.remove()
+    // snapLogo = molSnap.select('polygon:last-of-type')
+    // snapLogo.remove()
     if (mode2D === 'expanded') {
         fMarkExpandedHydrogens()
     }
@@ -2989,15 +2989,15 @@ function fResizeViewers() {
     }
 }
 
-let _resizeTimer
-window.addEventListener('resize', function () {
-    clearTimeout(_resizeTimer)
-    _resizeTimer = setTimeout(fResizeViewers, 150)
-})
+// let _resizeTimer
+// window.addEventListener('resize', function () {
+//     clearTimeout(_resizeTimer)
+//     _resizeTimer = setTimeout(fResizeViewers, 150)
+// })
 
-var _jmol_isReady_orig = (typeof jmol_isReady === 'function') ? jmol_isReady : null
-jmol_isReady = function (applet) {
-    if (_jmol_isReady_orig) _jmol_isReady_orig(applet)
-    setTimeout(fResizeViewers, 300)
-}
+// var _jmol_isReady_orig = (typeof jmol_isReady === 'function') ? jmol_isReady : null
+// jmol_isReady = function (applet) {
+//     if (_jmol_isReady_orig) _jmol_isReady_orig(applet)
+//     setTimeout(fResizeViewers, 300)
+// }
 

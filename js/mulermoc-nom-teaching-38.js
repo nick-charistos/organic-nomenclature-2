@@ -538,6 +538,14 @@ $(document).ready(function () {
     fShowNameAnalysis();
   });
 
+$("#originalJSME").on("click", ".checkBoxContainer", function () {
+  if ($("#originalJSMECheck").hasClass("selectedCheck")) {
+    $("#jsmeNomeclature").removeClass("hide");
+  } else {
+    $("#jsmeNomeclature").addClass("hide");
+  }
+});
+
   /////////// Export PNG /////////////
 
   /////////// Export PNG /////////////
