@@ -215,6 +215,13 @@ h1 {
   fill: #000 !important;
 }
 
+#radio2DMode, #controls3D {
+  position: relative;
+  background: #f3f3f3;
+  height: 36px;
+  display: flex;
+}
+
 .narrateBtn {
 	position: absolute;
 	right: 8px;
@@ -684,7 +691,7 @@ h1 {
   transition: all 0.3s;
 }
 
-.radioCheckContainer.disabledRadio {
+.radioCheckContainer.disabledRadio, #zigzagCheck.disabledCheck {
   opacity: 0.35;
   pointer-events: none;
   cursor: default;
@@ -1416,14 +1423,18 @@ h1 {
 }
 
 .saveImgBtn {
-    position: relative;
-    cursor: pointer;
-    padding: 0px;
-    opacity: 0.8;
-    border-radius: 2px;
-    display: flex;
-    align-items: center;
-  transition: all 0.2s;
+	position: absolute;
+	right: 5px;
+	bottom: 41px;
+	background-color: var(--bgColor);
+	cursor: pointer;
+	padding: 0px;
+	opacity: 0.8;
+	border-radius: 2px;
+	display: flex;
+	align-items: center;
+	transition: all 0.2s;
+	border: 1px solid var(--darkEarth);
 }
 .saveImgBtn img {
     width: 24px;
@@ -1433,6 +1444,7 @@ h1 {
 .saveImgBtn:hover {
     opacity: 1;
     background-color: var(--veryLightBlue);
+    border-color: var(--baseColor);
 }
 
 /* ── Responsive layout ─────────────────────────────────────────────────── */
@@ -1493,7 +1505,7 @@ h1 {
 /* JSME SVG */
 #jsmeNomeclatureSVG {
     width: 100% !important;
-    max-width: 450px;
+    /* max-width: 450px; */
     height: auto;
 }
 

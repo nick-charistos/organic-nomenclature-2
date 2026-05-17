@@ -473,7 +473,7 @@ $(document).ready(function () {
         mode2D = "condensed";
         modeSuffix = "";
         $("#zigzagCheck")
-          .hide()
+          .addClass("disabledCheck")
           .removeClass("selectedCheck")
           .addClass("unselectedCheck");
         break;
@@ -481,7 +481,7 @@ $(document).ready(function () {
         mode2D = "expanded";
         modeSuffix = "_E";
         $("#zigzagCheck")
-          .hide()
+          .addClass("disabledCheck")
           .removeClass("selectedCheck")
           .addClass("unselectedCheck");
         break;
@@ -489,7 +489,7 @@ $(document).ready(function () {
         mode2D = "diagramatic";
         modeSuffix = "_diagr2D";
         $("#zigzagCheck")
-          .show()
+          .removeClass("disabledCheck")
           .removeClass("selectedCheck")
           .addClass("unselectedCheck");
         break;

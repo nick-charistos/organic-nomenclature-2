@@ -100,12 +100,12 @@
                   </div>
                 </div>
               </div>
-              <div id="svgAtomColorRow" class="settingRow">
+              <!-- <div id="svgAtomColorRow" class="settingRow">
                 <div class="settingLabel">Χρωματισμός ατόμων (2D):</div>
                 <div id="svgAtomColorCheck" class="checkBoxContainer unselectedCheck">
-                  Ενεργό<span class="checkBox"></span>
+                  &nbsp;<span class="checkBox"></span>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -120,14 +120,18 @@
           </div>
           <div id="radio2DMode" style="
                 border: 1px solid var(--baseColor);
-                border-top: 0;
-                border-bottom: 0;
+                border-top: 1px solid #ddd;
+                border-bottom: 1px solid #ddd;
               ">
+
             <div class="radioGroupContainer HFlex" style="
                   justify-content: space-between;
                   align-items: center;
                   padding: 0 6px;
                 ">
+              <div id="svgAtomColorCheck" class="checkBoxContainer unselectedCheck">
+                Έγχρωμα Σύμβολα<span class="checkBox"></span>
+              </div>
               <div class="HFlex" style="align-items: center">
                 <div class="radioCheckContainer selectedRadio">
                   Συνεπτυγμένος<span class="radioCheck"></span>
@@ -138,7 +142,7 @@
                 <div class="radioCheckContainer unselectedRadio">
                   Σκελετικός<span class="radioCheck"></span>
                 </div>
-                <div id="zigzagCheck" class="checkBoxContainer unselectedCheck" style="display: none; margin-left: 8px">
+                <div id="zigzagCheck" class="checkBoxContainer unselectedCheck " style=" margin-left: 10px">
                   Σύμβολα CH<sub>n</sub><span class="checkBox"></span>
                 </div>
               </div>
@@ -161,16 +165,16 @@
               Jmol.script(jmolAppletNomeclature, "frank off");
             </script>
           </div>
-          <div id="3DControls" class="HFlex" style="
+          <div id="controls3D" class="HFlex" style="
                 border: 1px solid var(--baseColor);
-                border-top: 0;
+                border-top: 1px solid #ddd;
                 justify-content: space-between;
                 align-items: center;
                 padding: 0 6px;
               ">
             <div class="HFlex" style="align-items: center">
               <div id="atomSymbolsCheck" class="checkBoxContainer selectedCheck">
-                Σύμβολα <span class="checkBox"></span>
+                Σύμβολα ατόμων <span class="checkBox"></span>
               </div>
               <div id="hydrogensCheck" class="checkBoxContainer selectedCheck">
                 Υδρογόνα <span style="color:#666">C</span>-H<span class="checkBox"></span>

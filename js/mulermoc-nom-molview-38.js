@@ -72,7 +72,7 @@ const svgPlay = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentCo
 // ── jsmeOnLoad ────────────────────────────────────────────────────────────
 
 function jsmeOnLoad() {
-    jsmeNomeclatureApplet = new JSApplet.JSME("jsmeNomeclature", "450px", "200px", {
+    jsmeNomeclatureApplet = new JSApplet.JSME("jsmeNomeclature", "590px", "200px", {
         'options': "nozoom,depict,marker",
         'depictbg': '#fff',
         'atombgsize': '0.6',
@@ -182,7 +182,8 @@ function fUpdateDiagr2DButton() {
     if (hasDiagr2D) {
         $diagrBtn.removeClass('disabledRadio');
         if (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') {
-            $zigzagCheck.show();
+            // $zigzagCheck.show();
+            $zigzagCheck.removeClass('disabledCheck');
             if (mode2D === 'condensedZigZag') {
                 $zigzagCheck.removeClass('unselectedCheck').addClass('selectedCheck');
             } else {
@@ -191,7 +192,8 @@ function fUpdateDiagr2DButton() {
         }
     } else {
         $diagrBtn.addClass('disabledRadio');
-        $zigzagCheck.hide().removeClass('selectedCheck').addClass('unselectedCheck');
+        $zigzagCheck.addClass('disabledCheck');
+        $zigzagCheck.removeClass('selectedCheck').addClass('unselectedCheck');
         if (mode2D === 'diagramatic' || mode2D === 'condensedZigZag') {
             mode2D = 'condensed';
             modeSuffix = '';
@@ -1402,6 +1404,18 @@ function fWrapStandaloneHydrogenTextsAsTspan() {
                 '<tspan' + (oxygenFill ? (' fill="' + oxygenFill + '"') : '') + '>O</tspan>' +
                 '<tspan class="svgHydrogenPart"' + (hydrogenFill ? (' fill="' + hydrogenFill + '"') : '') + '>H</tspan>'
             )
+            continue
+        }
+
+        if (rawText === 'HO' || rawText === 'HO-') {
+            const hydrogenFill = fGetDisplayAtomFill('H', textEl)
+            const oxygenFill = fGetDisplayAtomFill('O', textEl)
+            let markup = '<tspan class="svgHydrogenPart"' + (hydrogenFill ? (' fill="' + hydrogenFill + '"') : '') + '>H</tspan>' +
+                '<tspan' + (oxygenFill ? (' fill="' + oxygenFill + '"') : '') + '>O</tspan>'
+            if (rawText === 'HO-') {
+                markup += '<tspan>-</tspan>'
+            }
+            fReplaceTextElementMarkup(textEl, markup)
             continue
         }
 
