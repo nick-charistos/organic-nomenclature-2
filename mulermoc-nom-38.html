@@ -4,10 +4,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1V8NWYY46Y"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-  <title>[DEV v38] Ονοματολογία — Όλα τα μόρια</title>
+    gtag("config", "G-1V8NWYY46Y");
+  </script>
 
-  <link rel="stylesheet" href="css/jsme-nick-37.css" />
+  <title>Κανόνες Ονοματολογίας Οργανικών Ενώσεων</title>
+
+  <link rel="stylesheet" href="css/jsme-nick-38.css" />
 
   <script src="jsme/jsme.nocache.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -40,30 +51,27 @@
       <path
         d="M16.48 2.52c3.27 1.55 5.61 4.72 5.97 8.48h1.5C23.44 4.84 18.29 0 12 0l-.66.03 3.81 3.81 1.33-1.32zm-6.25-.77c-.59-.59-1.54-.59-2.12 0L1.75 8.11c-.59.59-.59 1.54 0 2.12l12.02 12.02c.59.59 1.54.59 2.12 0l6.36-6.36c.59-.59.59-1.54 0-2.12L10.23 1.75zm4.6 19.44L2.81 9.17l6.36-6.36 12.02 12.02-6.36 6.36zm-7.31.29C4.25 19.94 1.91 16.76 1.55 13H.05C.56 19.16 5.71 24 12 24l.66-.03-3.81-3.81-1.33 1.32z" />
     </svg>
-    <p>&#931;&#964;&#961;&#941;&#968;&#949; &#964;&#951; &#963;&#965;&#963;&#954;&#949;&#965;&#942;
-      &#959;&#961;&#953;&#950;&#972;&#957;&#964;&#953;&#945;<br>&#947;&#953;&#945;
-      &#954;&#945;&#955;&#973;&#964;&#949;&#961;&#951; &#949;&#956;&#966;&#940;&#957;&#953;&#963;&#951;</p>
-    <button id="rotatePromptDismiss" onclick="fDismissRotatePrompt()">&#931;&#965;&#957;&#941;&#967;&#949;&#953;&#945;
-      &#969;&#962; &#941;&#967;&#949;&#953;</button>
+    <p>
+      &#931;&#964;&#961;&#941;&#968;&#949; &#964;&#951;
+      &#963;&#965;&#963;&#954;&#949;&#965;&#942;
+      &#959;&#961;&#953;&#950;&#972;&#957;&#964;&#953;&#945;<br />&#947;&#953;&#945;
+      &#954;&#945;&#955;&#973;&#964;&#949;&#961;&#951;
+      &#949;&#956;&#966;&#940;&#957;&#953;&#963;&#951;
+    </p>
+    <button id="rotatePromptDismiss" onclick="fDismissRotatePrompt()">
+      &#931;&#965;&#957;&#941;&#967;&#949;&#953;&#945; &#969;&#962;
+      &#941;&#967;&#949;&#953;
+    </button>
   </div>
 
   <div id="pageContainer">
     <div id="panelContainer">
-      <h1>[DEV v38] Ονοματολογία — Όλα τα μόρια</h1>
+      <h1>Κανόνες Ονοματολογίας Οργανικών Ενώσεων</h1>
       <div class="HFlex" style="justify-content: center">
         <!-- left column: MENU -->
         <div id="menuCol" class="VFlex" style="margin-right: 10px">
           <button id="menuToggle" onclick="fToggleMenu()">☰ Μενού</button>
           <div id="menuDrawer" class="menu-open">
-            <input type="search" id="molSearch" placeholder="Αναζήτηση..." style="
-              width: 100%;
-              box-sizing: border-box;
-              padding: 4px 8px;
-              margin-bottom: 4px;
-              border: 1px solid var(--baseColor, #ccc);
-              border-radius: 4px;
-              font-size: 0.9rem;
-            " />
             <div id="nomeclature2Menu"></div>
           </div>
         </div>
@@ -73,22 +81,29 @@
           <div class="panelTitle">
             <span>Μόριο</span>
             <button id="viewerSettingsBtn" class="settingsBtn" onclick="fToggleViewerSettings()"
-              data-tooltip="Ρυθμίσεις"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              data-tooltip="Ρυθμίσεις">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
                 <path
                   d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.02 7.02 0 0 0-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54a7.02 7.02 0 0 0-1.62.94l-2.39-.96a.47.47 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.36 1.04.67 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7.02 7.02 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.47.47 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 0 1 8.4 12 3.6 3.6 0 0 1 12 8.4a3.6 3.6 0 0 1 3.6 3.6 3.6 3.6 0 0 1-3.6 3.6z" />
-              </svg></button>
+              </svg>
+            </button>
             <div id="viewerSettingsPanel">
               <div class="settingTitle">Ρυθμίσεις</div>
               <div id="radioChainMode" class="settingRow">
-
                 <div class="settingLabel">Υπολογισμός κύριας αλυσίδας:</div>
-                <div class="radioGroupContainer HFlex" style="align-items:center; gap:0">
+                <div class="radioGroupContainer HFlex" style="align-items: center; gap: 0">
                   <div class="radioCheckContainer unselectedRadio">
                     Από δεδομένα<span class="radioCheck"></span>
                   </div>
                   <div class="radioCheckContainer selectedRadio">
                     Αλγοριθμικά<span class="radioCheck"></span>
                   </div>
+                </div>
+              </div>
+              <div id="svgAtomColorRow" class="settingRow">
+                <div class="settingLabel">Χρωματισμός ατόμων (2D):</div>
+                <div id="svgAtomColorCheck" class="checkBoxContainer selectedCheck">
+                  Ενεργό<span class="checkBox"></span>
                 </div>
               </div>
             </div>
@@ -123,6 +138,9 @@
                 <div class="radioCheckContainer unselectedRadio">
                   Σκελετικός<span class="radioCheck"></span>
                 </div>
+                <div id="zigzagCheck" class="checkBoxContainer unselectedCheck" style="display: none; margin-left: 8px">
+                  Σύμβολα CH<sub>n</sub><span class="checkBox"></span>
+                </div>
               </div>
               <div id="save2DBtn" class="saveImgBtn" onclick="fSave2DPng()" data-tooltip="Αποθήκευση εικόνας 2D">
                 <img src="imgs/image-svgrepo-Industrial-Sharp.svg" />
@@ -152,12 +170,15 @@
               ">
             <div class="HFlex" style="align-items: center">
               <div id="atomSymbolsCheck" class="checkBoxContainer selectedCheck">
-                Σύμβολα Ατόμων <span class="checkBox"></span>
+                Σύμβολα <span class="checkBox"></span>
               </div>
+              <div id="hydrogensCheck" class="checkBoxContainer selectedCheck">
+                Υδρογόνα <span style="color:#666">C</span>-H<span class="checkBox"></span>
+              </div>
+              <div id="dropMenu" style="margin-top: 2px"></div>
               <div id="rotateCheck" class="checkBoxContainer unselectedCheck">
                 Περιστροφή <span class="checkBox"></span>
               </div>
-              <div id="dropMenu" style="margin-top: 2px"></div>
             </div>
             <div id="save3DBtn" class="saveImgBtn" onclick="fSaveJmolPng()" data-tooltip="Αποθήκευση εικόνας 3D">
               <img src="imgs/image-svgrepo-Industrial-Sharp.svg" />
@@ -166,12 +187,10 @@
         </div>
 
         <!-- right column -->
-        <div id="analysisCol" class="VFlex" style="
-              margin-left: 10px;
-              justify-content: space-between;
-            ">
+        <div id="analysisCol" class="VFlex" style="margin-left: 10px; justify-content: space-between">
           <div>
             <div id="nameAnalysisContainer">
+              <div id="ruleTheory"></div>
               <div id="nameAnalysis"></div>
             </div>
             <div id="nameAnalysisExplain"></div>
@@ -189,30 +208,31 @@
   </div>
 
   <script src="js/jsme-nick-nomeclature-moc2-data_38.js"></script>
-  <script src="js/mulermoc-nom-core-37.js"></script>
-  <script src="js/mulermoc-nom-molview-37.js"></script>
-  <script src="js/mulermoc-nom-all-teaching-38.js"></script>
-  <script>window.JSApplet = window.JSApplet || {};</script>
+  <script src="js/mulermoc-nom-core-38.js"></script>
+  <script src="js/mulermoc-nom-molview-38.js"></script>
+  <script src="js/mulermoc-nom-teaching-38.js"></script>
+  <script>
+    window.JSApplet = window.JSApplet || {};
+  </script>
   <script src="jsme/96E40B969193BD74B8A621486920E79C.cache.js"></script>
 
   <script>
     function fToggleMenu() {
-      var drawer = document.getElementById('menuDrawer');
-      if (drawer.classList.contains('menu-open')) {
-        drawer.classList.remove('menu-open');
-        drawer.classList.add('menu-closed');
+      var drawer = document.getElementById("menuDrawer");
+      if (drawer.classList.contains("menu-open")) {
+        drawer.classList.remove("menu-open");
+        drawer.classList.add("menu-closed");
       } else {
-        drawer.classList.remove('menu-closed');
-        drawer.classList.add('menu-open');
+        drawer.classList.remove("menu-closed");
+        drawer.classList.add("menu-open");
       }
     }
 
     function fDismissRotatePrompt() {
-      var el = document.getElementById('rotatePrompt');
-      if (el) el.style.display = 'none';
+      var el = document.getElementById("rotatePrompt");
+      if (el) el.style.display = "none";
     }
   </script>
-
 </body>
 
 </html>
