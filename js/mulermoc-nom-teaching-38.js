@@ -539,10 +539,13 @@ $(document).ready(function () {
   });
 
 $("#originalJSME").on("click", ".checkBoxContainer", function () {
-  if ($("#originalJSMECheck").hasClass("selectedCheck")) {
-    $("#jsmeNomeclature").removeClass("hide");
+  const enableOriginal = $("#originalJSMECheck").hasClass("unselectedCheck");
+  if (enableOriginal) {
+    $("#jsmeNomeclatureORGNL").addClass("hide");
+    // $("#jsmeNomeclatureORGNL").removeClass("hide");
   } else {
-    $("#jsmeNomeclature").addClass("hide");
+    $("#jsmeNomeclatureORGNL").removeClass("hide");
+    // $("#jsmeNomeclatureORGNL").addClass("hide");
   }
 });
 

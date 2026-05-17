@@ -6,6 +6,7 @@
 // ── Viewer / display globals ──────────────────────────────────────────────
 let selectedMol
 let jsmeNomeclatureApplet
+let jsmeNomeclatureAppletORGNL
 let atomSymbols3DFlag = true
 let hydrogens3DFlag = true
 let rotateFlag = false
@@ -85,9 +86,25 @@ function jsmeOnLoad() {
 
     carbonHydrogens = Array(jsmeNomeclatureApplet.totalNumberOfAtoms())
 
-    // Auto-select first molecule once the applet is ready
+    jsmeNomeclatureAppletORGNL = new JSApplet.JSME("jsmeNomeclatureORGNL", "590px", "240px", {
+        'options': "depict, marker",
+        'depictbg': '#fff',
+        'atombgsize': '0.6',
+    });
+    jsmeNomeclatureAppletORGNL.setAtomMolecularAreaFontSize(9)
+    jsmeNomeclatureAppletORGNL.setMolecularAreaLineWidth(0.6)
+
+    // let bgAtom = ["#7ddfff", "#ffc37d", "#00ffff", "#ffcc66", "#ffff00", "#ff9999", "#33ccff", "#ff99ff", "#79dc6d", "#ff8566", "#66ff66", "#93bfff"];
+    jsmeNomeclatureAppletORGNL.setBackGroundColorPalette(bgAtom);
+
+    // carbonHydrogens = Array(jsmeNomeclatureAppletORGNL.totalNumberOfAtoms())
+
+    // Auto-select first molecule once both applets are ready.
     $(".menuLi").first().trigger("click");
+
 }
+
+// 
 
 // ── fToggleViewerSettings ────────────────────────────────────────────────
 
@@ -241,6 +258,7 @@ function fDeselectMol() {
 
     myMol2D = null;
     if (jsmeNomeclatureApplet) jsmeNomeclatureApplet.reset()
+    if (jsmeNomeclatureAppletORGNL) jsmeNomeclatureAppletORGNL.reset()
     fUpdateSVG()
 
     $("#molName").html("")
@@ -280,23 +298,31 @@ function fLoadMol2D() {
     if (!selectedExample) {
         myMol2D = null
         jsmeNomeclatureApplet.clear()
+        if (jsmeNomeclatureAppletORGNL) jsmeNomeclatureAppletORGNL.clear()
         return
     }
 
+    let rawMol2D
+
     switch (mode2D) {
         case 'condensed':
+            rawMol2D = selectedExample.structure2D
             myMol2D = fMakeAnnotatedSkeletal(selectedExample.structure2D)
             break;
         case 'expanded':
+            rawMol2D = selectedExample.structure2D_E
             myMol2D = fMakeAnnotatedSkeletal(selectedExample.structure2D_E)
             break;
         case 'diagramatic':
+            rawMol2D = selectedExample.structure2D_D
             myMol2D = selectedExample.structure2D_D
             break;
         case 'condensedZigZag':
+            rawMol2D = selectedExample.structure2D_D
             myMol2D = fMakeAnnotatedSkeletal(selectedExample.structure2D_D)
             break;
         default:
+            rawMol2D = selectedExample.structure2D
             myMol2D = selectedExample.structure2D
     }
 
@@ -304,6 +330,10 @@ function fLoadMol2D() {
 
     jsmeNomeclatureApplet.readMolFile(myMol2D);
     jsmeNomeclatureApplet.setMolecularAreaScale(2.4)
+    if (jsmeNomeclatureAppletORGNL && rawMol2D) {
+        jsmeNomeclatureAppletORGNL.readMolFile(rawMol2D)
+        jsmeNomeclatureAppletORGNL.setMolecularAreaScale(2.4)
+    }
 
     fAnalyseStructure()
     fDetectMolType()
