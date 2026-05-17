@@ -700,6 +700,10 @@ $("#originalJSME").on("click", ".checkBoxContainer", function () {
     svgAtomColors2DFlag = !svgAtomColors2DFlag;
     $("#jsmeNomeclatureSVG").toggleClass("svgAtomsColorized", svgAtomColors2DFlag);
     fUpdateSVG();
+    if (numberingFlag) {
+      currNumberEl = 0;
+      fShowNumbering(0);
+    }
   });
 
   $(".checkBoxContainer").on("click", function () {
