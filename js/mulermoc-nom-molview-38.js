@@ -1462,8 +1462,8 @@ function fUpdateSVG() {
         fAddHydrogens2SVG()
     }
     molSnap = Snap("#jsmeNomeclatureSVG svg")
-    // snapLogo = molSnap.select('polygon:last-of-type')
-    // snapLogo.remove()
+    snapLogo = molSnap.select('polygon:last-of-type')
+    snapLogo.remove()
     if (mode2D === 'expanded') {
         fMarkExpandedHydrogens()
     }
