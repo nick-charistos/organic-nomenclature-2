@@ -465,6 +465,11 @@ $(document).ready(function () {
 
   // Add data (2D structure files ) to nameExamples object
 
+  $("#zigzagCheck")
+    .addClass("disabledCheck")
+    .removeClass("selectedCheck")
+    .addClass("unselectedCheck");
+
   $("#radio2DMode").on("click", ".mode2DOption", function () {
     currMode2DNo = $(this)
       .parent()
