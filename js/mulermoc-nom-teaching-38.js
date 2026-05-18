@@ -345,6 +345,8 @@ function fShowCreditLibs() {
   myCredits += "<div class='creditsContainer'>";
   myCredits +=
     "<div class=''>Αναστασία Θεοφανίδου, Βασίλης Κουταλάς, <a href='https://nicharis.webpages.auth.gr/' target='_blank'> Νικόλας Χαριστός </a></div>";
+  myCredits += "</div><div class='creditsContainer'>";
+  myCredits += "<div class=''>ΠΜΣ <a href='https://molmod-edu.chem.auth.gr/' target='_blank'>Μοριακός Σχεδιασμός και Μοντελοποίηση - Χημική Εκπαίδευση</a></div>";
   myCredits += "<div>|</div>";
   myCredits += "<div class=''>Τμήμα Χημείας</div>";
   myCredits += "<div>|</div>";

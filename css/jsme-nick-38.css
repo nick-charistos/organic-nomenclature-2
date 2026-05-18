@@ -79,10 +79,16 @@ h1 {
   margin-top: 10px;
 }
 
+header {
+  height: 30px;
+  background-color: var(--veryLightBlue);
+  width: 100%;
+}
+
 #panelContainer {
   max-width: 1600px;
   margin: auto;
-  margin-top: 20px;
+  margin-top: 0;
   margin-bottom: 20px;
   /* overflow-x: hidden; */
 }
@@ -91,8 +97,7 @@ h1 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-}
+height: calc(100% - 30px);}
 
 #fGroupsContainer {
   width: 220px;
@@ -1391,6 +1396,7 @@ h1 {
   display: flex;
   gap: 10px 10px;
   justify-content: center;
+  padding: 5px;
   
 }
 
@@ -1418,6 +1424,7 @@ h1 {
   padding: 10px;
   background-color: var(--baseColor);
   width: 100%;
+  height: 80px;
 }
 
 .saveImgBtn {
