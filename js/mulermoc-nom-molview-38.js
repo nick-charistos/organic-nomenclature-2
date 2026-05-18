@@ -11,6 +11,7 @@ let atomSymbols3DFlag = true
 let hydrogens3DFlag = true
 let rotateFlag = false
 let svgAtomColors2DFlag = false
+let atomColorMode2D = 'atom'
 let mode2D = 'condensed'
 let modeSuffix = ''
 let molSnap
@@ -932,20 +933,64 @@ function fGetCompactAtomFill() {
     return ''
 }
 
-function fGetAtomColor2D(symbol) {
+function fGetHydrogenGroupParentSymbol(atomIdx) {
+    if (!Array.isArray(allAtomsTypeList) || !Array.isArray(atomConnectivityList)) { return '' }
+    if (typeof atomIdx !== 'number' || atomIdx < 0 || allAtomsTypeList[atomIdx] !== 'H') { return '' }
+    if (!Array.isArray(atomConnectivityList[atomIdx])) { return '' }
+
+    for (let i = 0; i < atomConnectivityList[atomIdx].length; i++) {
+        const neighborIdx = atomConnectivityList[atomIdx][i]
+        const neighborSymbol = allAtomsTypeList[neighborIdx]
+        if (neighborSymbol === 'O' || neighborSymbol === 'N') {
+            return neighborSymbol
+        }
+    }
+
+    return ''
+}
+
+function fGetAtomColor2D(symbol, colorContext) {
     if (!symbol || !atomColors2D) { return '' }
-    return Object.prototype.hasOwnProperty.call(atomColors2D, symbol) ? atomColors2D[symbol] : ''
+    const baseFill = Object.prototype.hasOwnProperty.call(atomColors2D, symbol) ? atomColors2D[symbol] : ''
+    if (!baseFill) { return '' }
+
+    if (symbol !== 'H' || atomColorMode2D !== 'group') {
+        return baseFill
+    }
+
+    const parentSymbol = colorContext && colorContext.parentSymbol ? colorContext.parentSymbol : ''
+    if (parentSymbol === 'O' || parentSymbol === 'N') {
+        return atomColors2D[parentSymbol] || baseFill
+    }
+
+    const atomIdx = colorContext && typeof colorContext.atomIdx === 'number' ? colorContext.atomIdx : -1
+    const attachedParentSymbol = fGetHydrogenGroupParentSymbol(atomIdx)
+    if (attachedParentSymbol === 'O' || attachedParentSymbol === 'N') {
+        return atomColors2D[attachedParentSymbol] || baseFill
+    }
+
+    return baseFill
 }
 
 function fGetDisplayAtomFill(symbol) {
+    let colorContext = null
+    let fallbackStartIdx = 1
+    if (arguments.length > 1 && arguments[1] && typeof arguments[1] === 'object' &&
+        (Object.prototype.hasOwnProperty.call(arguments[1], 'parentSymbol') || Object.prototype.hasOwnProperty.call(arguments[1], 'atomIdx'))) {
+        colorContext = arguments[1]
+        fallbackStartIdx = 2
+    }
+
     if (svgAtomColors2DFlag) {
-        const mappedFill = fGetAtomColor2D(symbol)
+        const mappedFill = fGetAtomColor2D(symbol, colorContext)
         if (mappedFill) { return mappedFill }
     }
+
     const fallbackEls = []
-    for (let i = 1; i < arguments.length; i++) {
+    for (let i = fallbackStartIdx; i < arguments.length; i++) {
         fallbackEls.push(arguments[i])
     }
+
     return fGetCompactAtomFill.apply(null, fallbackEls)
 }
 
@@ -971,7 +1016,56 @@ function fResolveAtomSymbolFromLabelNode(node) {
     const symbolMatch = rawText.match(/^([A-Z][a-z]?)/)
     if (!symbolMatch) { return '' }
     const symbol = symbolMatch[1]
-    return fGetAtomColor2D(symbol) ? symbol : ''
+    return Object.prototype.hasOwnProperty.call(atomColors2D, symbol) ? symbol : ''
+}
+
+function fResolveParentSymbolForHydrogenTspan(tspanNode, fallbackParentSymbol) {
+    if (!tspanNode || !tspanNode.parentElement) {
+        return (fallbackParentSymbol && fallbackParentSymbol !== 'H') ? fallbackParentSymbol : ''
+    }
+
+    const className = String(tspanNode.getAttribute('class') || '')
+    if (className.indexOf('svgOxygenAttachedHydrogen') !== -1) {
+        return 'O'
+    }
+    if (className.indexOf('svgCarbonAttachedHydrogen') !== -1) {
+        return 'C'
+    }
+
+    const siblingSpans = []
+    for (let i = 0; i < tspanNode.parentElement.childNodes.length; i++) {
+        const child = tspanNode.parentElement.childNodes[i]
+        if (!child || child.nodeType !== 1) { continue }
+        if (String(child.nodeName).toLowerCase() !== 'tspan') { continue }
+        siblingSpans.push(child)
+    }
+
+    for (let i = 0; i < siblingSpans.length; i++) {
+        const sibling = siblingSpans[i]
+        if (sibling === tspanNode) { continue }
+        const siblingSymbol = fResolveAtomSymbolFromLabelNode(sibling)
+        if (siblingSymbol && siblingSymbol !== 'H') {
+            return siblingSymbol
+        }
+    }
+
+    return (fallbackParentSymbol && fallbackParentSymbol !== 'H') ? fallbackParentSymbol : ''
+}
+
+function fBuildTextNodeAtomIndexMap() {
+    const textNodeAtomIndexMap = new Map()
+    if (!molSnap || !Array.isArray(allAtomsTypeList) || mode2D === 'condensed') {
+        return textNodeAtomIndexMap
+    }
+
+    const atomTextMap = fGetRenderedAtomTextMap(true, true)
+    for (const atomIdxKey in atomTextMap) {
+        const atomTextEl = atomTextMap[atomIdxKey]
+        if (!atomTextEl || !atomTextEl.node) { continue }
+        textNodeAtomIndexMap.set(atomTextEl.node, parseInt(atomIdxKey, 10))
+    }
+
+    return textNodeAtomIndexMap
 }
 
 function fIsHighlightFillColor(fillValue) {
@@ -1069,6 +1163,7 @@ function fApplyAtomColors2DToSVGLabels() {
     if (!svgAtomColors2DFlag || !molSnap) { return }
 
     const highlightedTextNodes = fBuildHighlightedTextNodeSet()
+    const textNodeAtomIndexMap = fBuildTextNodeAtomIndexMap()
 
     const textEls = molSnap.selectAll('text')
     for (let i = 0; i < textEls.length; i++) {
@@ -1089,18 +1184,33 @@ function fApplyAtomColors2DToSVGLabels() {
 
         if (tspanNodes.length === 0) {
             const symbol = fResolveAtomSymbolFromLabelNode(textEl.node)
-            const mappedFill = symbol ? fGetAtomColor2D(symbol) : ''
+            const mappedFill = symbol
+                ? fGetAtomColor2D(symbol, {
+                    atomIdx: textNodeAtomIndexMap.has(textEl.node) ? textNodeAtomIndexMap.get(textEl.node) : -1,
+                    parentSymbol: symbol,
+                })
+                : ''
             if (mappedFill) {
                 textEl.attr({ fill: mappedFill })
             }
             continue
         }
 
+        const parentSymbol = fResolveAtomSymbolFromLabelNode(textEl.node)
+        const parentAtomIdx = textNodeAtomIndexMap.has(textEl.node) ? textNodeAtomIndexMap.get(textEl.node) : -1
         for (let t = 0; t < tspanNodes.length; t++) {
             const tspanNode = tspanNodes[t]
             const symbol = fResolveAtomSymbolFromLabelNode(tspanNode)
             if (!symbol) { continue }
-            const mappedFill = fGetAtomColor2D(symbol)
+
+            const effectiveParentSymbol = (symbol === 'H')
+                ? fResolveParentSymbolForHydrogenTspan(tspanNode, parentSymbol)
+                : parentSymbol
+
+            const mappedFill = fGetAtomColor2D(symbol, {
+                atomIdx: parentAtomIdx,
+                parentSymbol: effectiveParentSymbol,
+            })
             if (mappedFill) {
                 tspanNode.setAttribute('fill', mappedFill)
             }
@@ -1192,15 +1302,15 @@ function fCompactFunctionalGroups2D() {
             const acidLabelKey = isFormicAcid ? 'HCOOH' : (reverseAcid ? 'HOOC' : 'COOH')
             const acidOFill = fGetDisplayAtomFill('O', carbonylOEl, ohEl, anchorEl)
             const acidMarkup = isFormicAcid
-                ? (fBuildCompactAtomTspan('H', null, 'svgHydrogenPart') +
+                ? (fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgCarbonAttachedHydrogen') +
                 fBuildCompactAtomTspan('C') +
                 fBuildCompactAtomTspan('O', acidOFill) +
                 fBuildCompactAtomTspan('O', acidOFill) +
-                fBuildCompactAtomTspan('H', null, 'svgHydrogenPart')
+                fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen')
                 )
                 : (reverseAcid
                 ? (
-                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart') +
+                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen') +
                     fBuildCompactAtomTspan('O', acidOFill) +
                     fBuildCompactAtomTspan('O', acidOFill) +
                     fBuildCompactAtomTspan('C')
@@ -1209,7 +1319,7 @@ function fCompactFunctionalGroups2D() {
                     fBuildCompactAtomTspan('C') +
                     fBuildCompactAtomTspan('O', acidOFill) +
                     fBuildCompactAtomTspan('O', acidOFill) +
-                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart')
+                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen')
                 ))
             const acidAttrs = reverseAcid
                 ? fGetReversedCompactLabelAttrs(anchorEl, 'HOOC')
@@ -1259,12 +1369,12 @@ function fCompactFunctionalGroups2D() {
             const aldehydeMarkup = reverseAldehyde
                 ? (
                     fBuildCompactAtomTspan('O', aldehydeOFill) +
-                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart') +
+                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgCarbonAttachedHydrogen') +
                     fBuildCompactAtomTspan('C')
                 )
                 : (
                     fBuildCompactAtomTspan('C') +
-                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart') +
+                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgCarbonAttachedHydrogen') +
                     fBuildCompactAtomTspan('O', aldehydeOFill)
                 )
             replacements.push({
@@ -1428,7 +1538,7 @@ function fWrapStandaloneHydrogenTextsAsTspan() {
 
         if (rawText === 'OH') {
             const oxygenFill = fGetDisplayAtomFill('O', textEl)
-            const hydrogenFill = fGetDisplayAtomFill('H', textEl)
+            const hydrogenFill = fGetDisplayAtomFill('H', { parentSymbol: 'O' }, textEl)
             fReplaceTextElementMarkup(
                 textEl,
                 '<tspan' + (oxygenFill ? (' fill="' + oxygenFill + '"') : '') + '>O</tspan>' +
@@ -1438,7 +1548,7 @@ function fWrapStandaloneHydrogenTextsAsTspan() {
         }
 
         if (rawText === 'HO' || rawText === 'HO-') {
-            const hydrogenFill = fGetDisplayAtomFill('H', textEl)
+            const hydrogenFill = fGetDisplayAtomFill('H', { parentSymbol: 'O' }, textEl)
             const oxygenFill = fGetDisplayAtomFill('O', textEl)
             let markup = '<tspan class="svgHydrogenPart"' + (hydrogenFill ? (' fill="' + hydrogenFill + '"') : '') + '>H</tspan>' +
                 '<tspan' + (oxygenFill ? (' fill="' + oxygenFill + '"') : '') + '>O</tspan>'
@@ -1538,7 +1648,7 @@ function patchtheNitrogen() {
             if (textAnchor) { attrs += ' text-anchor="' + textAnchor + '"'; }
             if (fill) { attrs += ' fill="' + fill + '"'; }
             if (stroke && strokeW) { attrs += ' stroke="' + stroke + '" stroke-width="' + strokeW + '"'; }
-            var hydrogenFill = fGetDisplayAtomFill('H', el);
+            var hydrogenFill = fGetDisplayAtomFill('H', { parentSymbol: 'N' }, el);
             var hydrogenFillAttr = hydrogenFill ? (' fill="' + hydrogenFill + '"') : '';
             var newString = '<text ' + attrs + '>N<tspan class="svgHydrogenPart"' + hydrogenFillAttr + '>H<tspan dy="70" font-size=".8em">2</tspan></tspan></text>';
             var newEl;

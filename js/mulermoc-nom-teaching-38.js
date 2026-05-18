@@ -165,7 +165,7 @@ function fInitTheory() {
 
   let rulesTheory_1_8 = [
     "Το όνομα μιας άκυκλης οργανικής ένωσης που έχει συνεχή ευθύγραμμη ανθρακική αλυσίδα προκύπτει από τον συνδυασμό τριών συνθετικών. Το 1<sup>ο</sup> Συνθετικό δείχνει τον αριθμό των ατόμων άνθρακα της ανθρακικής αλυσίδας. Το 2<sup>ο</sup> Συνθετικό δείχνει το είδος των δεσμών που υπάρχουν μεταξύ των ατόμων του άνθρακα. Το 3<sup>ο</sup> Συνθετικό δηλώνει την χημική τάξη που ανήκει.",
-    "Η αρίθμηση της ανθρακικής αλυσίδας αρχίζει από το άκρο που είναι πλησιέστερα στην Χαρακτηριστική Ομάδα ή στον Πολλαπλό Δεσμό",
+    "Η αρίθμηση της ανθρακικής αλυσίδας αρχίζει από το άκρο που είναι πλησιέστερα στην Χαρακτηριστική Ομάδα ή στον Πολλαπλό Δεσμό. Όταν υπάρχει Χαρακτηριστική Ομάδα και Πολλαπλός Δεσμός τότε η αρίθμηση αρχίζει από το άκρο που είναι πλησιέστερα στην Χαρακτηριστική Ομάδα.",
     "Η θέση της Χαρακτηριστικής Ομάδας ή του Πολλαπλού Δεσμού καθορίζεται με έναν αριθμό που γράφεται στην αρχή του ονόματος της ένωσης.",
     "Αλδεϋδες (-CH=O), καρβοξυλικά οξέα (-COOH) και νιτρίλια (-CN) είναι Χαρακτηριστικές Ομάδες που βρίσκονται υποχρεωτικά στην άκρη της ανθρακικής αλυσίδας και η αρίθμηση αρχίζει από τον άνθρακα της Χαρακτηριστικής Ομάδας.",
     "Αν στην οργανική ένωση έχουμε Χαρακτηριστική Ομάδα και Πολλαπλό Δεσμό τότε η θέση του Πολλαπλού Δεσμού καθορίζεται πριν από το βασικό όνομα και η αρίθμηση για την Χαρακτηριστική Ομάδα πριν από το 3<sup>o</sup> συνθετικό που δηλώνει το όνομα της Χαρακτηριστικής Ομάδας",
@@ -463,7 +463,7 @@ $(document).ready(function () {
 
   // Add data (2D structure files ) to nameExamples object
 
-  $("#radio2DMode").on("click", ".radioCheckContainer", function () {
+  $("#radio2DMode").on("click", ".mode2DOption", function () {
     currMode2DNo = $(this)
       .parent()
       .children(".radioCheckContainer")
@@ -696,9 +696,35 @@ $("#originalJSME").on("click", ".checkBoxContainer", function () {
   $("#svgAtomColorCheck").removeClass("selectedCheck").addClass("unselectedCheck");
   $("#jsmeNomeclatureSVG").removeClass("svgAtomsColorized");
 
+  atomColorMode2D = "atom";
+  localStorage.removeItem("atomColorMode2D");
+
+  $("#atomColorMode .atomColorModeRadio")
+    .removeClass("selectedRadio")
+    .addClass("unselectedRadio");
+  $("#atomColorMode .atomColorModeRadio[data-color-mode='" + atomColorMode2D + "']")
+    .removeClass("unselectedRadio")
+    .addClass("selectedRadio");
+
   $("#svgAtomColorCheck").on("click", function () {
     svgAtomColors2DFlag = !svgAtomColors2DFlag;
     $("#jsmeNomeclatureSVG").toggleClass("svgAtomsColorized", svgAtomColors2DFlag);
+    fUpdateSVG();
+    if (numberingFlag) {
+      currNumberEl = 0;
+      fShowNumbering(0);
+    }
+  });
+
+  $("#atomColorMode").on("click", ".atomColorModeRadio", function () {
+    const selectedMode = $(this).attr("data-color-mode");
+    if (!selectedMode || selectedMode === atomColorMode2D) {
+      return;
+    }
+
+    atomColorMode2D = selectedMode;
+    localStorage.setItem("atomColorMode2D", atomColorMode2D);
+
     fUpdateSVG();
     if (numberingFlag) {
       currNumberEl = 0;
@@ -719,8 +745,8 @@ $("#originalJSME").on("click", ".checkBoxContainer", function () {
   $(".radioCheckContainer").on("click", function () {
     if ($(this).hasClass("unselectedRadio")) {
       let group = $(this)
-        .closest(".radioGroupContainer")
-        .find(".radioCheckContainer");
+        .parent()
+        .children(".radioCheckContainer");
       group.removeClass("selectedRadio").addClass("unselectedRadio");
       $(this).removeClass("unselectedRadio").addClass("selectedRadio");
     }

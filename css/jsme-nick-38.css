@@ -179,7 +179,7 @@ h1 {
 	border-right: 1px solid var(--baseColor);
 }
 #viewerSettingsPanel.open {
-  max-height: 200px;
+  max-height: 260px;
   padding: 6px 8px;
 }
 
@@ -207,8 +207,6 @@ h1 {
 	margin-right: 4px;
 	margin-left: 10px;
 }
-
-.svgHydrogenPart { fill: #888; }
 
 #jsmeNomeclatureSVG:not(.svgAtomsColorized) text:not([id^="number"]),
 #jsmeNomeclatureSVG:not(.svgAtomsColorized) text:not([id^="number"]) tspan {
