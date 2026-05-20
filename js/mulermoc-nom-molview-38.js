@@ -2807,7 +2807,7 @@ function fShowNumbering(time) {
                 ? mainChainAtomsList
                 : nameExamples[selectedMol]['mainChain_E']
             highAtoms = (Array.isArray(highAtoms) ? highAtoms : []).filter(function (atomNo) { return allAtomsTypeList[atomNo - 1] === 'C' })
-            const expandedAtomTextMap = fGetRenderedAtomTextMap()
+                const expandedAtomTextMap = fGetRenderedAtomTextMap(false, true)
             numberOffset = [-120, -280]
             for (let i = 0; i < highAtoms.length; i++) {
                 currAtomTextElement = expandedAtomTextMap[highAtoms[i] - 1]
