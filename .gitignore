@@ -67,3 +67,6 @@ css/jsme-nick-2[0-9].css
 # Analysis / dev notes
 Code-Analysis/
 
+# Local communication files (keep out of repo)
+communication/
+

@@ -17,13 +17,13 @@ Greek IUPAC organic chemistry SPA (Single-Page Application) — educational modu
 
 ---
 
-## Current Version: 33
+## Current Version: 38
 
 | File | Description |
 |------|-------------|
-| `nomenclature_moc2_1_RC-33.html` | Main entry point |
-| `css/jsme-nick-33.css` | All styles |
-| `js/jsme-nick-nomeclature-moc2-33.js` | All app logic (~3000 lines) |
+| `nomenclature_moc2_1_RC-38.html` | Main entry point |
+| `css/jsme-nick-38.css` | All styles |
+| `js/jsme-nick-nomeclature-moc2-38.js` | All app logic (~3000 lines) |
 | `js/jsme-nick-nomeclature-moc2-data_6.js` | Minimal molecule data file |
 
 `index.html` redirects to the current version automatically.
@@ -60,7 +60,7 @@ Greek IUPAC organic chemistry SPA (Single-Page Application) — educational modu
 
 ---
 
-## Key Function Reference (v33)
+## Key Function Reference (v38)
 
 | Function | Approx. Line | Purpose |
 |----------|-------------|---------|
