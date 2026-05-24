@@ -275,8 +275,6 @@ header {
   padding: 6px 8px;
 }
 
-
-
 .narrateBtn,
 .nameStyleBox,
 .nameStyleCross,
@@ -1571,6 +1569,7 @@ header {
   min-width: 0;
   /* overrides flex default min-width:auto */
   overflow: visible;
+  width: 600px;
 }
 
 #analysisCol {

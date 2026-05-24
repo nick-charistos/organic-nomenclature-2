@@ -584,17 +584,15 @@ $(document).ready(function () {
   });
 
   $("#viewFinalJSMESetting").on("click", ".checkBoxContainer", function () {
-    // Determine the state *after* the click: if it currently has
-    // "unselectedCheck" it will become selected, so show the final JSME.
-    const willBeSelected = $("#finalJSMECheck").hasClass("unselectedCheck");
-    if (willBeSelected) {
-      $("#jsmeNomeclatureSVG").removeClass("hide");
-      $("#radio2DMode").removeClass("hide");
-      localStorage.setItem("viewFinalJSME", "true");
-    } else {
+    const enableFinalJSME = $("#finalJSMECheck").hasClass("unselectedCheck");
+    if (enableFinalJSME) {
       $("#jsmeNomeclatureSVG").addClass("hide");
       $("#radio2DMode").addClass("hide");
-      localStorage.setItem("viewFinalJSME", "false");
+
+    } else {
+      $("#jsmeNomeclatureSVG").removeClass("hide");
+      $("#radio2DMode").removeClass("hide");
+
     }
   });
 
@@ -760,31 +758,6 @@ $(document).ready(function () {
 
   atomColorMode2D = "atom";
   localStorage.removeItem("atomColorMode2D");
-
-  // Initialize final JSME visibility from localStorage (default: respect HTML)
-  (function initializeFinalJSME() {
-    const stored = localStorage.getItem("viewFinalJSME");
-    if (stored === null) {
-      // Persist current DOM checkbox state
-      const curSelected = $("#finalJSMECheck").hasClass("selectedCheck");
-      localStorage.setItem("viewFinalJSME", curSelected ? "true" : "false");
-      if (!curSelected) {
-        $("#jsmeNomeclatureSVG").addClass("hide");
-        $("#radio2DMode").addClass("hide");
-      } else {
-        $("#jsmeNomeclatureSVG").removeClass("hide");
-        $("#radio2DMode").removeClass("hide");
-      }
-    } else if (stored === "true") {
-      $("#finalJSMECheck").removeClass("unselectedCheck").addClass("selectedCheck");
-      $("#jsmeNomeclatureSVG").removeClass("hide");
-      $("#radio2DMode").removeClass("hide");
-    } else {
-      $("#finalJSMECheck").removeClass("selectedCheck").addClass("unselectedCheck");
-      $("#jsmeNomeclatureSVG").addClass("hide");
-      $("#radio2DMode").addClass("hide");
-    }
-  })();
 
   $("#atomColorMode .atomColorModeRadio")
     .removeClass("selectedRadio")
