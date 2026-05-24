@@ -142,22 +142,22 @@ header {
 
 /* ── Settings button in panelTitle ───────────────────────────────────────── */
 .settingsBtn {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--bgColor);
-  border: none;
-  color: var(--baseColor);
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 6px 8px;
-  line-height: 1;
-  border-radius: 2px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  z-index: 300;
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: var(--bgColor);
+	border: 1px solid var(--darkEarth);
+	color: var(--baseColor);
+	cursor: pointer;
+	font-size: 0;
+	padding: 2px;
+	/* line-height: 1; */
+	border-radius: 2px;
+	transition: all 0.2s;
+	/* display: flex; */
+	/* align-items: center; */
+	z-index: 300;
 }
 
 .settingsBtn:hover,
@@ -254,17 +254,28 @@ header {
 
 } */
 
-#nameStyle {
+/* In-flow collapsible name settings panel (sweeps following content) */
+#nameSettingsPanel {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 5px;
-  padding-right: 8px;
+  box-sizing: border-box;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, padding 0.25s ease;
+  padding: 0 8px;
   background: #f3f3f3;
   border: 1px solid #ddd;
   border-top: 0;
-  overflow: visible;
+  will-change: max-height;
 }
+
+#nameSettingsPanel.open {
+  max-height: 260px; /* tweak if your content needs more space */
+  padding: 6px 8px;
+}
+
+
 
 .narrateBtn,
 .nameStyleBox,
