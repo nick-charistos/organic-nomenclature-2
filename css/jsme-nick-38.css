@@ -1569,7 +1569,7 @@ header {
   min-width: 0;
   /* overrides flex default min-width:auto */
   overflow: visible;
-  width: 600px;
+  width: 620px;
 }
 
 #analysisCol {
