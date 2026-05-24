@@ -29,6 +29,11 @@ let vis3D = 'ballnstick'
 let JmolSelection = "select none"
 let selectedRule
 let narrateAnalysisFlag = false
+if (typeof window.nameBoxFlag === 'undefined') window.nameBoxFlag = true;
+if (typeof window.nameCrossFlag === 'undefined') window.nameCrossFlag = false;
+// keep local aliases for existing code that references plain identifiers
+var nameBoxFlag = window.nameBoxFlag;
+var nameCrossFlag = window.nameCrossFlag;
 let mainChainMode = 'algorithmic'  // 'data' | 'algorithmic'
 let compactNumberingLabelMap = {}
 const compactReverseOffsetScale = {
@@ -66,10 +71,16 @@ const atomColors2D = {
 }
 
 // ── SVG icon constants ────────────────────────────────────────────────────
-const svgSpeaker = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z'/></svg>"
-const svgMute = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 18l2 2L21 18.73l-1.27-1.27L4.27 3zM12 4L9.91 6.09 12 8.18V4z'/></svg>"
-const svgStop = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M6 6h12v12H6z'/></svg>"
-const svgPlay = "<svg viewBox='0 0 24 24' width='16' height='16' fill='currentColor' style='vertical-align:middle'><path d='M8 5v14l11-7z'/></svg>"
+const svgSpeaker = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z'/></svg>"
+const svgMute = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 18l2 2L21 18.73l-1.27-1.27L4.27 3zM12 4L9.91 6.09 12 8.18V4z'/></svg>"
+const svgStop = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M6 6h12v12H6z'/></svg>"
+const svgPlay = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M8 5v14l11-7z'/></svg>"
+const svgNameBox = "<svg viewBox='0 0 22 22' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle' xmlns='http://www.w3.org/2000/svg'><path style='stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke markers fill' d='M4 4h16v16H4z' transform='translate(-1 -1)'/><path d='M9.62 12.91h4.76m-6.347 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .35 0c.127.062.22.264.403.668l3.39 7.457' stroke='currentColor' style='stroke-width:1.65;stroke-dasharray:none' transform='translate(-1 -1)'/></svg>"
+const svgNameBoxOff = "<svg viewBox='0 0 22 22' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle'  id='svgNameBoxOff' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'> <defs id='defs1' /> <rect x='3' y='3' width='16' height='16' id='rect1' style='stroke=currentColor; stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke markers fill;opacity:0.2' /> <path d='M 8.6195557,11.909077 H 13.380445 M 7.0325918,15.083004 10.422104,7.6260622 c 0.183613,-0.403896 0.27542,-0.6058446 0.402616,-0.6684983 0.110533,-0.054444 0.240026,-0.054444 0.350561,0 0.127194,0.062657 0.219001,0.2646023 0.40261,0.6684983 l 3.389517,7.4569418' stroke='currentColor' stroke-width='1.65' stroke-linecap='round' stroke-linejoin='round' id='pathA' style='stroke-width:2;stroke-dasharray:none' /> </svg> "
+
+const svgNameCross = "<svg viewBox='0 0 22 22' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle' xmlns='http://www.w3.org/2000/svg'><path d='M5.923 33.4v-2.8a.654.654 45 0 0-.654-.653H2.5a.654.654 45 0 1-.654-.654v-.409a.654.654 135 0 1 .654-.654h2.77a.654.654 135 0 0 .653-.653v-2.77a.654.654 135 0 1 .654-.653h.429a.654.654 45 0 1 .654.654v2.769a.654.654 45 0 0 .653.653h2.77a.654.654 45 0 1 .653.654v.409a.654.654 135 0 1-.654.654H8.313a.654.654 135 0 0-.653.654v2.8a.654.654 135 0 1-.654.653h-.43a.654.654 45 0 1-.653-.654Z' style='font-size:20.9238px;line-height:125%;font-family:Arial;letter-spacing:0;word-spacing:0;fill:currentColor;stroke:none;stroke-width:1.65;stroke-miterlimit:0;stroke-dasharray:none;paint-order:stroke markers fill' aria-label='+' transform='translate(4.209 -18.104)' stroke='none'/><path d='M-2.556 11.91h4.76m-6.347 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .35 0c.128.062.22.264.403.668l3.39 7.457M19.795 11.91h4.761m-6.348 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .351 0c.127.062.219.264.403.668l3.39 7.457' stroke='currentColor' style='opacity:0.6;stroke-width:1.65;stroke-dasharray:none'/></svg>"
+
+const svgNameCrossOff = "<svg viewBox='0 0 22 22' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle' xmlns='http://www.w3.org/2000/svg'><path d='M3.494 11.91h4.76m-6.347 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .35 0c.128.062.22.264.403.668l3.39 7.457M13.745 11.91h4.761m-6.348 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .351 0c.127.062.219.264.403.668l3.39 7.457' stroke='currentColor' style='stroke-width:1.65;stroke-dasharray:none'/></svg>"
 
 // ── jsmeOnLoad ────────────────────────────────────────────────────────────
 
@@ -1303,24 +1314,24 @@ function fCompactFunctionalGroups2D() {
             const acidOFill = fGetDisplayAtomFill('O', carbonylOEl, ohEl, anchorEl)
             const acidMarkup = isFormicAcid
                 ? (fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgCarbonAttachedHydrogen') +
-                fBuildCompactAtomTspan('C') +
-                fBuildCompactAtomTspan('O', acidOFill) +
-                fBuildCompactAtomTspan('O', acidOFill) +
-                fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen')
-                )
-                : (reverseAcid
-                ? (
-                    fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen') +
-                    fBuildCompactAtomTspan('O', acidOFill) +
-                    fBuildCompactAtomTspan('O', acidOFill) +
-                    fBuildCompactAtomTspan('C')
-                )
-                : (
                     fBuildCompactAtomTspan('C') +
                     fBuildCompactAtomTspan('O', acidOFill) +
                     fBuildCompactAtomTspan('O', acidOFill) +
                     fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen')
-                ))
+                )
+                : (reverseAcid
+                    ? (
+                        fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen') +
+                        fBuildCompactAtomTspan('O', acidOFill) +
+                        fBuildCompactAtomTspan('O', acidOFill) +
+                        fBuildCompactAtomTspan('C')
+                    )
+                    : (
+                        fBuildCompactAtomTspan('C') +
+                        fBuildCompactAtomTspan('O', acidOFill) +
+                        fBuildCompactAtomTspan('O', acidOFill) +
+                        fBuildCompactAtomTspan('H', null, 'svgHydrogenPart svgOxygenAttachedHydrogen')
+                    ))
             const acidAttrs = reverseAcid
                 ? fGetReversedCompactLabelAttrs(anchorEl, 'HOOC')
                 : fGetForwardCompactLabelAttrs(anchorEl, acidLabelKey)
@@ -1887,8 +1898,20 @@ function fShowNameAnalysis() {
     const toggleIcon = narrateAnalysisFlag ? svgSpeaker : svgMute
     const toggleTitle = narrateAnalysisFlag ? 'Αφήγηση ενεργή' : 'Αφήγηση ανενεργή'
     const playDisabled = narrateAnalysisFlag ? '' : ' disabled'
-    nameCompContainer = "<div class='panelTitle'>Επεξήγηση ονομασίας<button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button></div>" +
+
+    const toggleNameStyleBox = nameBoxFlag ? svgNameBox : svgNameBoxOff
+    const boxClass = nameBoxFlag ? 'nameCompBox boxed' : 'nameCompBox unboxed'
+    const boxTooltip = nameBoxFlag ? 'Πλαίσια συνθετικών' : 'Χωρίς πλαίσια συνθετικών'
+
+    const toggleNameStyleCross = nameCrossFlag ? svgNameCross : svgNameCrossOff
+    const crossClass = nameCrossFlag ? 'nameCompPlus' : 'nameCompPlus hide'
+    const crossTooltip = nameCrossFlag ? 'Διαχωρισμένα συνθετικά' :'Ενωμένα συνθετικά' 
+
+    nameCompContainer = "<div class='panelTitle'>Επεξήγηση ονομασίας</div>" +
+        "<div id='nameStyle'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
         "<div class='HFlex' style='justify-content:center;'><div class='nameCompContainer'>"
+
+    // Build the name component boxes with Greek euphony applied, and + signs in between 
 
     for (i = 0; i < compCount; i++) {
         currComp = nameComponentsList[i]
@@ -1910,14 +1933,14 @@ function fShowNameAnalysis() {
             break
         }
 
-        compBox = "<div class='nameCompBox' " + "id='comp" + i + "' >" + displayComp + "</div>"
+        compBox = "<div class='" + boxClass + "' " + "id='comp" + i + "' >" + displayComp + "</div>"
         if (i < compCount - 1) {
-            compBox += "<div class='nameCompPlus' > + </div>"
+            compBox += "<div class='" + crossClass + "' > + </div>"
         }
         nameCompContainer += compBox
     }
 
-    nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' data-tooltip='Ανάγνωση ονόματος'" + playDisabled + ">" + svgPlay + "</button></div>"
+    // nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' data-tooltip='Ανάγνωση ονόματος'" + playDisabled + ">" + svgPlay + "</button></div>"
 
     $("#nameAnalysis").html(nameCompContainer)
 
@@ -2807,7 +2830,7 @@ function fShowNumbering(time) {
                 ? mainChainAtomsList
                 : nameExamples[selectedMol]['mainChain_E']
             highAtoms = (Array.isArray(highAtoms) ? highAtoms : []).filter(function (atomNo) { return allAtomsTypeList[atomNo - 1] === 'C' })
-                const expandedAtomTextMap = fGetRenderedAtomTextMap(false, true)
+            const expandedAtomTextMap = fGetRenderedAtomTextMap(false, true)
             numberOffset = [-120, -280]
             for (let i = 0; i < highAtoms.length; i++) {
                 currAtomTextElement = expandedAtomTextMap[highAtoms[i] - 1]

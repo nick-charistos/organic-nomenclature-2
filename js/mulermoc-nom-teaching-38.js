@@ -399,19 +399,46 @@ $(document).ready(function () {
         "data-tooltip",
         narrateAnalysisFlag ? "Αφήγηση ενεργή" : "Αφήγηση ανενεργή",
       );
-    if (!narrateAnalysisFlag) {
-      window.speechSynthesis.cancel();
-      $("#readNameBtn").prop("disabled", true);
-    } else {
-      $("#readNameBtn").prop("disabled", false);
-    }
+    // if (!narrateAnalysisFlag) {
+    //   window.speechSynthesis.cancel();
+    //   $("#readNameBtn").prop("disabled", true);
+    // } else {
+    //   $("#readNameBtn").prop("disabled", false);
+    // }
   });
 
   $(document).on("click", "#readNameBtn", function () {
-    if (!narrateAnalysisFlag || !selectedMol || !nameExamples[selectedMol])
+    if ( !selectedMol || !nameExamples[selectedMol])
       return;
     const text = currentMolName.replace(/<[^>]*>/g, "");
     fSpeakGreek(text);
+  });
+
+  // Ensure read button remains enabled/visible even if other scripts attempt to disable it
+  $("#readNameBtn").prop("disabled", false);
+
+  $(document).on("click", "#nameStyleBoxToggle", function () {
+    nameBoxFlag = !nameBoxFlag;
+    if (nameBoxFlag) {
+      $(".nameCompBox ").removeClass("unboxed").addClass("boxed");
+      $(this).html(svgNameBox).attr("data-tooltip", "Πλαίσια συνθετικών");
+    } else {
+      $(".nameCompBox ").removeClass("boxed").addClass("unboxed");
+      $(this).html(svgNameBoxOff).attr("data-tooltip", "Χωρίς πλαίσια συνθετικών");
+    }
+
+  });
+
+  $(document).on("click", "#nameStyleCrossToggle", function () {
+    nameCrossFlag = !nameCrossFlag;
+    if (nameCrossFlag) {
+      $(".nameCompPlus ").removeClass("hide");
+      $(this).html(svgNameCross).attr("data-tooltip", "Διαχωρισμένα συνθετικά");
+    } else {
+      $(".nameCompPlus ").addClass("hide");
+      $(this).html(svgNameCrossOff).attr("data-tooltip", "Ενωμένα συνθετικά");
+    }
+
   });
 
   // ---- Drop menu: init early so upstream errors don't prevent it loading ----
@@ -545,16 +572,16 @@ $(document).ready(function () {
     fShowNameAnalysis();
   });
 
-$("#originalJSME").on("click", ".checkBoxContainer", function () {
-  const enableOriginal = $("#originalJSMECheck").hasClass("unselectedCheck");
-  if (enableOriginal) {
-    $("#jsmeNomeclatureORGNL").addClass("hide");
-    // $("#jsmeNomeclatureORGNL").removeClass("hide");
-  } else {
-    $("#jsmeNomeclatureORGNL").removeClass("hide");
-    // $("#jsmeNomeclatureORGNL").addClass("hide");
-  }
-});
+  $("#originalJSME").on("click", ".checkBoxContainer", function () {
+    const enableOriginal = $("#originalJSMECheck").hasClass("unselectedCheck");
+    if (enableOriginal) {
+      $("#jsmeNomeclatureORGNL").addClass("hide");
+      // $("#jsmeNomeclatureORGNL").removeClass("hide");
+    } else {
+      $("#jsmeNomeclatureORGNL").removeClass("hide");
+      // $("#jsmeNomeclatureORGNL").addClass("hide");
+    }
+  });
 
   /////////// Export PNG /////////////
 
