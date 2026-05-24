@@ -408,7 +408,7 @@ $(document).ready(function () {
   });
 
   $(document).on("click", "#readNameBtn", function () {
-    if ( !selectedMol || !nameExamples[selectedMol])
+    if (!selectedMol || !nameExamples[selectedMol])
       return;
     const text = currentMolName.replace(/<[^>]*>/g, "");
     fSpeakGreek(text);
@@ -583,6 +583,34 @@ $(document).ready(function () {
     }
   });
 
+  $("#viewFinalJSMESetting").on("click", ".checkBoxContainer", function () {
+    // Determine the state *after* the click: if it currently has
+    // "unselectedCheck" it will become selected, so show the final JSME.
+    const willBeSelected = $("#finalJSMECheck").hasClass("unselectedCheck");
+    if (willBeSelected) {
+      $("#jsmeNomeclatureSVG").removeClass("hide");
+      $("#radio2DMode").removeClass("hide");
+      localStorage.setItem("viewFinalJSME", "true");
+    } else {
+      $("#jsmeNomeclatureSVG").addClass("hide");
+      $("#radio2DMode").addClass("hide");
+      localStorage.setItem("viewFinalJSME", "false");
+    }
+  });
+
+  $("#viewJSmolSetting").on("click", ".checkBoxContainer", function () {
+    const enableJSmol = $("#viewJSmolCheck").hasClass("unselectedCheck");
+    if (enableJSmol) {
+      $("#nomeclature3D").addClass("hide");
+      $("#controls3D").addClass("hide");
+
+    } else {
+      $("#nomeclature3D").removeClass("hide");
+      $("#controls3D").removeClass("hide");
+
+    }
+  });
+
   /////////// Export PNG /////////////
 
   /////////// Export PNG /////////////
@@ -732,6 +760,31 @@ $(document).ready(function () {
 
   atomColorMode2D = "atom";
   localStorage.removeItem("atomColorMode2D");
+
+  // Initialize final JSME visibility from localStorage (default: respect HTML)
+  (function initializeFinalJSME() {
+    const stored = localStorage.getItem("viewFinalJSME");
+    if (stored === null) {
+      // Persist current DOM checkbox state
+      const curSelected = $("#finalJSMECheck").hasClass("selectedCheck");
+      localStorage.setItem("viewFinalJSME", curSelected ? "true" : "false");
+      if (!curSelected) {
+        $("#jsmeNomeclatureSVG").addClass("hide");
+        $("#radio2DMode").addClass("hide");
+      } else {
+        $("#jsmeNomeclatureSVG").removeClass("hide");
+        $("#radio2DMode").removeClass("hide");
+      }
+    } else if (stored === "true") {
+      $("#finalJSMECheck").removeClass("unselectedCheck").addClass("selectedCheck");
+      $("#jsmeNomeclatureSVG").removeClass("hide");
+      $("#radio2DMode").removeClass("hide");
+    } else {
+      $("#finalJSMECheck").removeClass("selectedCheck").addClass("unselectedCheck");
+      $("#jsmeNomeclatureSVG").addClass("hide");
+      $("#radio2DMode").addClass("hide");
+    }
+  })();
 
   $("#atomColorMode .atomColorModeRadio")
     .removeClass("selectedRadio")
