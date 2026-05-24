@@ -71,6 +71,8 @@ const atomColors2D = {
 }
 
 // ── SVG icon constants ────────────────────────────────────────────────────
+const svgSettings = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' > <path d='M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.02 7.02 0 0 0-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54a7.02 7.02 0 0 0-1.62.94l-2.39-.96a.47.47 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.36 1.04.67 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7.02 7.02 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.47.47 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 0 1 8.4 12 3.6 3.6 0 0 1 12 8.4a3.6 3.6 0 0 1 3.6 3.6 3.6 3.6 0 0 1-3.6 3.6z' transform='translate(-1 -1)' /> </svg>"
+
 const svgSpeaker = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z'/></svg>"
 const svgMute = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 18l2 2L21 18.73l-1.27-1.27L4.27 3zM12 4L9.91 6.09 12 8.18V4z'/></svg>"
 const svgStop = "<svg viewBox='0 0 22 22' width='18' height='18' fill='currentColor' style='vertical-align:middle'><path d='M6 6h12v12H6z'/></svg>"
@@ -81,6 +83,8 @@ const svgNameBoxOff = "<svg viewBox='0 0 22 22' width='18' height='18' fill='non
 const svgNameCross = "<svg viewBox='0 0 22 22' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle' xmlns='http://www.w3.org/2000/svg'><path d='M5.923 33.4v-2.8a.654.654 45 0 0-.654-.653H2.5a.654.654 45 0 1-.654-.654v-.409a.654.654 135 0 1 .654-.654h2.77a.654.654 135 0 0 .653-.653v-2.77a.654.654 135 0 1 .654-.653h.429a.654.654 45 0 1 .654.654v2.769a.654.654 45 0 0 .653.653h2.77a.654.654 45 0 1 .653.654v.409a.654.654 135 0 1-.654.654H8.313a.654.654 135 0 0-.653.654v2.8a.654.654 135 0 1-.654.653h-.43a.654.654 45 0 1-.653-.654Z' style='font-size:20.9238px;line-height:125%;font-family:Arial;letter-spacing:0;word-spacing:0;fill:currentColor;stroke:none;stroke-width:1.65;stroke-miterlimit:0;stroke-dasharray:none;paint-order:stroke markers fill' aria-label='+' transform='translate(4.209 -18.104)' stroke='none'/><path d='M-2.556 11.91h4.76m-6.347 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .35 0c.128.062.22.264.403.668l3.39 7.457M19.795 11.91h4.761m-6.348 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .351 0c.127.062.219.264.403.668l3.39 7.457' stroke='currentColor' style='opacity:0.6;stroke-width:1.65;stroke-dasharray:none'/></svg>"
 
 const svgNameCrossOff = "<svg viewBox='0 0 22 22' width='18' height='18' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' style='vertical-align:middle' xmlns='http://www.w3.org/2000/svg'><path d='M3.494 11.91h4.76m-6.347 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .35 0c.128.062.22.264.403.668l3.39 7.457M13.745 11.91h4.761m-6.348 3.173 3.39-7.457c.183-.404.275-.606.402-.668a.397.397 0 0 1 .351 0c.127.062.219.264.403.668l3.39 7.457' stroke='currentColor' style='stroke-width:1.65;stroke-dasharray:none'/></svg>"
+
+fInitViewerSettingsBtn();
 
 // ── jsmeOnLoad ────────────────────────────────────────────────────────────
 
@@ -120,6 +124,30 @@ function jsmeOnLoad() {
 
 // ── fToggleViewerSettings ────────────────────────────────────────────────
 
+// Initialize viewer settings button markup into #viewerSettingsBtnDiv.
+// Uses existing `svgSettings` constant and the fToggleViewerSettings() handler.
+function fInitViewerSettingsBtn() {
+    const markup = "<button id='viewerSettingsBtn' class='settingsBtn' onclick='fToggleViewerSettings()' data-tooltip='Ρυθμίσεις'>" + svgSettings + "</button>";
+    function insert() {
+        try {
+            const div = document.getElementById('viewerSettingsBtnDiv');
+            if (div && !document.getElementById('viewerSettingsBtn')) {
+                div.innerHTML = markup;
+            }
+        } catch (e) {
+            // defensive - don't throw in init
+            console.warn('viewerSettings init failed', e);
+        }
+    }
+    insert();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', insert);
+    } else {
+        // ensure insertion if scripts run after DOM ready
+        setTimeout(insert, 0);
+    }
+}
+
 function fToggleViewerSettings() {
     var panel = document.getElementById('viewerSettingsPanel')
     var btn = document.getElementById('viewerSettingsBtn')
@@ -136,6 +164,34 @@ function fToggleViewerSettings() {
 document.addEventListener('click', function (e) {
     var panel = document.getElementById('viewerSettingsPanel')
     var btn = document.getElementById('viewerSettingsBtn')
+    if (!panel || !btn) return
+    if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+        panel.classList.remove('open')
+        btn.classList.remove('active')
+    }
+})
+
+// ── fToggleNameSettings ────────────────────────────────────────────────
+
+// Initialize name settings button markup into #nameSettingsBtnDiv.
+// Uses existing `svgSettings` constant and the fToggleNameSettings() handler.
+
+function fToggleNameSettings() {
+    var panel = document.getElementById('nameSettingsPanel')
+    var btn = document.getElementById('nameSettingsBtn')
+    var isOpen = panel.classList.contains('open')
+    if (isOpen) {
+        panel.classList.remove('open')
+        btn.classList.remove('active')
+    } else {
+        panel.classList.add('open')
+        btn.classList.add('active')
+    }
+}
+
+document.addEventListener('click', function (e) {
+    var panel = document.getElementById('nameSettingsPanel')
+    var btn = document.getElementById('nameSettingsBtn')
     if (!panel || !btn) return
     if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
         panel.classList.remove('open')
@@ -1907,8 +1963,8 @@ function fShowNameAnalysis() {
     const crossClass = nameCrossFlag ? 'nameCompPlus' : 'nameCompPlus hide'
     const crossTooltip = nameCrossFlag ? 'Διαχωρισμένα συνθετικά' :'Ενωμένα συνθετικά' 
 
-    nameCompContainer = "<div class='panelTitle'>Επεξήγηση ονομασίας</div>" +
-        "<div id='nameStyle'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
+    nameCompContainer = "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn'  onclick='fToggleNameSettings()'  data-tooltip='Ρυθμίσεις Ονομασίας' >" + svgSettings  +" </button></div></div>" +
+        "<div id='nameSettingsPanel'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
         "<div class='HFlex' style='justify-content:center;'><div class='nameCompContainer'>"
 
     // Build the name component boxes with Greek euphony applied, and + signs in between 
