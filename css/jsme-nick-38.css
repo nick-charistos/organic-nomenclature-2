@@ -273,6 +273,7 @@ header {
 #nameSettingsPanel.open {
   max-height: 260px; /* tweak if your content needs more space */
   padding: 6px 8px;
+  overflow: visible;
 }
 
 .narrateBtn,

@@ -189,15 +189,15 @@ function fToggleNameSettings() {
     }
 }
 
-document.addEventListener('click', function (e) {
-    var panel = document.getElementById('nameSettingsPanel')
-    var btn = document.getElementById('nameSettingsBtn')
-    if (!panel || !btn) return
-    if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-        panel.classList.remove('open')
-        btn.classList.remove('active')
-    }
-})
+// document.addEventListener('click', function (e) {
+//     var panel = document.getElementById('nameSettingsPanel')
+//     var btn = document.getElementById('nameSettingsBtn')
+//     if (!panel || !btn) return
+//     if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+//         panel.classList.remove('open')
+//         btn.classList.remove('active')
+//     }
+// })
 
 // ── fInitData ─────────────────────────────────────────────────────────────
 
@@ -1963,8 +1963,8 @@ function fShowNameAnalysis() {
     const crossClass = nameCrossFlag ? 'nameCompPlus' : 'nameCompPlus hide'
     const crossTooltip = nameCrossFlag ? 'Διαχωρισμένα συνθετικά' :'Ενωμένα συνθετικά' 
 
-    nameCompContainer = "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn'  onclick='fToggleNameSettings()'  data-tooltip='Ρυθμίσεις Ονομασίας' >" + svgSettings  +" </button></div></div>" +
-        "<div id='nameSettingsPanel'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
+    nameCompContainer = "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn active'  onclick='fToggleNameSettings()'  data-tooltip='Ρυθμίσεις Ονομασίας' >" + svgSettings  +" </button></div></div>" +
+        "<div id='nameSettingsPanel' class='open'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
         "<div class='HFlex' style='justify-content:center;'><div class='nameCompContainer'>"
 
     // Build the name component boxes with Greek euphony applied, and + signs in between 
