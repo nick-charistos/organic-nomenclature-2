@@ -28,6 +28,7 @@ let ruleTableFlag = false
 let vis3D = 'ballnstick'
 let JmolSelection = "select none"
 let selectedRule
+let nameSettingsFlag = true
 let narrateAnalysisFlag = false
 if (typeof window.nameBoxFlag === 'undefined') window.nameBoxFlag = true;
 if (typeof window.nameCrossFlag === 'undefined') window.nameCrossFlag = false;
@@ -177,10 +178,11 @@ document.addEventListener('click', function (e) {
 // Uses existing `svgSettings` constant and the fToggleNameSettings() handler.
 
 function fToggleNameSettings() {
+    nameSettingsFlag = !nameSettingsFlag
     var panel = document.getElementById('nameSettingsPanel')
     var btn = document.getElementById('nameSettingsBtn')
-    var isOpen = panel.classList.contains('open')
-    if (isOpen) {
+    // var isOpen = panel.classList.contains('open')
+    if (!nameSettingsFlag) {
         panel.classList.remove('open')
         btn.classList.remove('active')
     } else {
@@ -1963,8 +1965,11 @@ function fShowNameAnalysis() {
     const crossClass = nameCrossFlag ? 'nameCompPlus' : 'nameCompPlus hide'
     const crossTooltip = nameCrossFlag ? 'Διαχωρισμένα συνθετικά' :'Ενωμένα συνθετικά' 
 
-    nameCompContainer = "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn active'  onclick='fToggleNameSettings()'  data-tooltip='Ρυθμίσεις Ονομασίας' >" + svgSettings  +" </button></div></div>" +
-        "<div id='nameSettingsPanel' class='open'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
+    const nameSettingClass = nameSettingsFlag ? 'open' : ''
+    const namesSettingsBtnActiveClass = nameSettingsFlag ? 'active' : ''
+
+    nameCompContainer = "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn " + namesSettingsBtnActiveClass + "'  onclick='fToggleNameSettings()'  data-tooltip='Ρυθμίσεις Ονομασίας' >" + svgSettings  +" </button></div></div>" +
+        "<div id='nameSettingsPanel' class='" + nameSettingClass + "'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
         "<div class='HFlex' style='justify-content:center;'><div class='nameCompContainer'>"
 
     // Build the name component boxes with Greek euphony applied, and + signs in between 
