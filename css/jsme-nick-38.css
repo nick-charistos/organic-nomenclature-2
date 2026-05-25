@@ -1127,7 +1127,7 @@ header {
 }
 
 .nameCompBox.selected.unboxed {
-  padding: 0 4px;
+  padding: 5px 4px;
 }
 
 .nameCompBox.selected::after {
