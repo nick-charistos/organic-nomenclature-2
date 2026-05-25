@@ -1111,10 +1111,9 @@ header {
 }
 
 .nameCompBox:hover {
-  border-color: var(--guiColor);
+  /* border-color: var(--guiColor); */
   z-index: 100;
-  background-color: #fff;
-  background-color: var(--bgColor);
+  background-color: var(--veryLightBlue);
 }
 
 .nameCompBox.selected {
