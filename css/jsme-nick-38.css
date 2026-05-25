@@ -24,7 +24,7 @@
   --lightEarth: #f6d1ba;
 
   --baseColor: #1b275d;
-  --guiColor: #5FAD56;
+  --guiColor: #5fad56;
   /* --highColor: var(--guiColor); */
   /* --highColor: var(--orangeNick); */
   --bgColor: #fff1de;
@@ -142,22 +142,22 @@ header {
 
 /* ── Settings button in panelTitle ───────────────────────────────────────── */
 .settingsBtn {
-	position: absolute;
-	right: 8px;
-	top: 50%;
-	transform: translateY(-50%);
-	background: var(--bgColor);
-	border: 1px solid var(--darkEarth);
-	color: var(--baseColor);
-	cursor: pointer;
-	font-size: 0;
-	padding: 2px;
-	/* line-height: 1; */
-	border-radius: 2px;
-	transition: all 0.2s;
-	/* display: flex; */
-	/* align-items: center; */
-	z-index: 300;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bgColor);
+  border: 1px solid var(--darkEarth);
+  color: var(--baseColor);
+  cursor: pointer;
+  font-size: 0;
+  padding: 2px;
+  /* line-height: 1; */
+  border-radius: 2px;
+  transition: all 0.2s;
+  /* display: flex; */
+  /* align-items: center; */
+  z-index: 300;
 }
 
 .settingsBtn:hover,
@@ -178,7 +178,9 @@ header {
   border-top: 0;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.22s ease, padding 0.22s ease;
+  transition:
+    max-height 0.22s ease,
+    padding 0.22s ease;
   padding: 0 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   background-color: #f0f0f0;
@@ -228,6 +230,22 @@ header {
   background: #f3f3f3;
   height: 36px;
   display: flex;
+  border: 1px solid #ddd;
+  border-left: 0;
+  border-right: 0;
+}
+
+#controls3D {
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
+  border-bottom: 0;
+}
+
+.radioGroupContainer {
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
 }
 
 .ruleTheoryTitle .narrateBtn {
@@ -262,7 +280,9 @@ header {
   box-sizing: border-box;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.25s ease, padding 0.25s ease;
+  transition:
+    max-height 0.25s ease,
+    padding 0.25s ease;
   padding: 0 8px;
   background: #f3f3f3;
   border: 1px solid #ddd;
@@ -353,7 +373,7 @@ header {
 .nameStyleBox[data-tooltip]::before,
 .nameStyleCross[data-tooltip]::before,
 #narrateAnalysisToggle[data-tooltip]::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -628,7 +648,6 @@ header {
 
 .checkBoxContainer.unselectedCheck:hover .checkBox,
 .checkBoxContainer.unselectedCheck:hover::after {
-
   color: var(--darkEarth);
 
   transition: all 0.3s;
@@ -656,7 +675,6 @@ header {
 
 .unselectedCheck:hover::after {
   background-color: var(--bgColor);
-
 }
 
 .selectedCheck::after {
@@ -1081,7 +1099,7 @@ header {
 }
 
 .selected .euphonyLetter {
-  color: rgba(200, 255, 255, 0.8)
+  color: rgba(200, 255, 255, 0.8);
 }
 
 .nameCompPlus {
@@ -1109,7 +1127,7 @@ header {
 }
 
 .nameCompBox.selected.unboxed {
-  padding:0 4px;
+  padding: 0 4px;
 }
 
 .nameCompBox.selected::after {
@@ -1364,7 +1382,6 @@ header {
 }
 
 @keyframes blink {
-
   0%,
   100% {
     color: var(--guiColor);
@@ -1479,7 +1496,6 @@ header {
   gap: 10px 10px;
   justify-content: center;
   padding: 5px;
-
 }
 
 .creditsContainer a {
@@ -1493,7 +1509,7 @@ header {
 }
 
 .creditsContainer a:hover {
-  color: #FFF;
+  color: #fff;
   border-color: #fff;
   transition: all 0.2s;
 }
@@ -1575,6 +1591,8 @@ header {
   /* overrides flex default min-width:auto */
   overflow: visible;
   width: 620px;
+  border: 1px solid var(--baseColor);
+  border-top: 0;
 }
 
 #analysisCol {
@@ -1641,7 +1659,6 @@ header {
 }
 
 @keyframes rotateHint {
-
   0%,
   25% {
     transform: rotate(0deg);
@@ -1706,12 +1723,12 @@ header {
   }
 
   #creditsUs {
-    font-size: 0.70rem;
+    font-size: 0.7rem;
     padding: 4px 10px;
   }
 
   #creditsLib {
-    font-size: 0.70rem;
+    font-size: 0.7rem;
     padding: 4px 10px;
   }
 
@@ -1783,4 +1800,3 @@ header {
     max-height: 400px;
   }
 }
-
