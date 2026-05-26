@@ -346,7 +346,8 @@ function fShowCreditLibs() {
   myCredits +=
     "<div class=''>Αναστασία Θεοφανίδου, Βασίλης Κουταλάς, <a href='https://nicharis.webpages.auth.gr/' target='_blank'> Νικόλας Χαριστός </a></div>";
   myCredits += "</div><div class='creditsContainer'>";
-  myCredits += "<div class=''>ΠΜΣ <a href='https://molmod-edu.chem.auth.gr/' target='_blank'>Μοριακός Σχεδιασμός και Μοντελοποίηση - Χημική Εκπαίδευση</a></div>";
+  myCredits +=
+    "<div class=''>ΠΜΣ <a href='https://molmod-edu.chem.auth.gr/' target='_blank'>Μοριακός Σχεδιασμός και Μοντελοποίηση - Χημική Εκπαίδευση</a></div>";
   myCredits += "<div>|</div>";
   myCredits += "<div class=''>Τμήμα Χημείας</div>";
   myCredits += "<div>|</div>";
@@ -408,8 +409,7 @@ $(document).ready(function () {
   });
 
   $(document).on("click", "#readNameBtn", function () {
-    if (!selectedMol || !nameExamples[selectedMol])
-      return;
+    if (!selectedMol || !nameExamples[selectedMol]) return;
     const text = currentMolName.replace(/<[^>]*>/g, "");
     fSpeakGreek(text);
   });
@@ -424,9 +424,10 @@ $(document).ready(function () {
       $(this).html(svgNameBox).attr("data-tooltip", "Πλαίσια συνθετικών");
     } else {
       $(".nameCompBox ").removeClass("boxed").addClass("unboxed");
-      $(this).html(svgNameBoxOff).attr("data-tooltip", "Χωρίς πλαίσια συνθετικών");
+      $(this)
+        .html(svgNameBoxOff)
+        .attr("data-tooltip", "Χωρίς πλαίσια συνθετικών");
     }
-
   });
 
   $(document).on("click", "#nameStyleCrossToggle", function () {
@@ -438,7 +439,6 @@ $(document).ready(function () {
       $(".nameCompPlus ").addClass("hide");
       $(this).html(svgNameCrossOff).attr("data-tooltip", "Ενωμένα συνθετικά");
     }
-
   });
 
   // ---- Drop menu: init early so upstream errors don't prevent it loading ----
@@ -558,7 +558,9 @@ $(document).ready(function () {
   });
 
   $("#radioChainMode").on("click", ".radioCheckContainer", function () {
-    if ($(this).hasClass("disabledRadio")) { return; }
+    if ($(this).hasClass("disabledRadio")) {
+      return;
+    }
     const idx = $(this).parent().children(".radioCheckContainer").index(this);
     mainChainMode = idx === 1 ? "algorithmic" : "data";
 
@@ -586,26 +588,28 @@ $(document).ready(function () {
   $("#viewFinalJSMESetting").on("click", ".checkBoxContainer", function () {
     const enableFinalJSME = $("#finalJSMECheck").hasClass("unselectedCheck");
     if (enableFinalJSME) {
-      $("#jsmeNomeclatureSVG").addClass("hide");
+      $("#jsmeNomeclatureSVG").slideToggle(200);
+      // $("#jsmeNomeclatureSVG").addClass("hide");
       $("#radio2DMode").addClass("hide");
-
     } else {
-      $("#jsmeNomeclatureSVG").removeClass("hide");
+       $("#jsmeNomeclatureSVG").slideToggle(200);
+      // $("#jsmeNomeclatureSVG").removeClass("hide");
       $("#radio2DMode").removeClass("hide");
-
     }
   });
 
   $("#viewJSmolSetting").on("click", ".checkBoxContainer", function () {
     const enableJSmol = $("#viewJSmolCheck").hasClass("unselectedCheck");
     if (enableJSmol) {
-      $("#nomeclature3D").addClass("hide");
+       $("#nomeclature3D").slideToggle(200);
+      // $("#nomeclature3D").addClass("hide");
       $("#controls3D").addClass("hide");
-
+     
     } else {
-      $("#nomeclature3D").removeClass("hide");
+      $("#nomeclature3D").slideToggle(200);
+      // $("#nomeclature3D").removeClass("hide");
       $("#controls3D").removeClass("hide");
-
+      
     }
   });
 
@@ -753,7 +757,9 @@ $(document).ready(function () {
   });
 
   svgAtomColors2DFlag = false;
-  $("#svgAtomColorCheck").removeClass("selectedCheck").addClass("unselectedCheck");
+  $("#svgAtomColorCheck")
+    .removeClass("selectedCheck")
+    .addClass("unselectedCheck");
   $("#jsmeNomeclatureSVG").removeClass("svgAtomsColorized");
 
   atomColorMode2D = "atom";
@@ -762,13 +768,20 @@ $(document).ready(function () {
   $("#atomColorMode .atomColorModeRadio")
     .removeClass("selectedRadio")
     .addClass("unselectedRadio");
-  $("#atomColorMode .atomColorModeRadio[data-color-mode='" + atomColorMode2D + "']")
+  $(
+    "#atomColorMode .atomColorModeRadio[data-color-mode='" +
+      atomColorMode2D +
+      "']",
+  )
     .removeClass("unselectedRadio")
     .addClass("selectedRadio");
 
   $("#svgAtomColorCheck").on("click", function () {
     svgAtomColors2DFlag = !svgAtomColors2DFlag;
-    $("#jsmeNomeclatureSVG").toggleClass("svgAtomsColorized", svgAtomColors2DFlag);
+    $("#jsmeNomeclatureSVG").toggleClass(
+      "svgAtomsColorized",
+      svgAtomColors2DFlag,
+    );
     fUpdateSVG();
     if (numberingFlag) {
       currNumberEl = 0;
@@ -804,9 +817,7 @@ $(document).ready(function () {
 
   $(".radioCheckContainer").on("click", function () {
     if ($(this).hasClass("unselectedRadio")) {
-      let group = $(this)
-        .parent()
-        .children(".radioCheckContainer");
+      let group = $(this).parent().children(".radioCheckContainer");
       group.removeClass("selectedRadio").addClass("unselectedRadio");
       $(this).removeClass("unselectedRadio").addClass("selectedRadio");
     }
@@ -865,4 +876,3 @@ $(document).ready(function () {
     fUpdateSVG();
   });
 });
-

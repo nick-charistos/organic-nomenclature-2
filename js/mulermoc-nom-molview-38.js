@@ -1970,7 +1970,7 @@ function fShowNameAnalysis() {
 
     nameCompContainer = "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn " + namesSettingsBtnActiveClass + "'  onclick='fToggleNameSettings()'  data-tooltip='Ρυθμίσεις Ονομασίας' >" + svgSettings  +" </button></div></div>" +
         "<div id='nameSettingsPanel' class='" + nameSettingClass + "'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" + toggleTitle + "'>" + toggleIcon + "</button><button id='readNameBtn' class='readNameBtn' data-tooltip='Εκφώνηση ονόματος' >" + svgPlay + "</button><button id='nameStyleBoxToggle' class='nameStyleBox' data-tooltip='" + boxTooltip + "'>" + toggleNameStyleBox + "</button><button id='nameStyleCrossToggle' class='nameStyleCross' data-tooltip='" + crossTooltip + "'>" + toggleNameStyleCross + "</button></div>" +
-        "<div class='HFlex' style='justify-content:center;'><div class='nameCompContainer'>"
+        "<div class='HFlex nameContainer' style='justify-content:center;'><div class='nameCompContainer'>"
 
     // Build the name component boxes with Greek euphony applied, and + signs in between 
 

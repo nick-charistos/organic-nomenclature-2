@@ -183,7 +183,7 @@ header {
     padding 0.22s ease;
   padding: 0 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-  background-color: #f0f0f0;
+  background-color: #f3f3f3;
   border-left: 0;
   border-right: 0;
 }
@@ -285,7 +285,7 @@ header {
     padding 0.25s ease;
   padding: 0 8px;
   background: #f3f3f3;
-  border: 1px solid #ddd;
+  border-bottom: 0;
   border-top: 0;
   will-change: max-height;
 }
@@ -294,6 +294,14 @@ header {
   max-height: 260px; /* tweak if your content needs more space */
   padding: 6px 8px;
   overflow: visible;
+  border-bottom: 1px solid var(--darkEarth);
+}
+
+.nameContainer {
+  justify-content: center;
+  background-color: var(--bgColor);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--darkEarth);
 }
 
 .narrateBtn,
@@ -1066,7 +1074,7 @@ header {
 .nameCompContainer {
   display: flex;
   /* flex-wrap: wrap; */
-  margin-top: 10px;
+  /* margin-top: 10px; */
   align-items: center;
   justify-content: center;
 }
@@ -1075,11 +1083,10 @@ header {
   font-size: 1.1rem;
   font-weight: bold;
   color: #000;
-  /* padding: 5px 6px;
-  border: 2px solid #ddd; */
+  background-color: #fff;
   cursor: pointer;
   transition: all 0.3s;
-  /* margin-right: -2px; */
+ 
 }
 
 .boxed {
@@ -1142,10 +1149,13 @@ header {
 
 #nameAnalysis {
   margin-top: 10px;
+  border: 1px solid var(--baseColor);
 }
 
 #nameAnalysisExplain {
-  margin-top: 10px;
+  margin-top: -1px;
+  border: 1px solid var(--baseColor);
+  border-top: 0;
 }
 
 .explainText {
@@ -1154,7 +1164,7 @@ header {
   font-size: 1rem;
   color: #fff;
   background-color: var(--guiColor);
-  border-radius: 2px;
+  /* border-radius: 2px; */
   /* box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.5); */
 }
 
@@ -1799,3 +1809,4 @@ header {
     max-height: 400px;
   }
 }
+
