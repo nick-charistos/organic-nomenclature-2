@@ -598,7 +598,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#viewJSmolSetting").on("click", ".checkBoxContainer", function () {
+    $("#viewJSmolSetting").on("click", ".checkBoxContainer", function () {
     const enableJSmol = $("#viewJSmolCheck").hasClass("unselectedCheck");
     if (enableJSmol) {
       $("#nomeclature3D").slideToggle(200);
@@ -606,7 +606,7 @@ $(document).ready(function () {
       $("#controls3D").addClass("hide");
     } else {
       $("#nomeclature3D").slideToggle(200, function () {
-        if (window.jmolAppletNomeclature)
+        // if (window.jmolAppletNomeclature)
           Jmol.script(jmolAppletNomeclature, "refresh");
       });
       // $("#nomeclature3D").removeClass("hide");
@@ -878,3 +878,4 @@ $(document).ready(function () {
     fUpdateSVG();
   });
 });
+
