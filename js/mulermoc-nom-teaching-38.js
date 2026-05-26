@@ -592,7 +592,7 @@ $(document).ready(function () {
       // $("#jsmeNomeclatureSVG").addClass("hide");
       $("#radio2DMode").addClass("hide");
     } else {
-       $("#jsmeNomeclatureSVG").slideToggle(200);
+      $("#jsmeNomeclatureSVG").slideToggle(200);
       // $("#jsmeNomeclatureSVG").removeClass("hide");
       $("#radio2DMode").removeClass("hide");
     }
@@ -601,15 +601,17 @@ $(document).ready(function () {
   $("#viewJSmolSetting").on("click", ".checkBoxContainer", function () {
     const enableJSmol = $("#viewJSmolCheck").hasClass("unselectedCheck");
     if (enableJSmol) {
-       $("#nomeclature3D").slideToggle(200);
+      $("#nomeclature3D").slideToggle(200);
       // $("#nomeclature3D").addClass("hide");
       $("#controls3D").addClass("hide");
-     
     } else {
-      $("#nomeclature3D").slideToggle(200);
+      $("#nomeclature3D").slideToggle(200, function () {
+        if (window.jmolAppletNomeclature)
+          Jmol.script(jmolAppletNomeclature, "refresh");
+      });
       // $("#nomeclature3D").removeClass("hide");
       $("#controls3D").removeClass("hide");
-      
+      // Jmol.script(jmolAppletNomeclature, "refresh");
     }
   });
 
