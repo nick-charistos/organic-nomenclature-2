@@ -1099,6 +1099,7 @@ header {
   padding: 5px 0;
   border: 0;
   margin-right: 0;
+  background: transparent;
 }
 
 .euphonyLetter {
