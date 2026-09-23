@@ -2489,6 +2489,26 @@ window.fSave2DPng = function () {
       });
   }
 
+  // Defensive scrub: highlighted malformed labels may leak broken stroke-width
+  // values (with absorbed tag text) into export serialization.
+  svgClone.querySelectorAll("[stroke-width]").forEach(function (el) {
+    let strokeWidthValue = el.getAttribute("stroke-width") || "";
+    if (/[<>]|&(lt|gt);|tspan|stroke=/i.test(strokeWidthValue)) {
+      let safeStrokeWidth = strokeWidthValue
+        .split("&gt;")[0]
+        .split(">")[0]
+        .split("&lt;")[0]
+        .split("<")[0]
+        .trim();
+      if (/^\d+(\.\d+)?(px)?$/i.test(safeStrokeWidth)) {
+        el.setAttribute("stroke-width", safeStrokeWidth);
+      } else {
+        el.removeAttribute("stroke-width");
+      }
+      el.removeAttribute("stroke");
+    }
+  });
+
   let svgData = new XMLSerializer().serializeToString(svgClone);
   if (!svgData.includes('xmlns="http://www.w3.org/2000/svg"')) {
     svgData = svgData.replace(
@@ -2497,20 +2517,49 @@ window.fSave2DPng = function () {
     );
   }
 
-  // Fix JSME bug: highlighted atom labels produce malformed XML:
-  // fill="rgb(X,X,X) stroke=" black"="" stroke-width="11px"
-  // →  fill="rgb(X,X,X)" stroke="black" stroke-width="11px"
+  // Fix JSME bug: highlighted atom labels produce malformed XML.
   svgData = svgData.replace(
-    /fill="([^"]*?) stroke=" ([^"]*)"="" stroke-width="([^"]*)"/g,
+    /fill="([^"]*?)\s+stroke="\s*([^"]*?)"\s*=\s*"\s+stroke-width="([^"]*)"/g,
     'fill="$1" stroke="$2" stroke-width="$3"',
   );
-  // Fix JSME N-type highlight bug (e.g. NH2): XMLSerializer escapes > as &gt; inside
-  // the attribute value, producing: stroke-width="11px&gt;&lt;tspan&gt;...garbage..." sub"="">
-  // →  stroke-width="11px">
-  svgData = svgData.replace(
-    /stroke-width="(\d+px?)&gt;[^"]*" [^>]*>/g,
-    'stroke-width="$1">',
-  );
+
+  // Fix N-type highlight corruption: stroke-width can absorb escaped/literal
+  // fragments (e.g. &gt;&lt;tspan&gt;...) and break SVG image decode.
+  svgData = svgData.replace(/stroke-width="([^"]*)"/g, function (_m, value) {
+    if (!/(?:&gt;|&lt;|>|<|tspan|stroke=)/i.test(value)) {
+      return 'stroke-width="' + value + '"';
+    }
+    let safeValue = value
+      .split("&gt;")[0]
+      .split(">")[0]
+      .split("&lt;")[0]
+      .split("<")[0]
+      .trim();
+    if (!/^\d+(\.\d+)?(px)?$/i.test(safeValue)) {
+      return "";
+    }
+    return 'stroke-width="' + safeValue + '"';
+  });
+
+  // Remove orphaned encoded tspan tags left inside attribute contexts.
+  svgData = svgData.replace(/&lt;\/?tspan[^&]*?&gt;/gi, "");
+
+  // Fix another JSME highlight corruption variant seen in <text> tags:
+  //   ... fill="#000" black"="" stroke-width="11px" ...
+  // Remove orphan attributes ending as: <token>"=""
+  svgData = svgData.replace(/\s+[A-Za-z_:-][A-Za-z0-9_:\-\.]*"=""(?=\s|>)/g, "");
+
+  let svgDebugFlags = {
+    hasMalformedFillStroke: /fill="[^"]*?\s+stroke="\s*[^"]*?"\s*=\s*"/i.test(
+      svgData,
+    ),
+    hasCorruptStrokeWidth: /stroke-width="[^"]*(?:&gt;|&lt;|>|<|tspan|stroke=)/i.test(
+      svgData,
+    ),
+    hasEncodedTspan: /&lt;\/?tspan/i.test(svgData),
+    hasOrphanQuotedAttribute:
+      /\s+[A-Za-z_:-][A-Za-z0-9_:\-\.]*"=""(?=\s|>)/.test(svgData),
+  };
 
   let canvas = document.createElement("canvas");
   canvas.width = width;
@@ -2541,7 +2590,8 @@ window.fSave2DPng = function () {
   };
   img.onerror = function () {
     console.error("[2D PNG] SVG failed to load. SVG content:");
-  
+    console.error(svgData.slice(0, 4000));
+    console.error("[2D PNG] Debug flags:", svgDebugFlags);
   };
 
   let svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
