@@ -112,6 +112,17 @@ function fInitNamingProps() {
         nitro: { suffix: 'ιο', substitute: "νιτρο" }
     }
 
+    alkylSubstituentNames = {
+        1: "μεθυλο",
+        2: "αιθυλο",
+        3: "προπυλο",
+        4: "βουτυλο",
+        5: "πεντυλο",
+        6: "εξυλο",
+        7: "επτυλο",
+        8: "οκτυλο"
+    }
+
     nameMultiPrefix = ["", "δι", "τρι", "τετρα", "πεντα", "εξα", "επτα", "οκτα"]
 
     functionalGroupsOrder = ["carboxylicAcid", "cyanide", "aldehyde", "ketone", "alcohol", "amine", "nitro"]
@@ -1348,6 +1359,56 @@ function fValidateMainChain3D() {
     }
 }
 
+// ── fGetHydrocarbonSubstituentInfo ─────────────────────────────────────────
+// Detects carbon branches attached to the selected main chain and returns
+// their locant and alkyl-name metadata for simple branched hydrocarbons.
+
+function fGetHydrocarbonSubstituentInfo() {
+    if (!Array.isArray(mainChainAtomsList) || mainChainAtomsList.length === 0) return []
+
+    const mainSet = new Set(mainChainAtomsList.map((n) => n - 1))
+    const branchInfo = []
+    const visited = new Set()
+
+    for (let i = 0; i < atomsCount; i++) {
+        if (allAtomsTypeList[i] !== 'C' || mainSet.has(i) || visited.has(i)) continue
+
+        const neighbors = Array.isArray(atomConnectivityList[i]) ? atomConnectivityList[i] : []
+        const parent = neighbors.find((nb) => mainSet.has(nb))
+        if (parent === undefined) continue
+
+        const sideSet = new Set([i])
+        const stack = [i]
+        while (stack.length > 0) {
+            const node = stack.pop()
+            const ns = Array.isArray(atomConnectivityList[node]) ? atomConnectivityList[node] : []
+            for (let k = 0; k < ns.length; k++) {
+                const nb = ns[k]
+                if (nb === parent) continue
+                if (allAtomsTypeList[nb] !== 'C') continue
+                if (sideSet.has(nb)) continue
+                sideSet.add(nb)
+                stack.push(nb)
+            }
+        }
+
+        const locant = mainChainAtomsList.indexOf(parent + 1) + 1
+        const branchLength = sideSet.size
+
+        if (!Number.isNaN(locant)) {
+            branchInfo.push({
+                locant,
+                length: branchLength,
+                name: alkylSubstituentNames[Math.min(branchLength, 8)] || 'αλκυλο'
+            })
+        }
+
+        for (const node of sideSet) visited.add(node)
+    }
+
+    return branchInfo.sort((a, b) => a.locant - b.locant)
+}
+
 // ── fGuessName ────────────────────────────────────────────────────────────
 
 function fGuessName() {
@@ -1469,6 +1530,16 @@ function fGuessName() {
     comp0NumberList = [] // αριθμοί θέσεων πολλων υποκαταστατών για το comp0
     comp0TextList = [] // ονόματα πολλων υποκαταστατών για το comp0Text
     subPrefix = "" // συνθετικό υποκαταστατων
+
+    if (functionalGroupsList[0] === "hydrocarbon") {
+        const sideBranches = fGetHydrocarbonSubstituentInfo()
+        if (sideBranches.length > 0) {
+            const branch = sideBranches[0]
+            comp0 = branch.locant + "-"
+            comp0Text = branch.name
+        }
+    }
+
     if (functionalGroupsList.length < 2) { // αν περιέχει 1 ΧΟ
         comp4 = nameMainCompObj3[functionalGroupsList[0]].suffix // 3o Κυριο Συνθετικό - κατάληξη
         switch (functionalGroupsList[0]) { // ΟΜΟΛΟΓΕΣ ΣΕΙΡΕΣ

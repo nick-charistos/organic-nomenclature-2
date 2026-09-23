@@ -4,6 +4,17 @@ All notable changes to the Οργανική Ονοματολογία MuLERMoC.
 
 ---
 
+## [v39.1] — 2026-09-23
+
+**Branch highlighting and expanded-hydrogen selection**
+
+- Fixed the hydrocarbon branch highlight path so a selected alkyl side chain is highlighted correctly in both 2D and 3D views.
+- Generalized the side-branch detection so it still works when the same molecule also contains other functional groups.
+- Corrected the branch fallback so a carbon branch is treated as a valid highlight target even when no explicit FG entry matches the selected name component.
+- In expanded 2D mode, the parent carbon and its attached hydrogen label nodes are now highlighted together, preserving the expected visual selection behavior for methyl and other alkyl branches.
+
+---
+
 ## [v39] — 2026-09-23
 
 **Molecule grouping and navigation**

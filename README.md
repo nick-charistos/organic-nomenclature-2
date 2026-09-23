@@ -2,12 +2,22 @@
 
 A Greek-first interactive learning platform for organic nomenclature, built around molecular structure, naming logic, and multiple representations.
 
-**Current working baseline:** v39  
+**Current working baseline:** v39.1  
 **Main entry point:** [mulermoc-nom-39.html](mulermoc-nom-39.html)  
 **Core engine:** [js/mulermoc-nom-core-39.js](js/mulermoc-nom-core-39.js)  
 **Viewer layer:** [js/mulermoc-nom-molview-39.js](js/mulermoc-nom-molview-39.js)  
 **Teaching layer:** [js/mulermoc-nom-teaching-39.js](js/mulermoc-nom-teaching-39.js)  
 **Data set:** [js/jsme-nick-nomeclature-moc2-data_39.js](js/jsme-nick-nomeclature-moc2-data_39.js)
+
+---
+
+## Recent fix: branch highlighting
+
+The current working branch focuses on the selection logic for alkyl side chains and related expanded hydrogens.
+
+- Selected methyl and other hydrocarbon branches now highlight correctly in both the 2D JSME view and the 3D JSmol view.
+- The branch fallback works even when the molecule includes additional functional groups, instead of only pure hydrocarbon cases.
+- In expanded 2D mode, the carbon label and the attached hydrogen labels of the selected branch are color-synchronized so the branch remains visually coherent when highlighted.
 
 ---
 

@@ -1112,11 +1112,12 @@ header {
 
 .nameCompPlus {
   font-size: 1.5rem;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 4px;
+  margin-right: 4px;
   /* display: none; */
   color: var(--lightBlue);
 }
+
 
 .nameCompBox:hover {
   /* border-color: var(--guiColor); */
