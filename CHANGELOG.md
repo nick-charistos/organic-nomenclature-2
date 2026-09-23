@@ -4,6 +4,25 @@ All notable changes to the Οργανική Ονοματολογία MuLERMoC.
 
 ---
 
+## [v39] — 2026-09-23
+
+**Molecule grouping and navigation**
+
+- Homologous series are now the default molecule-menu grouping.
+- Rule-based grouping remains available as an alternate menu mode.
+- Molecules are classified through the existing structure-analysis pipeline,
+  without requiring new metadata in the data file.
+- Added special series classification for amino acids, hydroxy acids, keto
+  acids, hydroxy nitriles, and oxo carboxylic acids.
+- Homologous-series groups follow the declared `homologousSeriesLabels` order.
+- Molecules within each homologous-series group are ordered by increasing total
+  carbon count, with stable ordering for equal counts.
+- Switching grouping modes preserves the selected molecule and opens its new
+  group. With no selected molecule, all groups remain closed and no molecule is
+  selected.
+- Rule theory is hidden in homologous-series mode and shown in rule mode.
+- Methane is selected and its group opened on initial page load.
+
 ## [v37] — 2026-04-16
 
 **Major refactor:Algorithmic main chain (+ UI improvements)**
