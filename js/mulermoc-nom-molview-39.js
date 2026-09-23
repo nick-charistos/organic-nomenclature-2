@@ -1624,9 +1624,9 @@ function fApplyAtomColors2DToSVGLabels() {
 
     const tspanNodes = textEl.node.querySelectorAll("tspan");
     if (highlightedTextNodes.has(textEl.node)) {
-      textEl.attr({ fill: "#79dc6d" });
+      textEl.attr({ fill: "#000" });
       for (let t = 0; t < tspanNodes.length; t++) {
-        tspanNodes[t].setAttribute("fill", "#79dc6d");
+        tspanNodes[t].setAttribute("fill", "#000");
       }
       continue;
     }
@@ -3364,9 +3364,15 @@ function fHighlightFG(FGno) {
     return k !== "hydrocarbon";
   });
   const branch = fGetHydrocarbonBranchHighlight();
+  const allowBranchFallback = [
+    "compNumber1",
+    "compNumber2",
+    " compSecondSub1",
+    " compSecondSub2",
+  ].includes(nameAnalysisMode);
 
   if (fgKeys.length === 0) {
-    if (branch.atoms.length === 0) {
+    if (!allowBranchFallback || branch.atoms.length === 0) {
       return;
     }
 
@@ -3431,7 +3437,11 @@ function fHighlightFG(FGno) {
 
   // If the selected component is a carbon side branch rather than a real functional group,
   // highlight the branch atoms even when other functional groups are present.
-  if (branch.atoms.length > 0 && targetInstances.length === 0) {
+  if (
+    allowBranchFallback &&
+    branch.atoms.length > 0 &&
+    targetInstances.length === 0
+  ) {
     let highAtomsFGArg = "";
     for (let i = 0; i < branch.atoms.length; i++) {
       highAtomsFGArg += branch.atoms[i] + ",9";
@@ -3719,11 +3729,17 @@ function fHighlightFG3D(FGno) {
     return k !== "hydrocarbon";
   });
   const branch = fGetHydrocarbonBranchHighlight3D();
+  const allowBranchFallback = [
+    "compNumber1",
+    "compNumber2",
+    " compSecondSub1",
+    " compSecondSub2",
+  ].includes(nameAnalysisMode);
 
   let highAtoms3D = [];
 
   if (fgKeys.length === 0) {
-    if (branch.atoms.length === 0) {
+    if (!allowBranchFallback || branch.atoms.length === 0) {
       // pure hydrocarbon or no branch match — clear any existing highlight
       Jmol.script(
         jmolAppletNomeclature,
@@ -3787,7 +3803,11 @@ function fHighlightFG3D(FGno) {
 
     // If the selected component is a carbon side branch rather than a real functional group,
     // highlight the branch atoms even when other functional groups are present.
-    if (branch.atoms.length > 0 && targetInstances.length === 0) {
+    if (
+      allowBranchFallback &&
+      branch.atoms.length > 0 &&
+      targetInstances.length === 0
+    ) {
       highAtoms3D = branch.atoms;
       let highAtoms3DArg = "select";
       for (let i = 0; i < highAtoms3D.length; i++) {
