@@ -61,7 +61,7 @@ function fGetMoleculeClassification() {
     if (carbonCarbonDoubleBonds > 0 && carbonCarbonTripleBonds > 0) {
         bondSeries = "enynes"
     } else if (carbonCarbonDoubleBonds > 0) {
-        bondSeries = "alkenes"
+        bondSeries = carbonCarbonDoubleBonds > 1 ? "alkadienes" : "alkenes"
     } else if (carbonCarbonTripleBonds > 0) {
         bondSeries = "alkynes"
     }
@@ -84,6 +84,24 @@ function fGetMoleculeClassification() {
         gFunctionalGroupsOrder.includes(group),
     ) || functionalGroups.find((group) => ["halogen", "nitro", "ether", "ester"].includes(group)) || "hydrocarbon"
     const seriesKey = specialSeriesKey || (principalFunctionalGroup === "hydrocarbon" ? bondSeries : principalFunctionalGroup)
+    const chemicalClass = (() => {
+        if (["alkanes", "alkenes", "alkadienes", "alkynes", "enynes"].includes(seriesKey)) {
+            return "hydrocarbons"
+        }
+        if (seriesKey === "halogen") return "alkylHalides"
+        if (seriesKey === "alcohol") return "alcohols"
+        if (seriesKey === "ether") return "ethers"
+        if (["aldehyde", "ketone"].includes(seriesKey)) return "carbonylCompounds"
+        if (["carboxylicAcid", "oxoCarboxylicAcids", "ketoAcids"].includes(seriesKey)) {
+            return "carboxylicAcids"
+        }
+        if (["cyanide", "hydroxyNitriles"].includes(seriesKey)) return "nitriles"
+        if (seriesKey === "hydroxyAcids") return "hydroxyAcids"
+        if (seriesKey === "amine") return "amines"
+        if (seriesKey === "aminoAcids") return "aminoAcids"
+        if (seriesKey === "nitro") return "nitro"
+        return "unclassified"
+    })()
 
     return {
         taxonomy: molTaxonomy,
@@ -91,6 +109,7 @@ function fGetMoleculeClassification() {
         principalFunctionalGroup,
         bondSeries,
         seriesKey,
+        chemicalClass,
         functionalGroups,
     }
 }

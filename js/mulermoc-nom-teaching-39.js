@@ -17,11 +17,12 @@ let ruleExamples = {
   rule8: [48, 49, 50, 51, 52, 53, 54],
 };
 
-let moleculeGroupingMode = "series";
+let moleculeGroupingMode = "chemclass";
 
 const homologousSeriesLabels = {
   alkanes: "Αλκάνια",
   alkenes: "Αλκένια",
+  alkadienes: "Αλκαδιένια",
   alkynes: "Αλκίνια",
   enynes: "Αλκενίνια",
   halogen: "Αλκυλαλογονίδια",
@@ -39,6 +40,21 @@ const homologousSeriesLabels = {
   oxoCarboxylicAcids: "Οξοκαρβοξυλικά οξέα",
   hydroxyAcids: "Υδροξυοξέα",
   ketoAcids: "Κετοξέα",
+};
+
+const chemicalClassLabels = {
+  hydrocarbons: "Υδρογονάνθρακες",
+  alkylHalides: "Αλκυλαλογονίδια",
+  alcohols: "Αλκοόλες",
+  ethers: "Αιθέρες",
+  carbonylCompounds: "Καρβονυλικές Ενώσεις",
+  carboxylicAcids: "Καρβοξυλικά Οξέα",
+  nitriles: "Νιτρίλια",
+  hydroxyAcids: "Υδροξυοξέα",
+  amines: "Αμίνες",
+  aminoAcids: "Αμινοξέα",
+  nitro: "Νιτροενώσεις",
+  unclassified: "Μη ταξινομημένα",
 };
 
 // ── fInitTheory ───────────────────────────────────────────────────────────
@@ -295,11 +311,16 @@ function fInitNomeclatureMenu() {
   } else {
     names.forEach((name) => {
       const classification = nameExamples[name].classification;
-      const key = classification?.seriesKey || "unclassified";
+      const key =
+        moleculeGroupingMode === "chemclass"
+          ? classification?.chemicalClass || "unclassified"
+          : classification?.seriesKey || "unclassified";
       if (!groups[key]) groups[key] = [];
       groups[key].push(name);
       groupLabels[key] =
-        homologousSeriesLabels[key] ||
+        (moleculeGroupingMode === "chemclass"
+          ? chemicalClassLabels[key]
+          : homologousSeriesLabels[key]) ||
         classification?.taxonomy ||
         "Μη ταξινομημένα";
     });
@@ -330,19 +351,25 @@ function fInitNomeclatureMenu() {
   let myHTML = "<div class='panelTitle'> Παραδείγματα </div>";
   myHTML +=
     "<div class='groupingMode' role='group' aria-label='Ομαδοποίηση μορίων'>";
+    myHTML +=
+    "<div class='radioCheckContainer " +
+    (moleculeGroupingMode === "chemclass" ? "selectedRadio" : "unselectedRadio") +
+    "' data-grouping-mode='chemclass'>Χημική Τάξη<span class='radioCheck'></span></div>";
   myHTML +=
     "<div class='radioCheckContainer " +
     (moleculeGroupingMode === "series" ? "selectedRadio" : "unselectedRadio") +
-    "' data-grouping-mode='series'>Ομόλογες σειρές<span class='radioCheck'></span></div>";
+    "' data-grouping-mode='series'>Ομόλογες Σειρές<span class='radioCheck'></span></div>";
   myHTML +=
     "<div class='radioCheckContainer " +
     (moleculeGroupingMode === "rule" ? "selectedRadio" : "unselectedRadio") +
-    "' data-grouping-mode='rule'>Κανόνες<span class='radioCheck'></span></div>";
+    "' data-grouping-mode='rule'>Κανόνες Ονοματολογίας<span class='radioCheck'></span></div>";
   myHTML += "</div><div class='menuNomeclature2Container'>";
 
   const groupOrder =
     moleculeGroupingMode === "series"
       ? [...Object.keys(homologousSeriesLabels), "unclassified"]
+      : moleculeGroupingMode === "chemclass"
+        ? Object.keys(chemicalClassLabels)
       : Object.keys(groups);
 
   groupOrder.forEach((groupKey) => {
