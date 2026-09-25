@@ -91,7 +91,8 @@ function fGetMoleculeClassification() {
         if (seriesKey === "halogen") return "alkylHalides"
         if (seriesKey === "alcohol") return "alcohols"
         if (seriesKey === "ether") return "ethers"
-        if (["aldehyde", "ketone"].includes(seriesKey)) return "carbonylCompounds"
+        if (seriesKey === "aldehyde") return "aldehydes"
+        if (seriesKey === "ketone") return "ketones"
         if (["carboxylicAcid", "oxoCarboxylicAcids", "ketoAcids"].includes(seriesKey)) {
             return "carboxylicAcids"
         }

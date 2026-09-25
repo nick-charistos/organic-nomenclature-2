@@ -47,7 +47,9 @@ const chemicalClassLabels = {
   alkylHalides: "Αλκυλαλογονίδια",
   alcohols: "Αλκοόλες",
   ethers: "Αιθέρες",
-  carbonylCompounds: "Καρβονυλικές Ενώσεις",
+  aldehydes: "Αλδεΰδες",
+  ketones: "Κετόνες",
+  // carbonylCompounds: "Καρβονυλικές Ενώσεις",
   carboxylicAcids: "Καρβοξυλικά Οξέα",
   nitriles: "Νιτρίλια",
   hydroxyAcids: "Υδροξυοξέα",
@@ -149,27 +151,39 @@ function fInitTheory() {
     "              <div class=' ruleName ruleTableTitle'> 3<sup>o</sup> Συνθετικό </div>" +
     "        </div>" +
     "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'>Υδρογονάνθρακας</div>" +
+    "            <div class='ruleCase'>Υδρογονάνθρακες</div>" +
     "            <div class='ruleName'> -ιο </div>" +
     "        </div>" +
     "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Αλκοόλη (-ΟΗ) </div>" +
+    "            <div class='ruleCase'>Αλκυλαλογονίδια ( -Χ)</div>" +
+    "            <div class='ruleName'> -ιο </div>" +
+    "        </div>" +
+    "        <div class='HFlex ruleRow'>" +
+    "            <div class='ruleCase'>Νιτροενώσεις ( -NO<sub>2</sub>)</div>" +
+    "            <div class='ruleName'> -ιο </div>" +
+    "        </div>" +
+    "        <div class='HFlex ruleRow'>" +
+    "            <div class='ruleCase'> Αλκοόλες (-ΟΗ) </div>" +
     "            <div class='ruleName'> -όλη </div>" +
     "        </div>" +
     "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Αλδεϋδη (-CH=O) </div>" +
+    "            <div class='ruleCase'> Αλδεϋδες (-CH=O) </div>" +
     "            <div class='ruleName'> -άλη </div>" +
     "        </div>" +
     "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Κετόνη (C-C(=O)-C) </div>" +
+    "            <div class='ruleCase'> Κετόνες (C-C(=O)-C) </div>" +
     "            <div class='ruleName'> -όνη </div>" +
     "        </div>" +
     "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Καρβοξυλικό οξύ (-COOH)</div>" +
+    "            <div class='ruleCase'> Καρβοξυλικά οξέα (-COOH)</div>" +
     "            <div class='ruleName'> -ικό οξύ </div>" +
     "        </div>" +
     "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Νιτρίλιο (-CN) </div>" +
+    "            <div class='ruleCase'> Υδροξυοξέα ( -ΟΗ, -COOH)</div>" +
+    "            <div class='ruleName'> -ικό οξύ </div>" +
+    "        </div>" +
+    "        <div class='HFlex ruleRow'>" +
+    "            <div class='ruleCase'> Νιτρίλια (-CN) </div>" +
     "            <div class='ruleName'> -νιτρίλιο </div>" +
     "        </div>" +
     "    </div>";

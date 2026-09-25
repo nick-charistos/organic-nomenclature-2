@@ -2353,7 +2353,6 @@ function fFetchAndParse3D() {
       fParseSDF3D(text);
       fDetectMolType3D();
       fCalcMainChain3D();
-     
     })
     .catch(function (e) {
       console.warn("[3D parse failed]", url, e);
@@ -2547,15 +2546,17 @@ window.fSave2DPng = function () {
   // Fix another JSME highlight corruption variant seen in <text> tags:
   //   ... fill="#000" black"="" stroke-width="11px" ...
   // Remove orphan attributes ending as: <token>"=""
-  svgData = svgData.replace(/\s+[A-Za-z_:-][A-Za-z0-9_:\-\.]*"=""(?=\s|>)/g, "");
+  svgData = svgData.replace(
+    /\s+[A-Za-z_:-][A-Za-z0-9_:\-\.]*"=""(?=\s|>)/g,
+    "",
+  );
 
   let svgDebugFlags = {
     hasMalformedFillStroke: /fill="[^"]*?\s+stroke="\s*[^"]*?"\s*=\s*"/i.test(
       svgData,
     ),
-    hasCorruptStrokeWidth: /stroke-width="[^"]*(?:&gt;|&lt;|>|<|tspan|stroke=)/i.test(
-      svgData,
-    ),
+    hasCorruptStrokeWidth:
+      /stroke-width="[^"]*(?:&gt;|&lt;|>|<|tspan|stroke=)/i.test(svgData),
     hasEncodedTspan: /&lt;\/?tspan/i.test(svgData),
     hasOrphanQuotedAttribute:
       /\s+[A-Za-z_:-][A-Za-z0-9_:\-\.]*"=""(?=\s|>)/.test(svgData),
@@ -2782,7 +2783,6 @@ function fClearHighlights() {
 // ── fExplainNameComp ──────────────────────────────────────────────────────
 
 function fExplainNameComp() {
- 
   switch (nameAnalysisMode) {
     case "none":
       myText =
@@ -3090,7 +3090,13 @@ function fExplainNameComp() {
       fShowNumbering(0);
       break;
     case "compSuffix":
-      myText = "Ανήκει στη χημική τάξη " + molTaxonomy;
+      // myText = "Ανήκει στη χημική τάξη " + molTaxonomy;
+      const chemicalClass =
+        nameExamples[selectedMol]?.classification?.chemicalClass;
+
+      myText =
+        "Ανήκει στη χημική τάξη " +
+        (chemicalClassLabels[chemicalClass] || molTaxonomy);
       nStyle = "";
       myClass = "";
 
@@ -3109,7 +3115,7 @@ function fExplainNameComp() {
           break;
         case "Καροξυλικά οξέα":
           ruleTableHighlight = 5;
-         
+
           break;
         case "Νιτρίλια":
           ruleTableHighlight = 6;
@@ -3814,7 +3820,6 @@ function fHighlightFG3D(FGno) {
     );
     JmolSelection = highAtoms3DArg;
   } else {
-   
     // Build flat [fgKey, heteroEl] instances — one per distinct element type per FG key.
     let fgInstances = [];
     for (let k = 0; k < fgKeys.length; k++) {
@@ -3823,7 +3828,7 @@ function fHighlightFG3D(FGno) {
         fgInstances.push([fgKeys[k], heteroEls[e]]);
       }
     }
-   
+
     // Sort: lower-priority FGs first, matching functionalGroupsList order (FGno=1 = first prefix).
     const fgPriorityOrder3D = [
       "carboxylicAcid",
@@ -4060,8 +4065,12 @@ function fHighlightFG3D(FGno) {
     }
 
     // Merged into one script (vs. relying on the earlier fClearHighlights() call) to avoid a Jmol script-queue race.
-    Jmol.script( jmolAppletNomeclature,"select all; selectionHalos off; color atoms none; color bonds none;" +
-        highAtoms3DArg +";color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d];", );
+    Jmol.script(
+      jmolAppletNomeclature,
+      "select all; selectionHalos off; color atoms none; color bonds none;" +
+        highAtoms3DArg +
+        ";color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d];",
+    );
     JmolSelection = highAtoms3DArg;
   }
 }
@@ -4627,4 +4636,3 @@ function fResizeViewers() {
 //     if (_jmol_isReady_orig) _jmol_isReady_orig(applet)
 //     setTimeout(fResizeViewers, 300)
 // }
-
