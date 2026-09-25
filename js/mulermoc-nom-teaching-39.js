@@ -182,6 +182,10 @@ function fInitTheory() {
     "            <div class='ruleCase'> Υδροξυοξέα ( -ΟΗ, -COOH)</div>" +
     "            <div class='ruleName'> -ικό οξύ </div>" +
     "        </div>" +
+      "        <div class='HFlex ruleRow'>" +
+    "            <div class='ruleCase'> Αμινοξέα ( -ΝΗ<sub>2</sub>, -COOH)</div>" +
+    "            <div class='ruleName'> -ικό οξύ </div>" +
+    "        </div>" +
     "        <div class='HFlex ruleRow'>" +
     "            <div class='ruleCase'> Νιτρίλια (-CN) </div>" +
     "            <div class='ruleName'> -νιτρίλιο </div>" +

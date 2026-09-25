@@ -3094,31 +3094,41 @@ function fExplainNameComp() {
       const chemicalClass =
         nameExamples[selectedMol]?.classification?.chemicalClass;
 
-      myText =
-        "Ανήκει στη χημική τάξη " +
-        (chemicalClassLabels[chemicalClass] || molTaxonomy);
+      const myChemClass = chemicalClassLabels[chemicalClass] || molTaxonomy;
+      myText = "Ανήκει στη χημική τάξη " + myChemClass;
       nStyle = "";
       myClass = "";
 
-      switch (molTaxonomy) {
+      switch (myChemClass) {
         case "Υδρογονάνθρακες":
           ruleTableHighlight = 1;
           break;
-        case "Αλκοόλες":
+        case "Αλκυλαλογονίδια":
           ruleTableHighlight = 2;
           break;
-        case "Αλδεϋδες":
+        case "Νιτροενώσεις":
           ruleTableHighlight = 3;
           break;
-        case "Κετόνες":
+        case "Αλκοόλες":
           ruleTableHighlight = 4;
           break;
-        case "Καροξυλικά οξέα":
+        case "Αλδεΰδες":
           ruleTableHighlight = 5;
-
+          break;
+        case "Κετόνες":
+          ruleTableHighlight = 6;
+          break;
+        case "Καρβοξυλικά Οξέα":
+          ruleTableHighlight = 7;
+          break;
+        case "Υδροξυοξέα":
+          ruleTableHighlight = 8;
+          break;
+        case "Αμινοξέα":
+          ruleTableHighlight = 9;
           break;
         case "Νιτρίλια":
-          ruleTableHighlight = 6;
+          ruleTableHighlight = 10;
           break;
       }
       numberingFlag = false;
