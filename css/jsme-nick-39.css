@@ -1656,6 +1656,7 @@ max-height: 596px;
   width: 100% !important;
   /* max-width: 450px; */
   height: auto;
+  min-height: 244px;
 }
 
 /* ── "Rotate device" prompt ──────────────────────────────────────────── */

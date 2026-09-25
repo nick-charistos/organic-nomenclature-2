@@ -152,17 +152,17 @@ function jsmeOnLoad() {
   // carbonHydrogens = Array(jsmeNomeclatureAppletORGNL.totalNumberOfAtoms())
 
   // Select methane on startup and open its group.
-  let $startupMol = $("#methane");
-  if (!$startupMol.length) {
-    $startupMol = $(".menuLi").first();
-  }
-  if ($startupMol.length) {
-    $startupMol
-      .closest(".exmplContainer")
-      .prev(".crossMenuLi")
-      .trigger("click");
-    $startupMol.trigger("click");
-  }
+  // let $startupMol = $("#methane");
+  // if (!$startupMol.length) {
+  //   $startupMol = $(".menuLi").first();
+  // }
+  // if ($startupMol.length) {
+  //   $startupMol
+  //     .closest(".exmplContainer")
+  //     .prev(".crossMenuLi")
+  //     .trigger("click");
+  //   $startupMol.trigger("click");
+  // }
 }
 
 function fClassifyAllMolecules() {
