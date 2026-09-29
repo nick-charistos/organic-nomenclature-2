@@ -36,6 +36,7 @@ if (typeof window.nameCrossFlag === "undefined") window.nameCrossFlag = false;
 var nameBoxFlag = window.nameBoxFlag;
 var nameCrossFlag = window.nameCrossFlag;
 let mainChainMode = "algorithmic"; // 'data' | 'algorithmic'
+let etherNamingMode = "iupac"; // 'iupac' | 'common' — ether naming variant toggle
 let compactNumberingLabelMap = {};
 const compactReverseOffsetScale = {
   HOOC: 0.8,
@@ -277,13 +278,24 @@ function fToggleNameSettings() {
 
 function fInitData() {
   for (let prop in nameExamples) {
-    my2D = eval(prop + "_2D");
-    my2D_E = eval(prop + "_2D_E");
+    try {
+      my2D = eval(prop + "_2D");
+    } catch (e) {
+      my2D = null;
+    }
+    try {
+      my2D_E = eval(prop + "_2D_E");
+    } catch (e) {
+      my2D_E = null;
+    }
     try {
       my2D_D = eval(prop + "_diagr2D");
     } catch (e) {
       my2D_D = null;
     }
+    if (typeof my2D === "undefined") my2D = null;
+    if (typeof my2D_E === "undefined") my2D_E = null;
+    if (typeof my2D_D === "undefined") my2D_D = null;
 
     nameExamples[prop].structure2D = my2D;
     nameExamples[prop].structure2D_E = my2D_E;
@@ -353,13 +365,51 @@ function fUpdateChainModeButton() {
 }
 
 // ── fUpdateDiagr2DButton ──────────────────────────────────────────────────
+// Generalised: disables any 2D mode radio whose representation is missing
+// (condensed=eq(0), expanded=eq(1), skeletal/diagramatic=eq(2)) and falls
+// back to the first available representation (condensed > expanded > skeletal).
 
 function fUpdateDiagr2DButton() {
-  const $diagrBtn = $("#radio2DMode .radioCheckContainer").eq(2);
+  const $modeBtns = $("#radio2DMode .radioCheckContainer");
+  const $condBtn = $modeBtns.eq(0);
+  const $expBtn = $modeBtns.eq(1);
+  const $diagrBtn = $modeBtns.eq(2);
   const $zigzagCheck = $("#zigzagCheck");
-  const hasDiagr2D = !selectedMol || !!nameExamples[selectedMol]?.structure2D_D;
+  const ex = selectedMol ? nameExamples[selectedMol] : null;
+  const hasCond2D = !selectedMol || !!ex?.structure2D;
+  const hasExp2D = !selectedMol || !!ex?.structure2D_E;
+  const hasDiagr2D = !selectedMol || !!ex?.structure2D_D;
+  $condBtn.toggleClass("disabledRadio", !hasCond2D);
+  $expBtn.toggleClass("disabledRadio", !hasExp2D);
+  $diagrBtn.toggleClass("disabledRadio", !hasDiagr2D);
+
+  const modeAvailable =
+    mode2D === "condensed"
+      ? hasCond2D
+      : mode2D === "expanded"
+        ? hasExp2D
+        : hasDiagr2D; // diagramatic + condensedZigZag share structure2D_D
+  if (selectedMol && !modeAvailable) {
+    if (hasCond2D) {
+      mode2D = "condensed";
+      modeSuffix = "";
+    } else if (hasExp2D) {
+      mode2D = "expanded";
+      modeSuffix = "_E";
+    } else if (hasDiagr2D) {
+      mode2D = "diagramatic";
+      modeSuffix = "_diagr2D";
+    }
+    const fallbackIdx =
+      mode2D === "expanded" ? 1 : mode2D === "condensed" ? 0 : 2;
+    $modeBtns.removeClass("selectedRadio").addClass("unselectedRadio");
+    $modeBtns
+      .eq(fallbackIdx)
+      .removeClass("unselectedRadio")
+      .addClass("selectedRadio");
+  }
+
   if (hasDiagr2D) {
-    $diagrBtn.removeClass("disabledRadio");
     if (mode2D === "diagramatic" || mode2D === "condensedZigZag") {
       // $zigzagCheck.show();
       $zigzagCheck.removeClass("disabledCheck");
@@ -368,22 +418,13 @@ function fUpdateDiagr2DButton() {
       } else {
         $zigzagCheck.removeClass("selectedCheck").addClass("unselectedCheck");
       }
+    } else {
+      $zigzagCheck.addClass("disabledCheck");
+      $zigzagCheck.removeClass("selectedCheck").addClass("unselectedCheck");
     }
   } else {
-    $diagrBtn.addClass("disabledRadio");
     $zigzagCheck.addClass("disabledCheck");
     $zigzagCheck.removeClass("selectedCheck").addClass("unselectedCheck");
-    if (mode2D === "diagramatic" || mode2D === "condensedZigZag") {
-      mode2D = "condensed";
-      modeSuffix = "";
-      $("#radio2DMode .radioCheckContainer")
-        .removeClass("selectedRadio")
-        .addClass("unselectedRadio");
-      $("#radio2DMode .radioCheckContainer")
-        .eq(0)
-        .removeClass("unselectedRadio")
-        .addClass("selectedRadio");
-    }
   }
 }
 
@@ -468,6 +509,37 @@ function fLoadMol2D() {
     return;
   }
 
+  // Fall back to the first available representation if the requested
+  // mode has no data (condensed > expanded > skeletal). Keeps globals
+  // and radios in sync with what is actually loaded.
+  const modeHasData =
+    mode2D === "condensed"
+      ? !!selectedExample.structure2D
+      : mode2D === "expanded"
+        ? !!selectedExample.structure2D_E
+        : !!selectedExample.structure2D_D;
+  if (!modeHasData) {
+    if (selectedExample.structure2D) {
+      mode2D = "condensed";
+      modeSuffix = "";
+    } else if (selectedExample.structure2D_E) {
+      mode2D = "expanded";
+      modeSuffix = "_E";
+    } else if (selectedExample.structure2D_D) {
+      mode2D = "diagramatic";
+      modeSuffix = "_diagr2D";
+    }
+    const fallbackIdx =
+      mode2D === "expanded" ? 1 : mode2D === "condensed" ? 0 : 2;
+    $("#radio2DMode .radioCheckContainer")
+      .removeClass("selectedRadio")
+      .addClass("unselectedRadio");
+    $("#radio2DMode .radioCheckContainer")
+      .eq(fallbackIdx)
+      .removeClass("unselectedRadio")
+      .addClass("selectedRadio");
+  }
+
   let rawMol2D;
 
   switch (mode2D) {
@@ -494,6 +566,10 @@ function fLoadMol2D() {
 
   if (!myMol2D) {
     jsmeNomeclatureApplet.clear();
+    if (jsmeNomeclatureAppletORGNL) jsmeNomeclatureAppletORGNL.clear();
+    myMol2D = null;
+    fUpdateSVG();
+    return;
   }
 
   jsmeNomeclatureApplet.readMolFile(myMol2D);
@@ -2648,6 +2724,20 @@ function fShowNameAnalysis() {
   const nameSettingClass = nameSettingsFlag ? "open" : "";
   const namesSettingsBtnActiveClass = nameSettingsFlag ? "active" : "";
 
+  // Ether IUPAC/COMMON toggle (ethers only, name panel).
+  const _isEtherNaming =
+    !!selectedMol &&
+    nameExamples[selectedMol]?.classification?.chemicalClass === "ethers";
+  const _iupacCls = etherNamingMode === "iupac" ? "selectedRadio" : "unselectedRadio";
+  const _commonCls = etherNamingMode === "common" ? "selectedRadio" : "unselectedRadio";
+  const etherNamingToggle = _isEtherNaming
+    ? "<div id='radioEtherNaming' class='HFlex' style='align-items:center;gap:0;margin-right:8px'>" +
+      "<span class='radioLabel'>Ονομασία:</span>" +
+      "<div class='radioCheckContainer etherNamingRadio " + _iupacCls + "' data-naming-mode='iupac'>IUPAC<span class='radioCheck'></span></div>" +
+      "<div class='radioCheckContainer etherNamingRadio " + _commonCls + "' data-naming-mode='common'>Κοινή<span class='radioCheck'></span></div>" +
+      "</div>"
+    : "";
+
   nameCompContainer =
     "<div class='panelTitle'><span>Επεξήγηση ονομασίας</span><div id='nameSettingsBtnDiv'><button  id='nameSettingsBtn'  class='settingsBtn " +
     namesSettingsBtnActiveClass +
@@ -2656,7 +2746,7 @@ function fShowNameAnalysis() {
     " </button></div></div>" +
     "<div id='nameSettingsPanel' class='" +
     nameSettingClass +
-    "'><button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" +
+    "'>" + etherNamingToggle + "<button id='narrateAnalysisToggle' class='narrateBtn' data-tooltip='" +
     toggleTitle +
     "'>" +
     toggleIcon +
@@ -2673,6 +2763,64 @@ function fShowNameAnalysis() {
     "</button></div>" +
     "<div class='HFlex nameContainer' style='justify-content:center;'><div class='nameCompContainer'>";
 
+  // COMMON ether naming: render alkyl boxes + αιθέρας instead of IUPAC slots.
+  const _commonParts = _isEtherNaming && etherNamingMode === "common" ? fGetEtherCommonParts() : null;
+  if (_commonParts && _commonParts.parts) {
+    const _labels = _commonParts.parts.map(function (p) { return p.label; });
+    for (let ci = 0; ci < _labels.length; ci++) {
+      currComp = _labels[ci];
+      if (currComp == "" || currComp == undefined) {
+        continue;
+      }
+      let displayComp = currComp;
+      for (let n = ci + 1; n < _labels.length; n++) {
+        const nextComp = _labels[n];
+        if (!nextComp) continue;
+        const lastCh = currComp[currComp.length - 1];
+        const firstCh = nextComp[0];
+        const _isGkConsonant = (ch) =>
+          /[\u0370-\u03ff\u1f00-\u1fff]/u.test(ch) &&
+          !new Set([
+            "α",
+            "ε",
+            "η",
+            "ι",
+            "ο",
+            "υ",
+            "ω",
+            "ά",
+            "έ",
+            "ή",
+            "ί",
+            "ό",
+            "ύ",
+            "ώ",
+          ]).has(ch);
+        if (_isGkConsonant(lastCh) && _isGkConsonant(firstCh)) {
+          const connector =
+            (lastCh === "π" || lastCh === "τ") && firstCh === "δ" ? "α" : "ο";
+          displayComp =
+            currComp + "<span class='euphonyLetter'>" + connector + "</span>";
+        }
+        break;
+      }
+
+      compBox =
+        "<div class='" +
+        boxClass +
+        " nameCompBox'" +
+        " " +
+        "id='comp" +
+        (10 + ci) +
+        "' >" +
+        displayComp +
+        "</div>";
+      if (ci < _labels.length - 1) {
+        compBox += "<div class='" + crossClass + "' > + </div>";
+      }
+      nameCompContainer += compBox;
+    }
+  } else {
   // Build the name component boxes with Greek euphony applied, and + signs in between
 
   for (i = 0; i < compCount; i++) {
@@ -2730,6 +2878,7 @@ function fShowNameAnalysis() {
     }
     nameCompContainer += compBox;
   }
+  } // end IUPAC boxes (else of COMMON render)
 
   // nameCompContainer += "</div><button id='readNameBtn' class='readNameBtn' data-tooltip='Ανάγνωση ονόματος'" + playDisabled + ">" + svgPlay + "</button></div>"
 
@@ -2748,6 +2897,9 @@ function fShowNameAnalysis() {
       compEndNumber: "comp7",
       compBondType2: "comp8",
       compSuffix: "comp9",
+      commonAlkyl1: "comp10",
+      commonAlkyl2: "comp11",
+      commonEther: "comp12",
     };
     const _selId = _modeToCompId[nameAnalysisMode];
     if (_selId && $("#" + _selId).length) {
@@ -2777,6 +2929,8 @@ function fClearHighlights() {
   $("#ruleTheoryContainer").hide();
   $("#nameAnalysisExplain").html("");
   ruleTableHighlight = 0;
+  numberingAtomOverride = null;
+  numberingAtomOverride3D = null;
   JmolSelection = "select none;";
 }
 
@@ -2791,6 +2945,7 @@ const secondaryGroupNouns = {
   cyanide: "Κυανομάδα",
   amine: "Αμινοομάδα",
   nitro: "Νιτροομάδα",
+  ether: "Αλκοξυομάδα",
 };
 
 const secondaryHalogenNouns = {
@@ -2808,6 +2963,7 @@ const secondaryGroupPluralNouns = {
   cyanide: "Κυανομάδες",
   amine: "Αμινοομάδες",
   nitro: "Νιτροομάδες",
+  ether: "Αλκοξυομάδες",
 };
 
 const alkylBranchNouns = {
@@ -2843,6 +2999,7 @@ function fGetFGInstance(FGno) {
     "alcohol",
     "amine",
     "nitro",
+    "ether",
   ];
   const halogenOrder2D = Object.keys(nameMainCompObj3.halogen.substitute);
   fgInstances.sort(function (a, b) {
@@ -2880,6 +3037,7 @@ function fGetPrincipalGroupNounSuffix(usePlural) {
     "alcohol",
     "amine",
     "nitro",
+    "ether",
   ];
   const fgKeys = Object.keys(functionalGroupObj).filter(function (k) {
     return k !== "hydrocarbon" && k !== "halogen";
@@ -3068,6 +3226,22 @@ function fExplainNameComp() {
       numberingFlag = false;
       nStyle = "";
       myClass = "";
+      if (
+        functionalGroupsList.length === 1 &&
+        functionalGroupsList[0] === "ether"
+      ) {
+        // IUPAC alkoxy prefix (e.g. μεθοξυ): highlight O + alkoxy fragment,
+        // number the alkoxy chain only.
+        myText =
+          " Δηλώνει το όνομα της αλκοξυομάδας" +
+          fGetSecondaryGroupNounSuffix(1) +
+          ".";
+        fHighlightFG(1);
+        fHighlightFG3D(1);
+        numberingFlag = true;
+        fShowNumbering(0, fGetEtherAlkoxyChain(), fGetEtherAlkoxyChain3D());
+        break;
+      }
       if (nameComponentsList[3] !== null && nameComponentsList[3].length > 0) {
         myText =
           " Δηλώνει το όνομα  της πρώτης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας" +
@@ -3276,6 +3450,9 @@ function fExplainNameComp() {
 
       const myChemClass = chemicalClassLabels[chemicalClass] || molTaxonomy;
       myText = "Ανήκει στη χημική τάξη " + myChemClass;
+      if (typeof currentMolCommonName !== "undefined" && currentMolCommonName) {
+        myText += ". Κοινή ονομασία: " + currentMolCommonName;
+      }
       nStyle = "";
       myClass = "";
 
@@ -3310,6 +3487,9 @@ function fExplainNameComp() {
         case "Νιτρίλια":
           ruleTableHighlight = 10;
           break;
+        case "Αιθέρες":
+          ruleTableHighlight = 11;
+          break;
       }
       numberingFlag = false;
       if (molTaxonomy != "Υδρογονάνθρακες") {
@@ -3321,6 +3501,50 @@ function fExplainNameComp() {
           fHighlightFG3D();
         }
       }
+      $("#ruleTheoryContainer").show();
+      break;
+    case "commonAlkyl1":
+    case "commonAlkyl2": {
+      // COMMON alkyl click: highlight that alkyl chain only (no O), number it.
+      nStyle = "";
+      myClass = "";
+      const _parts = fGetEtherCommonParts();
+      const _idx = nameAnalysisMode === "commonAlkyl1" ? 0 : 1;
+      const _part = _parts && _parts.parts ? _parts.parts[_idx] : null;
+      if (_parts && _parts.symmetric) {
+        myText =
+          _idx === 0
+            ? "Δηλώνει το πρόθεμα δι- του συμμετρικού αιθέρα."
+            : "Δηλώνει το αλκύλιο του συμμετρικού αιθέρα.";
+      } else {
+        myText =
+          _idx === 0
+            ? "Δηλώνει το πρώτο αλφαβητικά αλκύλιο του αιθέρα."
+            : "Δηλώνει το δεύτερο αλφαβητικά αλκύλιο του αιθέρα.";
+      }
+      const _chain = _part && Array.isArray(_part.chain) ? _part.chain : null;
+      const _chain3D = _part && Array.isArray(_part.chain3D) ? _part.chain3D : null;
+      if (_chain && _chain.length > 0) {
+        fHighlightAtomChain(_chain);
+        fHighlightAtomChain3D(_chain3D);
+      }
+      numberingFlag = true;
+      fShowNumbering(
+        0,
+        _part ? _part.numberChain : null,
+        _part ? _part.numberChain3D : null,
+      );
+      break;
+    }
+    case "commonEther":
+      // COMMON αιθέρας click: highlight C-O-C, no numbering.
+      nStyle = "";
+      myClass = "";
+      myText = "Ανήκει στη χημική τάξη Αιθέρες (κοινή ονομασία).";
+      ruleTableHighlight = 11;
+      fHighlightFG();
+      fHighlightFG3D();
+      numberingFlag = false;
       $("#ruleTheoryContainer").show();
       break;
     default:
@@ -3376,6 +3600,17 @@ function fShowRule(theRule) {
       ruleText = namingRules.rule3;
       ruleTable = namingRules.table3;
       ruleTitle = "Κανόνας συνθετικού χημικής τάξης";
+      break;
+    case "commonEther":
+      ruleText = namingRules.rule3;
+      ruleTable = namingRules.table3;
+      ruleTitle = "Κανόνας συνθετικού χημικής τάξης";
+      break;
+    case "commonAlkyl1":
+    case "commonAlkyl2":
+      ruleText = "";
+      ruleTable = "";
+      ruleTitle = "";
       break;
     case "none":
       ruleText = "";
@@ -3617,6 +3852,176 @@ function fGetHydrocarbonBranchHighlight3D() {
   return { atoms: [...atoms], bonds: [...bonds] };
 }
 
+// ── Ether helpers ─────────────────────────────────────────────────────────
+// Alkoxy-side carbon (0-based) = ether-O neighbour NOT on the parent chain.
+function fGetEtherAlkoxyC() {
+  if (!functionalGroupObj || !functionalGroupObj.ether || !functionalGroupObj.ether.O) return null;
+  const oIdx = functionalGroupObj.ether.O[0];
+  if (oIdx === undefined || !Array.isArray(atomConnectivityList[oIdx])) return null;
+  const nbrs = atomConnectivityList[oIdx].filter(function (n) {
+    return allAtomsTypeList[n] === "C";
+  });
+  if (nbrs.length === 0) return null;
+  if (Array.isArray(mainChainAtomsList)) {
+    for (let i = 0; i < nbrs.length; i++) {
+      if (mainChainAtomsList.indexOf(nbrs[i] + 1) < 0) return nbrs[i];
+    }
+  }
+  if (typeof etherInfo !== "undefined" && etherInfo) return etherInfo.alkoxyAttachC;
+  return nbrs.length > 1 ? nbrs[1] : nbrs[0];
+}
+
+// Ordered alkoxy chain (1-based JSME numbers), attachment C first.
+function fGetEtherAlkoxyChain() {
+  if (typeof etherInfo !== "undefined" && etherInfo && Array.isArray(etherInfo.alkoxyFrag)) {
+    const att = etherInfo.alkoxyAttachC;
+    const rest = etherInfo.alkoxyFrag.filter(function (c) { return c !== att; });
+    return [att + 1].concat(rest.map(function (c) { return c + 1; }));
+  }
+  const alk = fGetEtherAlkoxyC();
+  return alk !== null && alk !== undefined ? [alk + 1] : null;
+}
+
+// 3D mirror: alkoxy-side carbon (0-based SDF index).
+function fGetEtherAlkoxyC3D() {
+  if (!functionalGroupObj3D || !functionalGroupObj3D.ether || !functionalGroupObj3D.ether.O) return null;
+  const oIdx = functionalGroupObj3D.ether.O[0];
+  if (oIdx === undefined || !Array.isArray(atomConnectivityList3D[oIdx])) return null;
+  const nbrs = atomConnectivityList3D[oIdx].filter(function (n) {
+    return allAtomsTypeList3D[n] === "C";
+  });
+  if (nbrs.length === 0) return null;
+  if (Array.isArray(mainChainAtoms3D)) {
+    for (let i = 0; i < nbrs.length; i++) {
+      if (mainChainAtoms3D.indexOf(nbrs[i] + 1) < 0) return nbrs[i];
+    }
+  }
+  return nbrs.length > 1 ? nbrs[1] : nbrs[0];
+}
+
+// 3D mirror: ordered alkoxy chain (1-based SDF numbers), attachment C first.
+function fGetEtherAlkoxyChain3D() {
+  if (!functionalGroupObj3D || !functionalGroupObj3D.ether || !functionalGroupObj3D.ether.O) return null;
+  const oIdx = functionalGroupObj3D.ether.O[0];
+  if (oIdx === undefined || !Array.isArray(atomConnectivityList3D[oIdx])) return null;
+  const att = fGetEtherAlkoxyC3D();
+  if (att === null || att === undefined) return null;
+  // BFS over 3D carbon-only graph from attachment
+  const seen = {};
+  const q = [att];
+  seen[att] = true;
+  while (q.length > 0) {
+    const n = q.pop();
+    const nbs = atomConnectivityList3D[n] || [];
+    for (let i = 0; i < nbs.length; i++) {
+      if (allAtomsTypeList3D[nbs[i]] === "C" && !seen[nbs[i]]) {
+        seen[nbs[i]] = true;
+        q.push(nbs[i]);
+      }
+    }
+  }
+  const rest = Object.keys(seen).map(function (x) { return parseInt(x); }).filter(function (c) { return c !== att; });
+  return [att + 1].concat(rest.map(function (c) { return c + 1; }));
+}
+
+// COMMON ether name parts: [{label, chain, chain3D, kind}] + suffix "αιθέρας".
+// kind: "alkyl" (chain only, no O) or "ether" (C-O-C, no numbering).
+// chain/chain3D: 1-based atom lists for highlight + numbering.
+function fGetEtherCommonParts() {
+  if (!selectedMol || !nameExamples[selectedMol]) return null;
+  if (nameExamples[selectedMol].classification?.chemicalClass !== "ethers") return null;
+  const parentLen = Array.isArray(mainChainAtomsList) ? mainChainAtomsList.length : 0;
+  const alkLen = (typeof etherInfo !== "undefined" && etherInfo && etherInfo.alkoxyLen) || 1;
+  const stem = function (n) {
+    const full = (typeof alkylSubstituentNames !== "undefined" && alkylSubstituentNames[n]) || (nameMainCompList1[n - 1] || "");
+    return String(full).replace(/ο$/, "");
+  };
+  const parentChain = Array.isArray(mainChainAtomsList) ? mainChainAtomsList.slice() : [];
+  const alkoxyChain = fGetEtherAlkoxyChain() || [];
+  const parentChain3D = Array.isArray(mainChainAtoms3D) ? mainChainAtoms3D.slice() : [];
+  const alkoxyChain3D = fGetEtherAlkoxyChain3D() || [];
+  const symmetric = (typeof etherInfo !== "undefined" && etherInfo) ? !!etherInfo.symmetric : parentLen === alkLen;
+  if (symmetric) {
+    const alkyl = stem(alkLen);
+    const both = parentChain.concat(alkoxyChain.filter(function (a) { return parentChain.indexOf(a) < 0; }));
+    const both3D = parentChain3D.concat(alkoxyChain3D.filter(function (a) { return parentChain3D.indexOf(a) < 0; }));
+    return {
+      symmetric: true,
+      parts: [
+        { label: nameMultiPrefix[1] || "δι", chain: both, chain3D: both3D, kind: "alkyl", numberChain: parentChain, numberChain3D: parentChain3D },
+        { label: alkyl, chain: both, chain3D: both3D, kind: "alkyl", numberChain: parentChain, numberChain3D: parentChain3D },
+        { label: "αιθέρας", chain: "ether", chain3D: "ether", kind: "ether", numberChain: null, numberChain3D: null },
+      ],
+    };
+  }
+  const sP = stem(parentLen), sA = stem(alkLen);
+  const mk = function (label, len) {
+    const isParent = len === parentLen && (parentLen !== alkLen || label === sP);
+    return {
+      label: label,
+      chain: isParent ? parentChain : alkoxyChain,
+      chain3D: isParent ? parentChain3D : alkoxyChain3D,
+      kind: "alkyl",
+      numberChain: isParent ? parentChain : alkoxyChain,
+      numberChain3D: isParent ? parentChain3D : alkoxyChain3D,
+    };
+  };
+  const pair = [mk(sP, parentLen), mk(sA, alkLen)].sort(function (a, b) {
+    return a.label < b.label ? -1 : a.label > b.label ? 1 : 0;
+  });
+  pair.push({ label: "αιθέρας", chain: "ether", chain3D: "ether", kind: "ether", numberChain: null, numberChain3D: null });
+  return { symmetric: false, parts: pair };
+}
+
+// Sync IUPAC/COMMON toggle visuals (radios are rebuilt in fShowNameAnalysis).
+function fUpdateEtherNamingButton() {
+  const $btns = $("#radioEtherNaming .etherNamingRadio");
+  if ($btns.length === 0) return;
+  $btns.removeClass("selectedRadio").addClass("unselectedRadio");
+  $btns
+    .filter("[data-naming-mode='" + etherNamingMode + "']")
+    .removeClass("unselectedRadio")
+    .addClass("selectedRadio");
+}
+
+// Chain-only highlight (no heteroatom): atoms + bonds with both ends in the set.
+function fHighlightAtomChain(chainAtoms) {
+  if (!Array.isArray(chainAtoms) || chainAtoms.length === 0) return;
+  let atomArg = "";
+  for (let i = 0; i < chainAtoms.length; i++) {
+    atomArg += chainAtoms[i] + ",9";
+    if (i < chainAtoms.length - 1) atomArg += ",";
+  }
+  jsmeNomeclatureApplet.setAtomBackgroundColors(0, atomArg);
+  let bondArg = "";
+  let first = true;
+  for (let b = 0; b < bondList.length; b++) {
+    if (!bondList[b]) continue;
+    if (chainAtoms.includes(bondList[b][0]) && chainAtoms.includes(bondList[b][1])) {
+      bondArg += (first ? "" : ",") + (b + 1) + ",9";
+      first = false;
+    }
+  }
+  if (bondArg) jsmeNomeclatureApplet.setBondBackgroundColors(0, bondArg);
+  fUpdateSVG();
+}
+
+function fHighlightAtomChain3D(chainAtoms3D) {
+  if (!Array.isArray(chainAtoms3D) || chainAtoms3D.length === 0) return;
+  let arg = "select";
+  for (let i = 0; i < chainAtoms3D.length; i++) {
+    arg += " atomno=" + chainAtoms3D[i];
+    if (i < chainAtoms3D.length - 1) arg += ",";
+  }
+  arg += "; select connected(selected) and _H or selected;";
+  Jmol.script(
+    jmolAppletNomeclature,
+    "select all; selectionHalos off; color atoms none; color bonds none;" + arg +
+      ";color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d];",
+  );
+  JmolSelection = arg;
+}
+
 // ── fHighlightFG ──────────────────────────────────────────────────────────
 
 function fHighlightFG(FGno) {
@@ -3683,6 +4088,7 @@ function fHighlightFG(FGno) {
     "alcohol",
     "amine",
     "nitro",
+    "ether",
   ];
   const halogenOrder2D = Object.keys(nameMainCompObj3.halogen.substitute);
   fgInstances.sort(function (a, b) {
@@ -3923,8 +4329,35 @@ function fHighlightFG(FGno) {
               }
             }
           }
+        } else if (fgKey === "ether") {
+          // Ether R-O-R': whole (FGno undefined, suffix click) -> O + both Cs (C-O-C).
+          // Prefix click (FGno defined, e.g. alkoxy) -> O + full alkoxy fragment (C-O for methoxy).
+          if (!highAtomsFG.includes(heteroIdx + 1)) {
+            highAtomsFG.push(heteroIdx + 1);
+          }
+          const _ethNbrs = Array.isArray(atomConnectivityList[heteroIdx])
+            ? atomConnectivityList[heteroIdx].filter(function (n) {
+                return allAtomsTypeList[n] === "C";
+              })
+            : [];
+          let _ethTargets = _ethNbrs;
+          if (FGno !== undefined) {
+            const _alkChain = fGetEtherAlkoxyChain();
+            if (_alkChain && _alkChain.length > 0) {
+              _ethTargets = _alkChain.map(function (a) { return a - 1; });
+            } else {
+              const _alk = fGetEtherAlkoxyC();
+              if (_alk !== null && _alk !== undefined) _ethTargets = [_alk];
+              else if (_ethNbrs.length > 1) _ethTargets = [_ethNbrs[1]];
+            }
+          }
+          for (let _en = 0; _en < _ethTargets.length; _en++) {
+            if (!highAtomsFG.includes(_ethTargets[_en] + 1)) {
+              highAtomsFG.push(_ethTargets[_en] + 1);
+            }
+          }
         } else {
-          // cyanide, imine, ether, CCamine, etc.
+          // cyanide, imine, CCamine, etc.
           if (!highAtomsFG.includes(heteroIdx + 1)) {
             highAtomsFG.push(heteroIdx + 1);
           }
@@ -4048,6 +4481,7 @@ function fHighlightFG3D(FGno) {
       "alcohol",
       "amine",
       "nitro",
+      "ether",
     ];
     const halogenOrder3D = Object.keys(nameMainCompObj3.halogen.substitute);
     fgInstances.sort(function (a, b) {
@@ -4239,8 +4673,26 @@ function fHighlightFG3D(FGno) {
                 }
               }
             }
+          } else if (fgKey === "ether") {
+            // Ether R-O-R': whole (FGno undefined) -> O + both Cs; prefix -> O + alkoxy C.
+            if (Array.isArray(atomConnectivityList3D[heteroIdx])) {
+              let _eth3Targets = atomConnectivityList3D[heteroIdx].filter(function (n) {
+                return allAtomsTypeList3D[n] === "C";
+              });
+              if (FGno !== undefined) {
+                const _alk3 = fGetEtherAlkoxyC3D();
+                if (_alk3 !== null && _alk3 !== undefined) _eth3Targets = [_alk3];
+                else if (_eth3Targets.length > 1) _eth3Targets = [_eth3Targets[1]];
+              }
+              for (let n = 0; n < _eth3Targets.length; n++) {
+                const neighbor = _eth3Targets[n] + 1;
+                if (!highAtoms3D.includes(neighbor)) {
+                  highAtoms3D.push(neighbor);
+                }
+              }
+            }
           } else {
-            // cyanide, imine, ether, CCamine, etc.
+            // cyanide, imine, CCamine, etc.
             if (Array.isArray(atomConnectivityList3D[heteroIdx])) {
               for (
                 let n = 0;
@@ -4285,12 +4737,20 @@ function fHighlightFG3D(FGno) {
   }
 }
 
+// Per-component numbering override (ethers): when set, fShowNumbering numbers
+// the override atom list instead of the parent main chain. Cleared on next
+// plain fShowNumbering(time) call and in fClearHighlights.
+let numberingAtomOverride = null;
+let numberingAtomOverride3D = null;
+
 // ── fShowNumbering ────────────────────────────────────────────────────────
 
-function fShowNumbering(time) {
+function fShowNumbering(time, overrideAtoms, overrideAtoms3D) {
   if (!numberingFlag) {
     return;
   }
+  numberingAtomOverride = Array.isArray(overrideAtoms) ? overrideAtoms : null;
+  numberingAtomOverride3D = Array.isArray(overrideAtoms3D) ? overrideAtoms3D : null;
   clearInterval(myNumberingTimeout);
   numbersSVGElements = [];
 
@@ -4298,10 +4758,12 @@ function fShowNumbering(time) {
   switch (mode2D) {
     case "condensed":
       highAtoms =
-        mainChainMode === "algorithmic" ||
-        !nameExamples[selectedMol]["mainChain"]
-          ? mainChainAtomsList
-          : nameExamples[selectedMol]["mainChain"];
+        Array.isArray(numberingAtomOverride)
+          ? numberingAtomOverride
+          : mainChainMode === "algorithmic" ||
+            !nameExamples[selectedMol]["mainChain"]
+            ? mainChainAtomsList
+            : nameExamples[selectedMol]["mainChain"];
       highAtoms = (Array.isArray(highAtoms) ? highAtoms : []).filter(
         function (atomNo) {
           return allAtomsTypeList[atomNo - 1] === "C";
@@ -4339,10 +4801,12 @@ function fShowNumbering(time) {
       break;
     case "condensedZigZag":
       highAtoms =
-        mainChainMode === "algorithmic" ||
-        !nameExamples[selectedMol]["mainChain"]
-          ? mainChainAtomsList
-          : nameExamples[selectedMol]["mainChain"];
+        Array.isArray(numberingAtomOverride)
+          ? numberingAtomOverride
+          : mainChainMode === "algorithmic" ||
+            !nameExamples[selectedMol]["mainChain"]
+            ? mainChainAtomsList
+            : nameExamples[selectedMol]["mainChain"];
       highAtoms = (Array.isArray(highAtoms) ? highAtoms : []).filter(
         function (atomNo) {
           return allAtomsTypeList[atomNo - 1] === "C";
@@ -4373,10 +4837,12 @@ function fShowNumbering(time) {
       break;
     case "expanded":
       highAtoms =
-        mainChainMode === "algorithmic" ||
-        !nameExamples[selectedMol]["mainChain_E"]
-          ? mainChainAtomsList
-          : nameExamples[selectedMol]["mainChain_E"];
+        Array.isArray(numberingAtomOverride)
+          ? numberingAtomOverride
+          : mainChainMode === "algorithmic" ||
+            !nameExamples[selectedMol]["mainChain_E"]
+            ? mainChainAtomsList
+            : nameExamples[selectedMol]["mainChain_E"];
       highAtoms = (Array.isArray(highAtoms) ? highAtoms : []).filter(
         function (atomNo) {
           return allAtomsTypeList[atomNo - 1] === "C";
@@ -4408,10 +4874,12 @@ function fShowNumbering(time) {
 
     case "diagramatic":
       highAtoms =
-        mainChainMode === "algorithmic" ||
-        !nameExamples[selectedMol]["mainChain_diagr"]
-          ? mainChainAtomsList
-          : nameExamples[selectedMol]["mainChain_diagr"];
+        Array.isArray(numberingAtomOverride)
+          ? numberingAtomOverride
+          : mainChainMode === "algorithmic" ||
+            !nameExamples[selectedMol]["mainChain_diagr"]
+            ? mainChainAtomsList
+            : nameExamples[selectedMol]["mainChain_diagr"];
       highAtoms = (Array.isArray(highAtoms) ? highAtoms : []).filter(
         function (atomNo) {
           return allAtomsTypeList[atomNo - 1] === "C";
@@ -4482,7 +4950,14 @@ function fShowNumber() {
 // ── fShowNumbering3D ──────────────────────────────────────────────────────
 
 function fShowNumbering3D() {
-  if (mainChainMode !== "algorithmic") {
+  const chain3D = Array.isArray(numberingAtomOverride3D)
+    ? numberingAtomOverride3D
+    : mainChainMode !== "algorithmic"
+      ? nameExamples[selectedMol].mainChain3D
+      : null;
+  if (chain3D) {
+    mainChainAtoms3D = chain3D;
+  } else if (mainChainMode !== "algorithmic") {
     mainChainAtoms3D = nameExamples[selectedMol].mainChain3D;
   }
   // algorithmic mode: mainChainAtoms3D already set by fCalcMainChain3D()
@@ -4502,9 +4977,11 @@ function removeEcho3D() {
 
 function fShowNumber3D(n) {
   myAtom =
-    mainChainMode === "algorithmic"
-      ? mainChainAtoms3D[n]
-      : nameExamples[selectedMol].mainChain3D[n];
+    Array.isArray(numberingAtomOverride3D)
+      ? numberingAtomOverride3D[n]
+      : mainChainMode === "algorithmic"
+        ? mainChainAtoms3D[n]
+        : nameExamples[selectedMol].mainChain3D[n];
 
   if (typeof myAtom === "undefined" || myAtom === null) {
     return;

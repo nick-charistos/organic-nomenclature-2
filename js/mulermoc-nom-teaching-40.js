@@ -190,6 +190,10 @@ function fInitTheory() {
     "            <div class='ruleCase'> Νιτρίλια (-CN) </div>" +
     "            <div class='ruleName'> -νιτρίλιο </div>" +
     "        </div>" +
+    "        <div class='HFlex ruleRow'>" +
+    "            <div class='ruleCase'> Αιθέρες (R-O-R') </div>" +
+    "            <div class='ruleName'> -ιο <br> αιθέρας </div>" +
+    "        </div>" +
     "    </div>";
 
   r4Table = `
@@ -217,6 +221,10 @@ function fInitTheory() {
         <div class='HFlex ruleRow'>
             <div class='ruleCase'><span class='orderNo'>6.</span> Αμινοομάδα</div>
             <div class='ruleName'> -ΝΗ<sub>2</sub> </div>
+        </div>
+        <div class='HFlex ruleRow'>
+            <div class='ruleCase'><span class='orderNo'>7.</span> Αλκοξυομάδα</div>
+            <div class='ruleName'> -O- </div>
         </div>
     </div>
     `;
@@ -627,6 +635,9 @@ $(document).ready(function () {
     .addClass("unselectedCheck");
 
   $("#radio2DMode").on("click", ".mode2DOption", function () {
+    if ($(this).hasClass("disabledRadio")) {
+      return;
+    }
     currMode2DNo = $(this)
       .parent()
       .children(".radioCheckContainer")
@@ -669,6 +680,9 @@ $(document).ready(function () {
   });
 
   $("#zigzagCheck").on("click", function () {
+    if ($(this).hasClass("disabledCheck")) {
+      return;
+    }
     // Generic .checkBoxContainer handler fires after this and toggles the class,
     // so read the CURRENT class to determine what state we are moving TO.
     if ($(this).hasClass("unselectedCheck")) {
@@ -699,6 +713,25 @@ $(document).ready(function () {
 
     fClearHighlights();
     fLoadMol2D();
+    currNumberEl = 0;
+    fShowNameAnalysis();
+  });
+
+  // Ether IUPAC/COMMON naming toggle (rendered in the name panel for ethers only).
+  $(document).on("click", "#radioEtherNaming .etherNamingRadio", function () {
+    if ($(this).hasClass("disabledRadio")) {
+      return;
+    }
+    etherNamingMode = $(this).attr("data-naming-mode") === "common" ? "common" : "iupac";
+    fUpdateEtherNamingButton();
+
+    if (!selectedMol || !nameExamples[selectedMol]) {
+      return;
+    }
+
+    nameAnalysisMode = "none";
+    fClearHighlights();
+    fUpdateSVG();
     currNumberEl = 0;
     fShowNameAnalysis();
   });
@@ -804,6 +837,15 @@ $(document).ready(function () {
           break;
         case "comp9":
           nameAnalysisMode = "compSuffix";
+          break;
+        case "comp10":
+          nameAnalysisMode = "commonAlkyl1";
+          break;
+        case "comp11":
+          nameAnalysisMode = "commonAlkyl2";
+          break;
+        case "comp12":
+          nameAnalysisMode = "commonEther";
           break;
         default:
           nameAnalysisMode = "none";

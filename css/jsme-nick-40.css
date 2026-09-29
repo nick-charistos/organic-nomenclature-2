@@ -734,6 +734,13 @@ max-height: 596px;
 
 } */
 
+.radioLabel {
+  font-family: "Roboto Condensed", sans-serif;
+  font-size: 0.85rem;
+  color: #333;
+  font-weight: normal;
+}
+
 .radioCheckContainer {
   display: block;
   position: relative;

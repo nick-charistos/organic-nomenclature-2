@@ -46,6 +46,10 @@ let ccTripleBondKeys3D = {}
 // ── Naming globals ────────────────────────────────────────────────────────
 let nameComponentsList = []
 let currentMolName = ""
+let currentMolCommonName = ""
+let etherInfo = null
+let etherInfo3D = null
+let alkoxyNames = {}
 let nameMainCompList1 = []
 let nameMainCompObj3 = {}
 let nameMultiPrefix = []
@@ -129,7 +133,13 @@ function fInitNamingProps() {
         carboxylicAcid: { suffix: 'ικό οξύ', substitute: "καρβοξυ" },
         cyanide: { suffix: 'νιτρίλιο', substitute: "κυανο" },
         amine: { suffix: 'αμίνη', substitute: "αμινο" },
-        nitro: { suffix: 'ιο', substitute: "νιτρο" }
+        nitro: { suffix: 'ιο', substitute: "νιτρο" },
+        ether: { suffix: 'ιο', substitute: "αλκοξυ" }
+    }
+
+    alkoxyNames = {}
+    for (let _ai = 0; _ai < nameMainCompList1.length; _ai++) {
+        alkoxyNames[_ai + 1] = nameMainCompList1[_ai] + "οξυ"
     }
 
     alkylSubstituentNames = {
@@ -665,6 +675,17 @@ function fCalcMainChain() {
                 }
                 if (anchorC !== null) {
                     anchorCarbons[anchorC] = true
+                    if (fg === 'ether' && Array.isArray(atomConnectivityList[entry])) {
+                        // Ether O bridges two carbons: anchor BOTH sides so the
+                        // parent-side attachment scores and orients the chain.
+                        for (let _ni = 0; _ni < atomConnectivityList[entry].length; _ni++) {
+                            const _nb = atomConnectivityList[entry][_ni]
+                            if (allAtomsTypeList[_nb] === 'C') {
+                                anchorCarbons[_nb] = true
+                                principalFgCarbons[_nb] = true
+                            }
+                        }
+                    }
                     if (fg === 'carboxylicAcid') {
                         terminalFgCarbons[anchorC] = 3  // highest IUPAC priority: always C1 when on chain
                     } else if (fg === 'cyanide') {
@@ -918,6 +939,48 @@ function fCalcMainChain() {
             }
         }
         if (!useForward) oriented = oriented.slice().reverse()
+    }
+
+    // ── Step 8b: Ether two-chain split (R-O-R') ─────────────────────────────────
+    // Carbon-only graph disconnects at O. Identify the two alkyl fragments so
+    // fGuessName can name parent alkane + alkoxy prefix. Parent = fragment
+    // containing the chosen best path (longest wins by scoring above).
+    etherInfo = null
+    if (functionalGroupObj && functionalGroupObj.ether && functionalGroupObj.ether.O && functionalGroupObj.ether.O.length > 0) {
+        const _eO = functionalGroupObj.ether.O[0]
+        const _eNbrs = (atomConnectivityList[_eO] || []).filter(function (n) { return allAtomsTypeList[n] === 'C' })
+        if (_eNbrs.length >= 2) {
+            const _cA = _eNbrs[0], _cB = _eNbrs[1]
+            const _bfsFrag = function (start) {
+                const seen = {}, q = [start]
+                seen[start] = true
+                while (q.length > 0) {
+                    const _n = q.pop()
+                    const _nbs = cAdj[_n] || []
+                    for (let _bi = 0; _bi < _nbs.length; _bi++) {
+                        if (!seen[_nbs[_bi]]) { seen[_nbs[_bi]] = true; q.push(_nbs[_bi]) }
+                    }
+                }
+                return Object.keys(seen).map(function (x) { return parseInt(x) })
+            }
+            const _fragA = _bfsFrag(_cA), _fragB = _bfsFrag(_cB)
+            const _inFrag = function (frag, node) { return frag.indexOf(node) >= 0 }
+            const _parentIsA = _inFrag(_fragA, oriented[0])
+            const _parentFrag = _parentIsA ? _fragA : _fragB
+            const _alkoxyFrag = _parentIsA ? _fragB : _fragA
+            const _parentAttach = _parentIsA ? _cA : _cB
+            const _alkoxyAttach = _parentIsA ? _cB : _cA
+            etherInfo = {
+                oIdx: _eO,
+                cA: _cA, cB: _cB,
+                fragA: _fragA, fragB: _fragB,
+                parentFrag: _parentFrag, alkoxyFrag: _alkoxyFrag,
+                parentAttachC: _parentAttach, alkoxyAttachC: _alkoxyAttach,
+                parentLen: _parentFrag.length, alkoxyLen: _alkoxyFrag.length,
+                symmetric: _fragA.length === _fragB.length,
+                locant: oriented.indexOf(_parentAttach) + 1
+            }
+        }
     }
 
     // ── Step 9: Write mainChainAtomsList (1-based JSME atom numbers) ─────────────
@@ -1463,6 +1526,7 @@ function fGuessName() {
     }
 
     guessNameObj = {}
+    currentMolCommonName = ""
     comp0 = null // αριθμητικό  υποκαταστατων μπροστά στο το όνομα
     comp0b = null // αριθμητικό 2ou  υποκαταστατη μπροστά στο το όνομα
     comp0Text = null // αλκυλαλογονίδια μπροστα στο το όνομα
@@ -1664,6 +1728,33 @@ function fGuessName() {
                     comp4 = theCountPrefix + comp4
                 }
                 break;
+            case "ether": // Αιθέρες R-O-R': αλκοξυ-πρόθεμα + γονικό αλκάνιο
+                {
+                    const _e = etherInfo
+                    const _parentLen = mainChainAtomsList.length
+                    const _alkLen = _e && _e.alkoxyLen ? _e.alkoxyLen : 1
+                    const _loc = _e && _e.locant ? _e.locant : 1
+                    comp0Text = alkoxyNames[_alkLen] || ("αλκοξυ")
+                    if (_parentLen < 3) {
+                        comp0 = ""
+                    } else {
+                        comp0 = _loc + "-"
+                    }
+                    // comp4 already = "ιο" (suffix); single ether needs no multiplicative prefix
+                    // Κοινή ονομασία: αλκυλ-αλκυλ-αιθέρας (αλφαβητικά), συμμετρικός: δι-αλκυλ-αιθέρας
+                    const _stem = function (n) {
+                        const _full = (typeof alkylSubstituentNames !== "undefined" && alkylSubstituentNames[n]) || (nameMainCompList1[n - 1] || "")
+                        return _full.replace(/ο$/, "")
+                    }
+                    if (_e && _e.symmetric) {
+                        currentMolCommonName = nameMultiPrefix[1] + _stem(_alkLen) + "αιθέρας"
+                    } else {
+                        const _sA = _stem(_parentLen), _sB = _stem(_alkLen)
+                        const _pair = [_sA, _sB].sort()
+                        currentMolCommonName = _pair[0] + _pair[1] + "αιθέρας"
+                    }
+                }
+                break;
             case "cyanide":
             case "aldehyde":
             case "carboxylicAcid":
@@ -1679,7 +1770,7 @@ function fGuessName() {
 
     } else { // αν περιέχει > 1 ΧΟ
         // console.log("multiple functional groups ", functionalGroupsList)
-        functionalGroupsOrder = ["carboxylicAcid", "cyanide", "aldehyde", "ketone", "alcohol", "amine", "nitro"]
+        functionalGroupsOrder = ["carboxylicAcid", "cyanide", "aldehyde", "ketone", "alcohol", "amine", "nitro", "ether"]
 
         ///////// PATCH για σωστή σειρά υποκαταστατών ////////////
 
