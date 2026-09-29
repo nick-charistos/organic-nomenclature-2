@@ -2,12 +2,21 @@
 
 A Greek-first interactive learning platform for organic nomenclature, built around molecular structure, naming logic, and multiple representations.
 
-**Current working baseline:** v39.1  
-**Main entry point:** [mulermoc-nom-39.html](mulermoc-nom-39.html)  
-**Core engine:** [js/mulermoc-nom-core-39.js](js/mulermoc-nom-core-39.js)  
-**Viewer layer:** [js/mulermoc-nom-molview-39.js](js/mulermoc-nom-molview-39.js)  
-**Teaching layer:** [js/mulermoc-nom-teaching-39.js](js/mulermoc-nom-teaching-39.js)  
-**Data set:** [js/jsme-nick-nomeclature-moc2-data_39.js](js/jsme-nick-nomeclature-moc2-data_39.js)
+**Current working baseline:** v40
+**Main entry point:** [mulermoc-nom-40.html](mulermoc-nom-40.html)
+**Core engine:** [js/mulermoc-nom-core-40.js](js/mulermoc-nom-core-40.js)
+**Viewer layer:** [js/mulermoc-nom-molview-40.js](js/mulermoc-nom-molview-40.js)
+**Teaching layer:** [js/mulermoc-nom-teaching-40.js](js/mulermoc-nom-teaching-40.js)
+**Data set:** [js/jsme-nick-nomeclature-moc2-data_40.js](js/jsme-nick-nomeclature-moc2-data_40.js)
+
+---
+
+## Recent work: ethers (v40)
+
+- First ether molecule: `ethyl_methyl_ether` (CH3OCH2CH3), classified into the existing `Αιθέρες` menu group.
+- Systematic naming (alkoxy prefix + parent alkane, e.g. μεθοξυαιθάνιο) and common naming (e.g. αιθυλμεθυλαιθέρας), with an IUPAC/COMMON toggle in the name-explanation panel.
+- Per-component highlight and numbering: alkoxy/alkyl clicks highlight and number only their own chain; `αιθέρας` highlights C-O-C.
+- Tolerant 2D loading: molecules with a missing representation load the first available one and disable the corresponding mode radio instead of crashing.
 
 ---
 
@@ -113,10 +122,11 @@ The next version should not be organized primarily around rule-by-rule teaching.
    - corrected locant logic
    - validation examples
 
-2. **Ethers**
-   - detection and classification
-   - naming logic
-   - examples and edge cases
+2. **Ethers** (in progress, v40)
+   - detection and classification: done
+   - systematic + common naming for saturated acyclic mono-ethers: done
+   - per-component highlight/numbering + IUPAC/COMMON toggle: done
+   - remaining: expanded/skeletal data, stored chain data, symmetric example, unsaturated chains
 
 3. **Esters**
    - acid-derived and alcohol-derived grouping
@@ -187,9 +197,9 @@ This makes the platform more pedagogically coherent and more scalable than a str
 
 ## Repository status summary
 
-- Working baseline: **v39**
+- Working baseline: **v40**
 - Main focus: **stable learning app + chemistry expansion**
-- Near-term goal: **branch logic, ethers, esters**
+- Near-term goal: **ethers completion, esters**
 - Product model: **homologous series first**
 - Rules: **secondary explanatory layer**
 - Research layer: **deferred**

@@ -4,6 +4,21 @@ All notable changes to the Οργανική Ονοματολογία MuLERMoC.
 
 ---
 
+## [v40] — 2026-09-29
+
+**Ethers: first molecule + systematic and common naming**
+
+- Added the first ether molecule, `ethyl_methyl_ether` (CH3OCH2CH3), with condensed 2D data and 3D SDF. Missing expanded/skeletal representations no longer crash the viewer (see tolerant loading below).
+- Tolerant 2D loading: `fInitData` accepts molecules with only a subset of representations; the mode radios for missing representations are disabled and the viewer falls back to the first available one (condensed > expanded > skeletal). `fLoadMol2D` never calls `readMolFile(null)`.
+- Two-chain ether detection: `fCalcMainChain` splits R-O-R' into parent + alkoxy fragments via BFS on the carbon-only graph (`etherInfo`); both O-bonded carbons anchor and orient the parent chain.
+- Systematic (IUPAC) naming: alkoxy prefix (`μεθοξυ-`, `αιθοξυ-`, …) + parent alkane (`-άνιο`), with locant omitted for parent chains under 3 carbons. Common name also generated (`αιθυλμεθυλαιθέρας`, symmetric `διαιθυλαιθέρας`).
+- IUPAC/COMMON toggle in the name-explanation panel (ethers only). COMMON name renders as clickable boxes: each alkyl highlights and numbers only its own chain (chain-only, no bridging O); `αιθέρας` highlights C-O-C with no numbering. Alkyl explanations state Greek alphabetical order («πρώτο/δεύτερο αλφαβητικά αλκύλιο»).
+- IUPAC prefix click (`μεθοξυ`) highlights O + alkoxy fragment (C-O) and numbers the alkoxy chain; suffix click highlights the whole C-O-C group. Switching IUPAC/COMMON clears all highlights.
+- Teaching layer: new `Αιθέρες (R-O-R') → -ιο` row in the rule-3 table, `Αλκοξυομάδα → -O-` row in the rule-4 table, suffix highlight index 11, `Αλκοξυομάδα` nouns for explanations.
+- Scope: saturated acyclic mono-ethers. Still open: expanded/skeletal MOLs + stored `mainChain` data for the ether, a symmetric ether example, unsaturated ether chains.
+
+---
+
 ## [v39.1] — 2026-09-23
 
 **Branch highlighting and expanded-hydrogen selection**

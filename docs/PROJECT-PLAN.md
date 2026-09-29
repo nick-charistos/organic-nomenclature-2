@@ -79,7 +79,7 @@ Each step removes one scaffolding layer. Familiar representations constrain inte
 - Annotated skeletal representation: `fMakeAnnotatedSkeletal()` — completes the fading sequence
 - Atom click targets: `fAddAtomClickTargets()` — enables interactive quiz scenarios
 - Branched molecule naming (alkyl substituents) — extends engine to full organic curriculum
-- Ether naming (moderate complexity)
+- Ether naming (moderate complexity) — done for saturated acyclic mono-ethers in v40 (systematic + common, first molecule `ethyl_methyl_ether`); remaining: stored chain data, symmetric example, unsaturated chains
 - Ester naming (highest complexity — two-chain naming)
 
 ---
@@ -111,7 +111,7 @@ Each step removes one scaffolding layer. Familiar representations constrain inte
 - [ ] Session logging (`mulermoc-nom-log-1.js`) — per-attempt schema, localStorage, CSV export
 - [ ] Research mode — condition lock, participant ID, no-feedback option, viewer visibility control
 - [ ] Branched molecule naming (alkyl substituents)
-- [ ] Ether naming
+- [x] Ether naming — saturated acyclic mono-ethers in v40 (systematic + common); symmetric example and unsaturated chains still open
 - [ ] Expanded molecule database (target: 100+ molecules)
 - [ ] Transfer-test molecule set (separate from study set — required for valid retention tests)
 - [ ] Ethics approval (GDPR compliance for student interaction logging)
