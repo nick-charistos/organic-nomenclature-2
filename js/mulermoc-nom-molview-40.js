@@ -2780,6 +2780,147 @@ function fClearHighlights() {
   JmolSelection = "select none;";
 }
 
+// ── Secondary-group display names ─────────────────────────────────────────
+// Greek nouns for secondary characteristic groups, shown in parentheses in
+// fExplainNameComp messages. Vocabulary matches the r4 rule table.
+const secondaryGroupNouns = {
+  alcohol: "Υδροξύλιο",
+  aldehyde: "Αλδεϋδομάδα",
+  ketone: "Κετονομάδα",
+  carboxylicAcid: "Καρβοξύλιο",
+  cyanide: "Κυανομάδα",
+  amine: "Αμινοομάδα",
+  nitro: "Νιτροομάδα",
+};
+
+const secondaryHalogenNouns = {
+  Cl: "Χλώριο",
+  Br: "Βρώμιο",
+  F: "Φθόριο",
+  I: "Ιώδιο",
+};
+
+const secondaryGroupPluralNouns = {
+  alcohol: "Υδροξύλια",
+  aldehyde: "Αλδεϋδομάδες",
+  ketone: "Κετονομάδες",
+  carboxylicAcid: "Καρβοξύλια",
+  cyanide: "Κυανομάδες",
+  amine: "Αμινοομάδες",
+  nitro: "Νιτροομάδες",
+};
+
+const alkylBranchNouns = {
+  μεθυλο: "μεθύλιο",
+  αιθυλο: "αιθύλιο",
+  προπυλο: "προπύλιο",
+  βουτυλο: "βουτύλιο",
+  πεντυλο: "πεντύλιο",
+  εξυλο: "εξύλιο",
+  επτυλο: "επτύλιο",
+  οκτυλο: "οκτύλιο",
+};
+
+// Resolve the [fgKey, heteroEl] instance behind FGno, using the same
+// fgInstances ordering as fHighlightFG (FGno=1 → first name prefix).
+// Returns null when FGno matches no functional group (e.g. alkyl branch).
+function fGetFGInstance(FGno) {
+  const fgKeys = Object.keys(functionalGroupObj).filter(function (k) {
+    return k !== "hydrocarbon";
+  });
+  const fgInstances = [];
+  for (let k = 0; k < fgKeys.length; k++) {
+    const heteroEls = Object.keys(functionalGroupObj[fgKeys[k]]);
+    for (let e = 0; e < heteroEls.length; e++) {
+      fgInstances.push([fgKeys[k], heteroEls[e]]);
+    }
+  }
+  const fgPriorityOrder2D = [
+    "carboxylicAcid",
+    "cyanide",
+    "aldehyde",
+    "ketone",
+    "alcohol",
+    "amine",
+    "nitro",
+  ];
+  const halogenOrder2D = Object.keys(nameMainCompObj3.halogen.substitute);
+  fgInstances.sort(function (a, b) {
+    if (a[0] === "halogen" && b[0] === "halogen") {
+      return halogenOrder2D.indexOf(a[1]) - halogenOrder2D.indexOf(b[1]);
+    }
+    return fgPriorityOrder2D.indexOf(b[0]) - fgPriorityOrder2D.indexOf(a[0]);
+  });
+  return fgInstances[FGno - 1] || null;
+}
+
+// " (Χλώριο)" suffix for explanation messages, or "" when FGno matches
+// no functional group.
+function fGetSecondaryGroupNounSuffix(FGno) {
+  const inst = fGetFGInstance(FGno);
+  if (!inst) {
+    return "";
+  }
+  const noun =
+    inst[0] === "halogen"
+      ? secondaryHalogenNouns[inst[1]]
+      : secondaryGroupNouns[inst[0]];
+  return noun ? " (" + noun + ")" : "";
+}
+
+// " (Υδροξύλιο)" / " (Υδροξύλια)" suffix naming the principal (strongest)
+// characteristic group, or "" when there is none. Halogens are always
+// secondary, so they are skipped (defensive "Αλογόνο" fallback included).
+function fGetPrincipalGroupNounSuffix(usePlural) {
+  const fgPriorityOrder2D = [
+    "carboxylicAcid",
+    "cyanide",
+    "aldehyde",
+    "ketone",
+    "alcohol",
+    "amine",
+    "nitro",
+  ];
+  const fgKeys = Object.keys(functionalGroupObj).filter(function (k) {
+    return k !== "hydrocarbon" && k !== "halogen";
+  });
+  let principalKey = null;
+  for (let i = 0; i < fgPriorityOrder2D.length; i++) {
+    if (fgKeys.includes(fgPriorityOrder2D[i])) {
+      principalKey = fgPriorityOrder2D[i];
+      break;
+    }
+  }
+  if (!principalKey) {
+    if (Object.keys(functionalGroupObj).includes("halogen")) {
+      return " (Αλογόνο)";
+    }
+    return "";
+  }
+  const noun = usePlural
+    ? secondaryGroupPluralNouns[principalKey]
+    : secondaryGroupNouns[principalKey];
+  return noun ? " (" + noun + ")" : "";
+}
+
+// Alkyl branch noun (e.g. "μεθύλιο") for pure-hydrocarbon molecules with a
+// side branch, or "" otherwise.
+function fGetBranchDisplayName() {
+  if (
+    Object.keys(functionalGroupObj).length !== 1 ||
+    !functionalGroupObj.hydrocarbon ||
+    !Array.isArray(nameComponentsList) ||
+    !nameComponentsList[1]
+  ) {
+    return "";
+  }
+  if (fGetHydrocarbonBranchHighlight().atoms.length === 0) {
+    return "";
+  }
+  const prefix = String(nameComponentsList[1]);
+  return alkylBranchNouns[prefix] || prefix;
+}
+
 // ── fExplainNameComp ──────────────────────────────────────────────────────
 
 function fExplainNameComp() {
@@ -2802,7 +2943,9 @@ function fExplainNameComp() {
           nameComponentsList[3].length > 0
         ) {
           myText =
-            " Δηλώνει τη θέση της πρώτης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας.";
+            " Δηλώνει τη θέση της πρώτης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας" +
+            fGetSecondaryGroupNounSuffix(1) +
+            ".";
           fHighlightFG(1);
           fHighlightFG3D(1);
         } else {
@@ -2822,10 +2965,22 @@ function fExplainNameComp() {
             myText =
               " Δηλώνει τις θέσεις των " +
               myCountText +
-              " δευτερευουσών  Χαρακτηριστικών Ομάδών.";
+              " δευτερευουσών  Χαρακτηριστικών Ομάδών" +
+              fGetSecondaryGroupNounSuffix(1) +
+              ".";
           } else {
-            myText =
-              " Δηλώνει τη θέση της δευτερεύουσας Χαρακτηριστικής Ομάδας.";
+            const branchPosName = fGetBranchDisplayName();
+            if (branchPosName) {
+              myText =
+                " Δηλώνει τη θέση της ανθρακικής διακλάδωσης (" +
+                branchPosName +
+                ").";
+            } else {
+              myText =
+                " Δηλώνει τη θέση της δευτερεύουσας Χαρακτηριστικής Ομάδας" +
+                fGetSecondaryGroupNounSuffix(1) +
+                ".";
+            }
           }
 
           if (Object.keys(functionalGroupObj).length > 1) {
@@ -2863,9 +3018,14 @@ function fExplainNameComp() {
           myText =
             " Δηλώνει τις θέσεις των " +
             myCountText +
-            "  Χαρακτηριστικών Ομάδών.";
+            "  Χαρακτηριστικών Ομάδών" +
+            fGetPrincipalGroupNounSuffix(true) +
+            ".";
         } else {
-          myText = " Δηλώνει τη θέση της Χαρακτηριστικής Ομάδας.";
+          myText =
+            " Δηλώνει τη θέση της Χαρακτηριστικής Ομάδας" +
+            fGetPrincipalGroupNounSuffix(false) +
+            ".";
         }
 
         fHighlightFG();
@@ -2910,7 +3070,9 @@ function fExplainNameComp() {
       myClass = "";
       if (nameComponentsList[3] !== null && nameComponentsList[3].length > 0) {
         myText =
-          " Δηλώνει το όνομα  της πρώτης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας.";
+          " Δηλώνει το όνομα  της πρώτης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας" +
+          fGetSecondaryGroupNounSuffix(1) +
+          ".";
         fHighlightFG(1);
         fHighlightFG3D(1);
       } else {
@@ -2930,7 +3092,18 @@ function fExplainNameComp() {
           fHighlightFG();
           fHighlightFG3D();
         }
-        myText = " Δηλώνει το όνομα της δευτερεύουσας Χαρακτηριστικής Ομάδας.";
+        const branchSubName = fGetBranchDisplayName();
+        if (branchSubName) {
+          myText =
+            " Δηλώνει το όνομα της ανθρακικής διακλάδωσης (" +
+            branchSubName +
+            ").";
+        } else {
+          myText =
+            " Δηλώνει το όνομα της δευτερεύουσας Χαρακτηριστικής Ομάδας" +
+            fGetSecondaryGroupNounSuffix(1) +
+            ".";
+        }
       }
 
       break;
@@ -2938,7 +3111,9 @@ function fExplainNameComp() {
       nStyle = "";
       myClass = "";
       myText =
-        " Δηλώνει τη θέση της δεύτερης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας.";
+        " Δηλώνει τη θέση της δεύτερης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας" +
+        fGetSecondaryGroupNounSuffix(2) +
+        ".";
       numberingFlag = true;
 
       fHighlightFG(2);
@@ -2949,7 +3124,9 @@ function fExplainNameComp() {
       nStyle = "";
       myClass = "";
       myText =
-        " Δηλώνει το όνομα  της δεύτερης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας.";
+        " Δηλώνει το όνομα  της δεύτερης αλφαβητικά δευτερεύουσας Χαρακτηριστικής Ομάδας" +
+        fGetSecondaryGroupNounSuffix(2) +
+        ".";
       numberingFlag = false;
       fHighlightFG(2);
       fHighlightFG3D(2);
@@ -3080,7 +3257,10 @@ function fExplainNameComp() {
       if (nameComponentsList[8].length === 0) {
         fHighlightFG();
         fHighlightFG3D();
-        myText = " Δηλώνει τη θέση της  Χαρακτηριστικής Ομάδας.";
+        myText =
+          " Δηλώνει τη θέση της  Χαρακτηριστικής Ομάδας" +
+          fGetPrincipalGroupNounSuffix(false) +
+          ".";
       } else {
         myText = " Δηλώνει τη θέση του τριπλού δεσμού.";
         fHighlightMultiBonds3D(2);
