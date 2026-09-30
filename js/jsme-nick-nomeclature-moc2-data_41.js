@@ -605,22 +605,23 @@ let nameExamples = {
   },
 
   //// ESTERS
-  // ethanoic_methyl_ester: {
-  //   formula: "CH3COOCH3",
-  //   mainChain: [],
-  //   mainChain_E: [],
-  //   mainChain_diagr: [],
-  //   mainChain3D: [],
-  //   // moveto: "moveto 0.0 { -993 107 40 170.04} 69.57 0.0 0.0 {0.018154999999999945 0.015150000000000045 0.04406499999999999} 4.830360556026081 {0 0 0} 0 0 0 3.0 0.0 0.0;",
-  // },
-  // propanoic_methyl_ester: {
-  //   formula: "CH3CH2COOCH3",
-  //   mainChain: [],
-  //   mainChain_E: [],
-  //   mainChain_diagr: [],
-  //   mainChain3D: [],
-  //   // moveto: "moveto 0.0 { -993 107 40 170.04} 69.57 0.0 0.0 {0.018154999999999945 0.015150000000000045 0.04406499999999999} 4.830360556026081 {0 0 0} 0 0 0 3.0 0.0 0.0;",
-  // },
+  ethanoic_methyl_ester: {
+    formula: "CH3COOCH3",
+    mainChain: [],
+    mainChain_E: [],
+    mainChain_diagr: [],
+    mainChain3D: [],
+    moveto: "moveto 0.0 { 23 -25 999 179.99} 69.57 0.0 0.0 {-0.06443636363636365 0.21650909090909093 -0.00010909090909091726} 3.8970839838672164 {0 0 0} 0 0 0 3.0 0.0 0.0;",
+  },
+  
+  propanoic_methyl_ester: {
+    formula: "CH3CH2COOCH3",
+    mainChain: [],
+    mainChain_E: [],
+    mainChain_diagr: [],
+    mainChain3D: [],
+    // moveto: "moveto 0.0 { -993 107 40 170.04} 69.57 0.0 0.0 {0.018154999999999945 0.015150000000000045 0.04406499999999999} 4.830360556026081 {0 0 0} 0 0 0 3.0 0.0 0.0;",
+  },
 };
 
 let methane_2D =
