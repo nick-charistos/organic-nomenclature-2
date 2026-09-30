@@ -95,16 +95,13 @@ function fGetMoleculeClassification() {
         if (seriesKey === "halogen") return "alkylHalides"
         if (seriesKey === "alcohol") return "alcohols"
         if (seriesKey === "ether") return "ethers"
-        if (seriesKey === "aldehyde") return "aldehydes"
-        if (seriesKey === "ketone") return "ketones"
+        if (seriesKey === "aldehyde" || seriesKey === "ketone") return "carbonylCompounds"
         if (seriesKey === "ester") return "esters"
-        if (["carboxylicAcid", "oxoCarboxylicAcids", "ketoAcids"].includes(seriesKey)) {
+        if (["carboxylicAcid", "oxoCarboxylicAcids", "ketoAcids", "hydroxyAcids", "aminoAcids"].includes(seriesKey)) {
             return "carboxylicAcids"
         }
         if (["cyanide", "hydroxyNitriles"].includes(seriesKey)) return "nitriles"
-        if (seriesKey === "hydroxyAcids") return "hydroxyAcids"
         if (seriesKey === "amine") return "amines"
-        if (seriesKey === "aminoAcids") return "aminoAcids"
         if (seriesKey === "nitro") return "nitro"
         return "unclassified"
     })()

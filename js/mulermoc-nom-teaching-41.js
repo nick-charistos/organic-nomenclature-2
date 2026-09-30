@@ -47,15 +47,11 @@ const chemicalClassLabels = {
   alkylHalides: "Αλκυλαλογονίδια",
   alcohols: "Αλκοόλες",
   ethers: "Αιθέρες",
-  aldehydes: "Αλδεΰδες",
-  ketones: "Κετόνες",
-  // carbonylCompounds: "Καρβονυλικές Ενώσεις",
+  carbonylCompounds: "Καρβονυλικές Ενώσεις",
   carboxylicAcids: "Καρβοξυλικά Οξέα",
   esters: "Εστέρες",
   nitriles: "Νιτρίλια",
-  hydroxyAcids: "Υδροξυοξέα",
   amines: "Αμίνες",
-  aminoAcids: "Αμινοξέα",
   nitro: "Νιτροενώσεις",
   unclassified: "Μη ταξινομημένα",
 };
@@ -79,31 +75,31 @@ function fInitTheory() {
     "                <div class='ruleCase ruleTableTitle'> Άτομα Άνθρακα </div>" +
     "              <div class=' ruleName ruleTableTitle'> 1<sup>o</sup> Συνθετικό </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c1\">" +
     "            <div class='ruleCase'>1 C</div>" +
     "            <div class='ruleName'> Μεθ- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c2\">" +
     "            <div class='ruleCase'>2 C</div>" +
     "            <div class='ruleName'> Αιθ- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c3\">" +
     "            <div class='ruleCase'>3 C</div>" +
     "            <div class='ruleName'> Προπ- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c4\">" +
     "            <div class='ruleCase'>4 C</div>" +
     "            <div class='ruleName'> Βουτ- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c5\">" +
     "            <div class='ruleCase'>5 C</div>" +
     "            <div class='ruleName'> Πεντ- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c6\">" +
     "            <div class='ruleCase'>6 C</div>" +
     "            <div class='ruleName'> Εξ- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r1-c7\">" +
     "            <div class='ruleCase'>7 C</div>" +
     "            <div class='ruleName'> Επτ- </div>" +
     "        </div>" +
@@ -115,31 +111,31 @@ function fInitTheory() {
     "                <div class='ruleCase ruleTableTitle'> Είδος Δεσμών </div>" +
     "              <div class=' ruleName ruleTableTitle'> 2<sup>o</sup> Συνθετικό </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-single\">" +
     "            <div class='ruleCase'>Απλοί δεσμοί</div>" +
     "            <div class='ruleName'> -αν- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-double\">" +
     "            <div class='ruleCase'> 1 διπλός δεσμός </div>" +
     "            <div class='ruleName'> -εν- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-triple\">" +
     "            <div class='ruleCase'> 1 τριπλός δεσμός </div>" +
     "            <div class='ruleName'> -ιν- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-didouble\">" +
     "            <div class='ruleCase'> 2 διπλοί δεσμοί </div>" +
     "            <div class='ruleName'> -διεν- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-tridouble\">" +
     "            <div class='ruleCase'> 3 διπλοί δεσμοί </div>" +
     "            <div class='ruleName'> -τριεν- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-ditriple\">" +
     "            <div class='ruleCase'> 2 τριπλοί δεσμοί </div>" +
     "            <div class='ruleName'> -διιν- </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
+    "        <div class='HFlex ruleRow' data-row=\"r2-double-triple\">" +
     "            <div class='ruleCase'> 1 διπλός + 1 τριπλός</div>" +
     "            <div class='ruleName'> -ενιν- </div>" +
     "        </div>" +
@@ -151,83 +147,79 @@ function fInitTheory() {
     "                <div class='ruleCase ruleTableTitle'> Χημική Τάξη </div>" +
     "              <div class=' ruleName ruleTableTitle'> 3<sup>o</sup> Συνθετικό </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'>Υδρογονάνθρακες</div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-hydrocarbons\">" +
+    "            <div class='ruleCase'>Υδρογονάνθρακες R-H</div>" +
     "            <div class='ruleName'> -ιο </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'>Αλκυλαλογονίδια ( -Χ)</div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-alkyl-halides\">" +
+    "            <div class='ruleCase'>Αλκυλαλογονίδια R-Χ</div>" +
     "            <div class='ruleName'> -ιο </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'>Νιτροενώσεις ( -NO<sub>2</sub>)</div>" +
-    "            <div class='ruleName'> -ιο </div>" +
-    "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Αλκοόλες (-ΟΗ) </div>" +
+       "        <div class='HFlex ruleRow' data-row=\"r3-alcohols\">" +
+    "            <div class='ruleCase'> Αλκοόλες R-OH </div>" +
     "            <div class='ruleName'> -όλη </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Αλδεϋδες (-CH=O) </div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-aldehydes\">" +
+    "            <div class='ruleCase'> Καρβονυλικές Ενώσεις - Αλδεϋδες R-CH=O </div>" +
     "            <div class='ruleName'> -άλη </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Κετόνες (C-C(=O)-C) </div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-ketones\">" +
+    "            <div class='ruleCase'> Καρβονυλικές Ενώσεις - Κετόνες R-C(=O)-R' </div>" +
     "            <div class='ruleName'> -όνη </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Καρβοξυλικά οξέα (-COOH)</div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-carboxylic-acids\">" +
+    "            <div class='ruleCase'> Καρβοξυλικά οξέα R-COOH</div>" +
     "            <div class='ruleName'> -ικό οξύ </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Υδροξυοξέα ( -ΟΗ, -COOH)</div>" +
-    "            <div class='ruleName'> -ικό οξύ </div>" +
-    "        </div>" +
-      "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Αμινοξέα ( -ΝΗ<sub>2</sub>, -COOH)</div>" +
-    "            <div class='ruleName'> -ικό οξύ </div>" +
-    "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Νιτρίλια (-CN) </div>" +
-    "            <div class='ruleName'> -νιτρίλιο </div>" +
-    "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Αιθέρες (R-O-R') </div>" +
+    //   "        <div class='HFlex ruleRow' data-row=\"r3-amino-acids\">" +
+    // "            <div class='ruleCase'> Αμινοξέα ( -ΝΗ<sub>2</sub>, -COOH)</div>" +
+    // "            <div class='ruleName'> -ικό οξύ </div>" +
+    // "        </div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-ethers\">" +
+    "            <div class='ruleCase'> Αιθέρες R-O-R' </div>" +
     "            <div class='ruleName'> -ιο <br> αιθέρας </div>" +
     "        </div>" +
-    "        <div class='HFlex ruleRow'>" +
-    "            <div class='ruleCase'> Εστέρες (R-COO-R') </div>" +
+    "        <div class='HFlex ruleRow' data-row=\"r3-esters\">" +
+    "            <div class='ruleCase'> Εστέρες R-COO-R' </div>" +
     "            <div class='ruleName'> -οϊκός … εστέρας </div>" +
+    "        </div>" +
+     "        <div class='HFlex ruleRow' data-row=\"r3-nitro\">" +
+    "            <div class='ruleCase'>Νιτροενώσεις R-NO<sub>2</sub></div>" +
+    "            <div class='ruleName'> -ιο </div>" +
+    "        </div>" +
+        "        <div class='HFlex ruleRow' data-row=\"r3-nitriles\">" +
+    "            <div class='ruleCase'> Νιτρίλια R-CN </div>" +
+    "            <div class='ruleName'> -νιτρίλιο </div>" +
     "        </div>" +
     "    </div>";
 
   r4Table = `
     <div class='VFlex namingRuleTable rule4'>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-carboxylic">
             <div class='ruleCase'><span class='orderNo'>1.</span> Καρβοξύλιο </div>
             <div class='ruleName'> -COOH </div>
         </div>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-cyano">
             <div class='ruleCase'><span class='orderNo'>2.</span> Κυανομάδα </div>
             <div class='ruleName'> -CN </div>
         </div>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-aldehyde">
             <div class='ruleCase'><span class='orderNo'>3.</span> Αλδεϋδομάδα </div>
             <div class='ruleName'> -CH=O </div>
         </div>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-keto">
             <div class='ruleCase'><span class='orderNo'>4.</span> Κετονομάδα </div>
             <div class='ruleName'> C-C(=O)-C </div>
         </div>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-hydroxy">
             <div class='ruleCase'><span class='orderNo'>5.</span> Υδροξύλιο</div>
             <div class='ruleName'> -OH </div>
         </div>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-amino">
             <div class='ruleCase'><span class='orderNo'>6.</span> Αμινοομάδα</div>
             <div class='ruleName'> -ΝΗ<sub>2</sub> </div>
         </div>
-        <div class='HFlex ruleRow'>
+        <div class='HFlex ruleRow' data-row="r4-alkoxy">
             <div class='ruleCase'><span class='orderNo'>7.</span> Αλκοξυομάδα</div>
             <div class='ruleName'> -O- </div>
         </div>
@@ -902,7 +894,21 @@ $(document).ready(function () {
     "click",
     ".menuNomeclature2Container .crossMenuLi",
     function () {
-      if ($(this).hasClass("selectedLi")) {
+      // Toggle shut: clicking the open group closes it again.
+      if (
+        $(this).hasClass("selectedLi") &&
+        $(this).next(".exmplContainer").hasClass("open")
+      ) {
+        fDeselectMol();
+        $(this).removeClass("selectedLi");
+        $(this).next(".exmplContainer").slideUp();
+        $(this).next(".exmplContainer").removeClass("open").addClass("closed");
+        // Rule mode: closing the group clears its theory (mirrors molecule deselect).
+        if (moleculeGroupingMode === "rule") {
+          selectedRule = undefined;
+          window.speechSynthesis.cancel();
+          $("#ruleTheory").empty();
+        }
         return;
       }
 

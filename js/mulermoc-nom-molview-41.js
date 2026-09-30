@@ -23,7 +23,7 @@ let numbersSVGElements = [];
 let currNumberEl = 0;
 let namingRules;
 let ruleFlag = false;
-let ruleTableHighlight = 0;
+let ruleTableHighlight = null;
 let ruleTableFlag = false;
 let vis3D = "ballnstick";
 let JmolSelection = "select none";
@@ -502,7 +502,7 @@ function fInitProps() {
   clearInterval(myNumberingTimeout);
   nameAnalysisMode = "none";
   carbons = 0;
-  ruleTableHighlight = 0;
+  ruleTableHighlight = null;
 }
 
 // ── fShowMolName ──────────────────────────────────────────────────────────
@@ -3003,7 +3003,7 @@ function fClearHighlights() {
   removeEcho3D();
   $("#ruleTheoryContainer").hide();
   $("#nameAnalysisExplain").html("");
-  ruleTableHighlight = 0;
+  ruleTableHighlight = null;
   numberingAtomOverride = null;
   numberingAtomOverride3D = null;
   JmolSelection = "select none;";
@@ -3053,6 +3053,22 @@ const alkylBranchNouns = {
   επτυλο: "επτύλιο",
   οκτυλο: "οκτύλιο",
 };
+
+// FG key -> rule-4 table row key. Returns null when the FG has no rule-4 row
+// (nitro, halogens, ethers, esters): no highlight instead of a wrong one.
+const r4KeyForFG = {
+  carboxylicAcid: "r4-carboxylic",
+  cyanide: "r4-cyano",
+  aldehyde: "r4-aldehyde",
+  ketone: "r4-keto",
+  alcohol: "r4-hydroxy",
+  amine: "r4-amino",
+};
+function fRule4KeysForFGs(fgA, fgB) {
+  return [fgA, fgB]
+    .map(function (k) { return r4KeyForFG[k] || null; })
+    .filter(function (k) { return !!k; });
+}
 
 // Resolve the [fgKey, heteroEl] instance behind FGno, using the same
 // fgInstances ordering as fHighlightFG (FGno=1 → first name prefix).
@@ -3225,10 +3241,7 @@ function fExplainNameComp() {
             fHighlightFG3D(1);
             myFG0 = functionalGroupsList[0];
             myFG1 = functionalGroupsList[1];
-            ruleTableHighlight = [
-              gFunctionalGroupsOrder.indexOf(myFG0),
-              gFunctionalGroupsOrder.indexOf(myFG1),
-            ];
+            ruleTableHighlight = fRule4KeysForFGs(myFG0, myFG1);
             $("#ruleTheoryContainer").show();
           } else {
             fHighlightFG();
@@ -3272,23 +3285,23 @@ function fExplainNameComp() {
           case "έν":
           case "εν":
             myText = " Δηλώνει τη θέση του διπλού δεσμού.";
-            ruleTableHighlight = 2;
+            ruleTableHighlight = "r2-double";
             break;
           case "διέν":
           case "διεν":
             myText = " Δηλώνει τις θέσεις των διπλών δεσμών.";
-            ruleTableHighlight = 4;
+            ruleTableHighlight = "r2-didouble";
             break;
           case "ίν":
           case "ιν":
             myText = " Δηλώνει τη θέση του τριπλού δεσμού.";
-            ruleTableHighlight = 3;
+            ruleTableHighlight = "r2-triple";
             break;
           case "διίν":
           case "διιν":
             myText = " Δηλώνει τις θέσεις των τριπλών δεσμών.";
 
-            ruleTableHighlight = 6;
+            ruleTableHighlight = "r2-ditriple";
             break;
           default:
           // myText = " Δηλώνει τη θέση του Πολλαπλού Δεσμού."
@@ -3336,10 +3349,7 @@ function fExplainNameComp() {
           // Βρισκει τις υπαρχουσες ΧΟ και επιλέγει τη σειρά στον πινακα
           myFG0 = functionalGroupsList[0];
           myFG1 = functionalGroupsList[1];
-          ruleTableHighlight = [
-            gFunctionalGroupsOrder.indexOf(myFG0),
-            gFunctionalGroupsOrder.indexOf(myFG1),
-          ];
+          ruleTableHighlight = fRule4KeysForFGs(myFG0, myFG1);
           $("#ruleTheoryContainer").show();
         } else {
           fHighlightFG();
@@ -3391,12 +3401,12 @@ function fExplainNameComp() {
         case "έν":
         case "εν":
           myText = " Δηλώνει τη θέση του διπλού δεσμού.";
-          ruleTableHighlight = 2;
+          ruleTableHighlight = "r2-double";
           break;
         case "ίν":
         case "ιν":
           myText = " Δηλώνει τη θέση του τριπλού δεσμού.";
-          ruleTableHighlight = 3;
+          ruleTableHighlight = "r2-triple";
           break;
         default:
           myText = " Δηλώνει τη θέση του Πολλαπλού Δεσμού.";
@@ -3415,9 +3425,10 @@ function fExplainNameComp() {
       nStyle = "";
       myClass = "";
       ruleTableHighlight =
-        Array.isArray(mainChainAtomsList) && mainChainAtomsList.length
+        "r1-c" +
+        (Array.isArray(mainChainAtomsList) && mainChainAtomsList.length
           ? mainChainAtomsList.length
-          : carbons;
+          : carbons);
       numberingFlag = true;
       fShowNumbering();
       $("#ruleTheoryContainer").show();
@@ -3427,26 +3438,26 @@ function fExplainNameComp() {
         case "αν":
         case "άν":
           myText = "μόνο απλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 1;
+          ruleTableHighlight = "r2-single";
           break;
         case "εν":
         case "έν":
           myText = "έναν διπλό δεσμο μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 2;
+          ruleTableHighlight = "r2-double";
           break;
         case "ίν":
         case "ιν":
           myText = "έναν τριπλό δεσμό μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 3;
+          ruleTableHighlight = "r2-triple";
           break;
         case "διέν":
         case "διεν":
           myText = "δύο διπλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 4;
+          ruleTableHighlight = "r2-didouble";
           break;
         default:
           myText = "μόνο απλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 1;
+          ruleTableHighlight = "r2-single";
       }
       myText = "Έχει " + myText;
       nStyle = "";
@@ -3465,39 +3476,39 @@ function fExplainNameComp() {
       switch (nameComponentsList[8]) {
         case "άν":
           myText = "μόνο απλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 1;
+          ruleTableHighlight = "r2-single";
           break;
         case "αν":
           myText = "μόνο απλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 1;
+          ruleTableHighlight = "r2-single";
           break;
         case "έν":
           myText = "έναν διπλό δεσμο μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 2;
+          ruleTableHighlight = "r2-double";
           break;
         case "εν":
           myText = "έναν διπλό δεσμο μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 2;
+          ruleTableHighlight = "r2-double";
           break;
         case "ίν":
           myText = "έναν τριπλό δεσμό μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 3;
+          ruleTableHighlight = "r2-triple";
           break;
         case "ιν":
           myText = "έναν τριπλό δεσμό μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 3;
+          ruleTableHighlight = "r2-triple";
           break;
         case "διέν":
           myText = "δύο διπλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 4;
+          ruleTableHighlight = "r2-didouble";
           break;
         case "διεν":
           myText = "δύο διπλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 4;
+          ruleTableHighlight = "r2-didouble";
           break;
         default:
           myText = "μόνο απλούς δεσμούς μεταξύ των ατόμων άνθρακα";
-          ruleTableHighlight = 1;
+          ruleTableHighlight = "r2-single";
       }
       myText = "Έχει " + myText;
       nStyle = "";
@@ -3531,50 +3542,59 @@ function fExplainNameComp() {
         nameExamples[selectedMol]?.classification?.chemicalClass;
 
       const myChemClass = chemicalClassLabels[chemicalClass] || molTaxonomy;
-      myText = "Ανήκει στη χημική τάξη " + myChemClass;
+      const _seriesKey = nameExamples[selectedMol]?.classification?.seriesKey;
+      const _seriesLabel =
+        (typeof homologousSeriesLabels !== "undefined" && _seriesKey && homologousSeriesLabels[_seriesKey]) || "";
+      myText = "Ανήκει στη Χημική Τάξη " + myChemClass;
+      if (_seriesLabel && _seriesLabel.toLocaleLowerCase("el") !== myChemClass.toLocaleLowerCase("el")) {
+        myText += " και στην Ομόλογη Σειρά " + _seriesLabel + ".";
+      } else {
+        myText += ".";
+      }
       if (typeof currentMolCommonName !== "undefined" && currentMolCommonName) {
-        myText += ". Κοινή ονομασία: " + currentMolCommonName;
+        myText += " Κοινή ονομασία: " + currentMolCommonName;
       }
       nStyle = "";
       myClass = "";
 
       switch (myChemClass) {
         case "Υδρογονάνθρακες":
-          ruleTableHighlight = 1;
+          ruleTableHighlight = "r3-hydrocarbons";
           break;
         case "Αλκυλαλογονίδια":
-          ruleTableHighlight = 2;
+          ruleTableHighlight = "r3-alkyl-halides";
           break;
         case "Νιτροενώσεις":
-          ruleTableHighlight = 3;
+          ruleTableHighlight = "r3-nitro";
           break;
         case "Αλκοόλες":
-          ruleTableHighlight = 4;
+          ruleTableHighlight = "r3-alcohols";
           break;
         case "Αλδεΰδες":
-          ruleTableHighlight = 5;
+          ruleTableHighlight = "r3-aldehydes";
           break;
         case "Κετόνες":
-          ruleTableHighlight = 6;
+          ruleTableHighlight = "r3-ketones";
+          break;
+        case "Καρβονυλικές Ενώσεις":
+          // Single row via series below (Αλδεϋδες=5 xor Κετόνες=6).
           break;
         case "Καρβοξυλικά Οξέα":
-          ruleTableHighlight = 7;
-          break;
-        case "Υδροξυοξέα":
-          ruleTableHighlight = 8;
-          break;
-        case "Αμινοξέα":
-          ruleTableHighlight = 9;
+          ruleTableHighlight = "r3-carboxylic-acids";
           break;
         case "Νιτρίλια":
-          ruleTableHighlight = 10;
+          ruleTableHighlight = "r3-nitriles";
           break;
         case "Αιθέρες":
-          ruleTableHighlight = 11;
+          ruleTableHighlight = "r3-ethers";
           break;
         case "Εστέρες":
-          ruleTableHighlight = 12;
+          ruleTableHighlight = "r3-esters";
           break;
+      }
+      if (chemicalClass === "carbonylCompounds") {
+        if (_seriesKey === "aldehyde") ruleTableHighlight = "r3-aldehydes";
+        else if (_seriesKey === "ketone") ruleTableHighlight = "r3-ketones";
       }
       numberingFlag = false;
       if (molTaxonomy != "Υδρογονάνθρακες") {
@@ -3641,7 +3661,7 @@ function fExplainNameComp() {
       nStyle = "";
       myClass = "";
       myText = "Ανήκει στη χημική τάξη Εστέρες.";
-      ruleTableHighlight = 12;
+      ruleTableHighlight = "r3-esters";
       fHighlightAtomChain(fGetEsterGroupFragment());
       fHighlightAtomChain3D(fGetEsterGroupFragment3D(), true);
       numberingFlag = false;
@@ -3652,7 +3672,7 @@ function fExplainNameComp() {
       nStyle = "";
       myClass = "";
       myText = "Ανήκει στη χημική τάξη Αιθέρες (κοινή ονομασία).";
-      ruleTableHighlight = 11;
+      ruleTableHighlight = "r3-ethers";
       fHighlightFG();
       fHighlightFG3D();
       numberingFlag = false;
@@ -3759,19 +3779,25 @@ function fShowRule(theRule) {
 
   $("#ruleTheoryContainer").html(myHTML);
 
-  if (Number.isInteger(ruleTableHighlight)) {
-    $(".ruleRow:nth-of-type(" + (ruleTableHighlight + 1) + ")").addClass(
+  // Key-based highlight: rows carry data-row="rN-key" (see fInitTheory tables).
+  // Row order no longer matters — moves/additions need no code changes.
+  if (typeof ruleTableHighlight === "string" && ruleTableHighlight) {
+    $('#ruleContainer [data-row="' + ruleTableHighlight + '"]').addClass(
       "selected",
     );
   }
   if (Array.isArray(ruleTableHighlight)) {
     $("#ruleContainer .ruleText").addClass("hideTopRow");
-    $(".ruleRow:nth-of-type(" + (ruleTableHighlight[0] + 1) + ")").addClass(
-      "selected selectedB",
-    );
-    $(".ruleRow:nth-of-type(" + (ruleTableHighlight[1] + 1) + ")").addClass(
-      "selected selectedA",
-    );
+    if (ruleTableHighlight[0]) {
+      $('#ruleContainer [data-row="' + ruleTableHighlight[0] + '"]').addClass(
+        "selected selectedB",
+      );
+    }
+    if (ruleTableHighlight[1]) {
+      $('#ruleContainer [data-row="' + ruleTableHighlight[1] + '"]').addClass(
+        "selected selectedA",
+      );
+    }
   }
 }
 

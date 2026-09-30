@@ -111,9 +111,9 @@ header {
   display: none !important;
 }
 
-#jsmeNomeclatureDIV {
-  /* width: 450px; */
-}
+/* #jsmeNomeclatureDIV {
+  width: 450px;
+} */
 
 #jsmeFunSVG,
 #jsmeMolSVG {
@@ -567,8 +567,8 @@ max-height: 596px;
   color: #333;
 }
 
-.menuLi::before {
-  /* content: '';
+/* .menuLi::before {
+  content: '';
     width: 5px;
     height: 5px;
     border-radius: 50%;
@@ -576,8 +576,8 @@ max-height: 596px;
     transition: all 0.3s;
     position: absolute;
     left: 5px;
-    top: 14px; */
-}
+    top: 14px;
+} */
 
 .menuLi:hover::before {
   transition: all 0.3s;
@@ -1237,15 +1237,18 @@ max-height: 596px;
   box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.5);
 }
 
-.namingRuleTable {
-  /* max-width: 320px; */
-  /* padding-bottom: 20px; */
-}
+/* .namingRuleTable {
+  max-width: 320px;
+  padding-bottom: 20px;
+} */
 
 .ruleCase,
 .ruleName {
   color: #333;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* .ruleCase {} */
