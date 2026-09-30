@@ -160,10 +160,39 @@ header {
   z-index: 300;
 }
 
-.settingsBtn:hover,
-.settingsBtn.active {
+.settingsBtn:hover {
   background: var(--darkEarth);
   color: #fff;
+}
+
+
+.settingsBtn.active {
+  background: var(--lightBlue);
+  color: #fff;
+}
+/* Viewer title-bar button row: [2D][3D][gear]. Buttons lay out in a row;
+   .settingsBtn absolute positioning is neutralized inside the container. */
+#viewerVisBtns {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  z-index: 300;
+}
+#viewerVisBtns .settingsBtn {
+  position: static;
+  transform: none;
+}
+/* Text visibility toggles: bold label instead of an icon. */
+.settingsBtn.visBtn {
+font-size: 1rem;
+  font-weight: bolder;
+  padding: 2px 4px;
+  font-family: "Roboto Condensed";
 }
 
 /* ── Settings dropdown panel ─────────────────────────────────────────────── */
@@ -460,6 +489,27 @@ header {
   border-right-color: transparent;
   border-left-color: var(--lightBlue);
   z-index: 400;
+}
+/* 2D/3D title buttons: tooltip below EACH button (like #narrateAnalysisToggle).
+   relative positioning anchors each tooltip to its own button. */
+#viewerVisBtns .settingsBtn.visBtn {
+  position: relative;
+}
+.settingsBtn.visBtn[data-tooltip]::after {
+  top: calc(100% + 10px);
+  bottom: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+.settingsBtn.visBtn[data-tooltip]::before {
+  top: 100%;
+  bottom: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--lightBlue);
 }
 
 .panelTitleSpan {

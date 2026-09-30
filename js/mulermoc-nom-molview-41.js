@@ -196,18 +196,26 @@ function fClassifyAllMolecules() {
 
 // ── fToggleViewerSettings ────────────────────────────────────────────────
 
-// Initialize viewer settings button markup into #viewerSettingsBtnDiv.
+// Title-bar buttons: 2D / 3D visibility toggles into #viewerVisBtns (far left,
+// bold text, same .active contract as the gear) + gear into #viewerSettingsBtnDiv.
 // Uses existing `svgSettings` constant and the fToggleViewerSettings() handler.
 function fInitViewerSettingsBtn() {
   const markup =
     "<button id='viewerSettingsBtn' class='settingsBtn' onclick='fToggleViewerSettings()' data-tooltip='Ρυθμίσεις'>" +
     svgSettings +
     "</button>";
+  const visMarkup =
+    "<button id='view2DBtn' class='settingsBtn visBtn active' onclick='fToggleViewer2D()' data-tooltip='Εμφάνιση 2D'>2D</button>" +
+    "<button id='view3DBtn' class='settingsBtn visBtn active' onclick='fToggleViewer3D()' data-tooltip='Εμφάνιση 3D'>3D</button>";
   function insert() {
     try {
       const div = document.getElementById("viewerSettingsBtnDiv");
       if (div && !document.getElementById("viewerSettingsBtn")) {
         div.innerHTML = markup;
+      }
+      const bar = document.getElementById("viewerVisBtns");
+      if (bar && !document.getElementById("view2DBtn")) {
+        bar.insertAdjacentHTML("afterbegin", visMarkup);
       }
     } catch (e) {
       // defensive - don't throw in init
@@ -220,6 +228,40 @@ function fInitViewerSettingsBtn() {
   } else {
     // ensure insertion if scripts run after DOM ready
     setTimeout(insert, 0);
+  }
+}
+
+// Title-bar 2D visibility toggle. Same .active contract as fToggleViewerSettings.
+// Scope mirrors the (commented-out) viewFinalJSME checkbox: SVG + 2D mode radios.
+function fToggleViewer2D() {
+  var btn = document.getElementById("view2DBtn");
+  var show = btn && btn.classList.contains("active");
+  if (show) {
+    if (btn) btn.classList.remove("active");
+    $("#jsmeNomeclatureSVG").slideUp(200);
+    $("#radio2DMode").addClass("hide");
+  } else {
+    if (btn) btn.classList.add("active");
+    $("#jsmeNomeclatureSVG").slideDown(200);
+    $("#radio2DMode").removeClass("hide");
+  }
+}
+
+// Title-bar 3D visibility toggle. Scope mirrors the (commented-out) viewJSmol
+// checkbox: 3D applet + 3D controls, with JSmol refresh on re-show.
+function fToggleViewer3D() {
+  var btn = document.getElementById("view3DBtn");
+  var show = btn && btn.classList.contains("active");
+  if (show) {
+    if (btn) btn.classList.remove("active");
+    $("#nomeclature3D").slideUp(200);
+    $("#controls3D").addClass("hide");
+  } else {
+    if (btn) btn.classList.add("active");
+    $("#nomeclature3D").slideDown(200, function () {
+      Jmol.script(jmolAppletNomeclature, "refresh");
+    });
+    $("#controls3D").removeClass("hide");
   }
 }
 
