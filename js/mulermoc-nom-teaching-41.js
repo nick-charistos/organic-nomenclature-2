@@ -316,6 +316,29 @@ function fNarrateRule() {
   window.speechSynthesis.speak(utterance);
 }
 
+// ── fSortPropsByCarbonCount ─────────────────────────────────────────────────
+// Ascending total-carbon order, stable on data-file order, unclassified last.
+// Shared by series-mode groups and the flat "all molecules" list.
+function fSortPropsByCarbonCount(props) {
+  return props
+    .map((prop, originalIndex) => ({
+      prop,
+      originalIndex,
+      carbonCount: nameExamples[prop].classification?.carbonCount,
+    }))
+    .sort((left, right) => {
+      const leftCount = left.carbonCount;
+      const rightCount = right.carbonCount;
+      if (leftCount == null && rightCount == null) {
+        return left.originalIndex - right.originalIndex;
+      }
+      if (leftCount == null) return 1;
+      if (rightCount == null) return -1;
+      return leftCount - rightCount || left.originalIndex - right.originalIndex;
+    })
+    .map(({ prop }) => prop);
+}
+
 // ── fInitNomeclatureMenu ──────────────────────────────────────────────────
 
 function fInitNomeclatureMenu() {
@@ -331,7 +354,7 @@ function fInitNomeclatureMenu() {
         .filter(Boolean);
       groupLabels[key] = ruleIndex + 1 + "<sup>ος</sup> Κανόνας";
     });
-  } else {
+  } else if (moleculeGroupingMode !== "all") {
     names.forEach((name) => {
       const classification = nameExamples[name].classification;
       const key =
@@ -351,23 +374,7 @@ function fInitNomeclatureMenu() {
 
   if (moleculeGroupingMode === "series") {
     Object.keys(groups).forEach((groupKey) => {
-      groups[groupKey] = groups[groupKey]
-        .map((prop, originalIndex) => ({
-          prop,
-          originalIndex,
-          carbonCount: nameExamples[prop].classification?.carbonCount,
-        }))
-        .sort((left, right) => {
-          const leftCount = left.carbonCount;
-          const rightCount = right.carbonCount;
-          if (leftCount == null && rightCount == null) {
-            return left.originalIndex - right.originalIndex;
-          }
-          if (leftCount == null) return 1;
-          if (rightCount == null) return -1;
-          return leftCount - rightCount || left.originalIndex - right.originalIndex;
-        })
-        .map(({ prop }) => prop);
+      groups[groupKey] = fSortPropsByCarbonCount(groups[groupKey]);
     });
   }
 
@@ -377,7 +384,7 @@ function fInitNomeclatureMenu() {
     myHTML +=
     "<div class='radioCheckContainer " +
     (moleculeGroupingMode === "chemclass" ? "selectedRadio" : "unselectedRadio") +
-    "' data-grouping-mode='chemclass'>Χημική Τάξη<span class='radioCheck'></span></div>";
+    "' data-grouping-mode='chemclass'>Χημικές Τάξεις<span class='radioCheck'></span></div>";
   myHTML +=
     "<div class='radioCheckContainer " +
     (moleculeGroupingMode === "series" ? "selectedRadio" : "unselectedRadio") +
@@ -386,7 +393,30 @@ function fInitNomeclatureMenu() {
     "<div class='radioCheckContainer " +
     (moleculeGroupingMode === "rule" ? "selectedRadio" : "unselectedRadio") +
     "' data-grouping-mode='rule'>Κανόνες Ονοματολογίας<span class='radioCheck'></span></div>";
+  myHTML +=
+    "<div class='radioCheckContainer " +
+    (moleculeGroupingMode === "all" ? "selectedRadio" : "unselectedRadio") +
+    "' data-grouping-mode='all'>Όλα τα μόρια<span class='radioCheck'></span></div>";
   myHTML += "</div><div class='menuNomeclature2Container'>";
+
+  if (moleculeGroupingMode === "all") {
+    fSortPropsByCarbonCount(names).forEach((prop) => {
+      let myMolFormula = nameExamples[prop].formula.replace(
+        /(\d+)/g,
+        "<sub>$1</sub>",
+      );
+      myMolFormula = myMolFormula.replace(
+        /(['='])/g,
+        '<span class="bondSymbol large">&#9552;</span>',
+      );
+      myMolFormula = myMolFormula.replace(
+        /(['_'])/g,
+        '<span class="bondSymbol">&#9776;</span>',
+      );
+      myHTML +=
+        "<div id='" + prop + "' class='menuLi'> " + myMolFormula + "</div>";
+    });
+  }
 
   const groupOrder =
     moleculeGroupingMode === "series"
@@ -949,7 +979,9 @@ $(document).ready(function () {
     }
 
     if ($targetMol.length) {
-      $targetMol.closest(".exmplContainer").prev(".crossMenuLi").trigger("click");
+      // Flat ("all") mode has no group headers — select the molecule directly.
+      const $hdr = $targetMol.closest(".exmplContainer").prev(".crossMenuLi");
+      if ($hdr.length) $hdr.trigger("click");
       $targetMol.trigger("click");
     }
   });

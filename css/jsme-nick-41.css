@@ -547,7 +547,7 @@ max-height: 596px;
 .menuNomeclature2Container {
 	max-height: 451px;
 	overflow: auto;
-	
+	padding-bottom: 10px;
 }
 
 .groupingMode {
