@@ -3394,7 +3394,10 @@ function fExplainNameComp() {
         " άτομα άνθρακα C";
       nStyle = "";
       myClass = "";
-      ruleTableHighlight = carbons;
+      ruleTableHighlight =
+        Array.isArray(mainChainAtomsList) && mainChainAtomsList.length
+          ? mainChainAtomsList.length
+          : carbons;
       numberingFlag = true;
       fShowNumbering();
       $("#ruleTheoryContainer").show();
