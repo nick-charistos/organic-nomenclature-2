@@ -2890,10 +2890,16 @@ function fShowNameAnalysis() {
 
     // Apply Greek euphony: append connecting vowel to this component's display
     // if it ends with a consonant and the next non-empty component starts with one.
-    // Esters: no connector across the acid|alcohol|ester word boundaries
-    // (slots 10+ are separate words: προπανοϊκός μεθυλ εστέρας).
+    // Esters are two words (προπανοϊκός μεθυλεστέρας): no connector from the
+    // acid part (slots <10) into the fused tail (slots 10+).
     const _isEsterWordBoundary = (typeof nameExamples !== "undefined" && selectedMol &&
       nameExamples[selectedMol]?.classification?.chemicalClass === "esters");
+    // Next non-empty component drives both euphony and the trailing separator,
+    // so no "+" (or space) ever renders after the last box.
+    let _nextIdx = -1;
+    for (let _m = i + 1; _m < compCount; _m++) {
+      if (nameComponentsList[_m]) { _nextIdx = _m; break; }
+    }
     let displayComp = currComp;
     for (let n = i + 1; n < compCount; n++) {
       const nextComp = nameComponentsList[n];
@@ -2937,13 +2943,9 @@ function fShowNameAnalysis() {
       "' >" +
       displayComp +
       "</div>";
-    if (i < compCount - 1) {
+    if (_nextIdx >= 0) {
       // Esters: two-word name — blank space after οϊκός instead of +.
-      let _nextNonEmpty = -1;
-      for (let _m = i + 1; _m < compCount; _m++) {
-        if (nameComponentsList[_m]) { _nextNonEmpty = _m; break; }
-      }
-      if (_isEsterWordBoundary && i < 10 && _nextNonEmpty >= 10) {
+      if (_isEsterWordBoundary && i < 10 && _nextIdx >= 10) {
         compBox += "<div class='nameCompSpace'>&nbsp;</div>";
       } else {
         compBox += "<div class='" + crossClass + "' > + </div>";
