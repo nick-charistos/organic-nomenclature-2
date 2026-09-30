@@ -3474,6 +3474,11 @@ function fExplainNameComp() {
           ? mainChainAtomsList.length
           : carbons);
       numberingFlag = true;
+      // Optional (settings): light the numbered chain atoms as well.
+      if ($("#highlightNumberingCheck").hasClass("selectedCheck")) {
+        fHighLightMainChain();
+        fHighlightAtomChain3D(mainChainAtoms3D, true);
+      }
       fShowNumbering();
       $("#ruleTheoryContainer").show();
       break;
@@ -4319,7 +4324,7 @@ function fHighlightAtomChain3D(chainAtoms3D, skipH) {
   Jmol.script(
     jmolAppletNomeclature,
     "select all; selectionHalos off; color atoms none; color bonds none;" + arg +
-      ";color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d];",
+      ";color selectionHalos[X79dc6d]; selectionHalos on; color atoms [X79dc6d]; color bonds [X909090];",
   );
   JmolSelection = arg;
 }

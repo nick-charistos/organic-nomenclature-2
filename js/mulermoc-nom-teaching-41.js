@@ -1003,10 +1003,8 @@ $(document).ready(function () {
     rotate3D();
   });
 
-  svgAtomColors2DFlag = false;
-  $("#svgAtomColorCheck")
-    .removeClass("selectedCheck")
-    .addClass("unselectedCheck");
+  svgAtomColors2DFlag = true
+  // $("#svgAtomColorCheck").removeClass("selectedCheck").addClass("unselectedCheck");
   $("#jsmeNomeclatureSVG").removeClass("svgAtomsColorized");
 
   atomColorMode2D = "atom";
