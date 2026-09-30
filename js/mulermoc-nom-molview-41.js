@@ -3643,7 +3643,7 @@ function fExplainNameComp() {
       myText = "Ανήκει στη χημική τάξη Εστέρες.";
       ruleTableHighlight = 12;
       fHighlightAtomChain(fGetEsterGroupFragment());
-      fHighlightAtomChain3D(fGetEsterGroupFragment3D());
+      fHighlightAtomChain3D(fGetEsterGroupFragment3D(), true);
       numberingFlag = false;
       $("#ruleTheoryContainer").show();
       break;
@@ -4237,14 +4237,15 @@ function fHighlightAtomChain(chainAtoms) {
   fUpdateSVG();
 }
 
-function fHighlightAtomChain3D(chainAtoms3D) {
+function fHighlightAtomChain3D(chainAtoms3D, skipH) {
   if (!Array.isArray(chainAtoms3D) || chainAtoms3D.length === 0) return;
   let arg = "select";
   for (let i = 0; i < chainAtoms3D.length; i++) {
     arg += " atomno=" + chainAtoms3D[i];
     if (i < chainAtoms3D.length - 1) arg += ",";
   }
-  arg += "; select connected(selected) and _H or selected;";
+  // skipH: halo exactly the listed atoms (ester group: alkyl C without its H).
+  if (!skipH) arg += "; select connected(selected) and _H or selected;";
   Jmol.script(
     jmolAppletNomeclature,
     "select all; selectionHalos off; color atoms none; color bonds none;" + arg +
