@@ -394,7 +394,7 @@ function fInitNomeclatureMenu() {
         '<span class="bondSymbol">&#9776;</span>',
       );
       counter++;
-      myHTML += `<div id='${prop}' class='menuLi'><span class='menuLiCounter' >${counter}.</span>    <span> ${myMolFormula}</span></div>`;
+      myHTML += `<div id='${prop}' class='menuLi'><span class='menuLiCounter' >${counter}.</span><span class='menuLiFormula'> ${myMolFormula}</span></div>`;
     });
   }
 

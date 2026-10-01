@@ -546,7 +546,8 @@ max-height: 596px;
 
 .menuNomeclature2Container {
 	max-height: 451px;
-	overflow: auto;
+	overflow-x: auto;
+	overflow-y: auto;
 	padding-bottom: 10px;
 }
 
@@ -570,12 +571,19 @@ max-height: 596px;
 .menuLi {
   font-family: "Roboto", sans-serif;
   font-weight: normal;
-  padding: 5px 0 5px 15px;
+  padding: 5px 8px 5px 15px;
   transition: all 0.2s;
   color: #333;
   position: relative;
   height: 30px;
   box-sizing: border-box;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: visible;
+  width: max-content;
+  min-width: 100%;
 }
 
 .selectedLi {
@@ -1883,8 +1891,7 @@ max-height: 596px;
     font-size: 0.76rem;
     padding-left: 6px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
   }
 
   .menuContainer {
@@ -1929,3 +1936,17 @@ max-height: 596px;
   }
 }
 
+
+.menuLiCounter {
+  margin-left:-5px;
+  color:var(--darkBlue);
+  font-weight: 500;
+  font-family: "Roboto Condensed", sans-serif;
+   flex: 0 0 auto;
+}
+
+.menuLiFormula {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: visible;
+}
