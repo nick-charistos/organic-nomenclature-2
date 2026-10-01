@@ -2,21 +2,31 @@
 
 A Greek-first interactive learning platform for organic nomenclature, built around molecular structure, naming logic, and multiple representations.
 
-**Current working baseline:** v40
-**Main entry point:** [mulermoc-nom-40.html](mulermoc-nom-40.html)
-**Core engine:** [js/mulermoc-nom-core-40.js](js/mulermoc-nom-core-40.js)
-**Viewer layer:** [js/mulermoc-nom-molview-40.js](js/mulermoc-nom-molview-40.js)
-**Teaching layer:** [js/mulermoc-nom-teaching-40.js](js/mulermoc-nom-teaching-40.js)
-**Data set:** [js/jsme-nick-nomeclature-moc2-data_40.js](js/jsme-nick-nomeclature-moc2-data_40.js)
+**Current working baseline:** v41
+**Main entry point:** [mulermoc-nom-41.html](mulermoc-nom-41.html)
+**Core engine:** [js/mulermoc-nom-core-41.js](js/mulermoc-nom-core-41.js)
+**Viewer layer:** [js/mulermoc-nom-molview-41.js](js/mulermoc-nom-molview-41.js)
+**Teaching layer:** [js/mulermoc-nom-teaching-41.js](js/mulermoc-nom-teaching-41.js)
+**Data set:** [js/jsme-nick-nomeclature-moc2-data_41.js](js/jsme-nick-nomeclature-moc2-data_41.js) — 64 molecules
 
 ---
 
 ## Recent work: ethers (v40)
 
-- First ether molecule: `ethyl_methyl_ether` (CH3OCH2CH3), classified into the existing `Αιθέρες` menu group.
+- First ether molecules: `ethyl_methyl_ether` (CH3OCH2CH3) and `dimethylether` (CH3OCH3), classified into the `Αιθέρες` menu group.
 - Systematic naming (alkoxy prefix + parent alkane, e.g. μεθοξυαιθάνιο) and common naming (e.g. αιθυλμεθυλαιθέρας), with an IUPAC/COMMON toggle in the name-explanation panel.
 - Per-component highlight and numbering: alkoxy/alkyl clicks highlight and number only their own chain; `αιθέρας` highlights C-O-C.
 - Tolerant 2D loading: molecules with a missing representation load the first available one and disable the corresponding mode radio instead of crashing.
+
+---
+
+## Recent work: esters + viewer/menu improvements (v41)
+
+- First ester molecules: `ethanoic_methyl_ester` (CH3COOCH3) and `propanoic_methyl_ester` (CH3CH2COOCH3), with condensed, expanded and skeletal 2D data plus 3D SDFs. They run in algorithmic main-chain mode; stored `mainChain`/`moveto` data remains optional.
+- Ester detection in 2D and 3D (`functionalGroupObj.ester`), two-fragment `esterInfo` analysis, and two-word Greek IUPAC naming (e.g. προπανοϊκός μεθυλεστέρας) with ester-aware euphony.
+- Ester highlight/numbering: alcohol-fragment click numbers only the alcohol chain; ester-word click highlights the `O-C(=O)-O` triad in 2D and 3D.
+- Viewer: `[2D][3D]` title-bar visibility toggles, `Επισήμανση ατόμων κατά την αρίθμηση` setting (on by default), 2D atom colors on by default, molecule info button + panel (disabled by default via `molInfoEnabled = false`).
+- Menu: chemical-class taxonomy (`carbonylCompounds`, `esters`; hydroxy/amino acids folded into `carboxylicAcids`), flat `Όλα τα μόρια` grouping mode, rewritten rule-3 table with `data-row` keys.
 
 ---
 
@@ -69,24 +79,29 @@ The next product iteration is being re-scoped around a clearer educational model
   - expanded
   - skeletal
   - annotated skeletal
-- Greek IUPAC name generation
-- Name analysis and explanation panels
+- Greek IUPAC name generation (incl. ether systematic + common names, two-word ester names)
+- Name analysis and explanation panels (per-fragment highlight/numbering, IUPAC/COMMON toggle for ethers)
 - Rule theory panel
 - TTS narration in Greek
 - PNG export for 2D and 3D views
 - Responsive menu and settings controls
-- Current molecule data set for the teaching application
+- Title-bar `[2D][3D]` visibility toggles + highlight-during-numbering setting
+- 2D atom colors on by default
+- Current molecule data set for the teaching application (64 molecules, incl. 2 ethers + 2 esters)
 
-### v39 molecule grouping
+### Molecule grouping (v39, refined in v41)
 
-The v39 menu classifies molecules through the existing structure-analysis
+The menu classifies molecules through the existing structure-analysis
 pipeline (`fAnalyseStructure()` and `fDetectMolType()`). Each molecule receives
 a classification snapshot containing its functional groups, homologous-series
 key, bond-series type, and total carbon count.
 
-The default menu groups molecules by homologous series. Rule grouping remains
-available as an alternate mode. Special series currently include amino acids,
-hydroxy acids, keto acids, hydroxy nitriles, and oxo carboxylic acids.
+The default menu groups molecules by homologous series. Rule grouping and a
+flat `Όλα τα μόρια` (all molecules) list are available as alternate modes.
+Chemical classes in v41 include `ethers`, `esters` and `carbonylCompounds`
+(merged aldehydes/ketones); hydroxy/amino acids are folded into
+`carboxylicAcids`. Remaining special series include keto acids, hydroxy
+nitriles, and oxo carboxylic acids.
 
 Within each homologous-series group, molecules are ordered by increasing total
 number of carbon atoms. The optional `mainChain` data is not required for this
@@ -122,16 +137,20 @@ The next version should not be organized primarily around rule-by-rule teaching.
    - corrected locant logic
    - validation examples
 
-2. **Ethers** (in progress, v40)
-   - detection and classification: done
-   - systematic + common naming for saturated acyclic mono-ethers: done
-   - per-component highlight/numbering + IUPAC/COMMON toggle: done
-   - remaining: expanded/skeletal data, stored chain data, symmetric example, unsaturated chains
+2. **Ethers** (v40, carried into v41)
+    - detection and classification: done
+    - systematic + common naming for saturated acyclic mono-ethers: done
+    - per-component highlight/numbering + IUPAC/COMMON toggle: done
+    - second example (`dimethylether`) added; stored chain data and `moveto` remain optional
+    - remaining: unsaturated ether chains
 
-3. **Esters**
-   - acid-derived and alcohol-derived grouping
-   - full IUPAC naming logic
-   - validation dataset
+3. **Esters** (in progress, v41)
+    - detection and classification (2D + 3D): done
+    - two-fragment `esterInfo` analysis: done
+    - two-word IUPAC naming (e.g. προπανοϊκός μεθυλεστέρας): done
+    - per-fragment highlight/numbering + rule-table rows: done
+    - first molecules (`ethanoic_methyl_ester`, `propanoic_methyl_ester` with condensed/expanded/skeletal + 3D): done
+    - remaining: wider molecule coverage, unsaturated chains
 
 ### After the chemistry expansion
 - add a first learning interaction layer
@@ -161,23 +180,23 @@ These belong to a later product phase.
 
 ## Key project documents
 
-- [DEVELOPMENT-PLAN.md](DEVELOPMENT-PLAN.md)
-- [RESEARCH-PLAN.md](RESEARCH-PLAN.md)
-- [PROJECT-PLAN.md](PROJECT-PLAN.md)
-- [PROJECT-PLAN-GR.md](PROJECT-PLAN-GR.md)
-- [CHANGELOG.md](CHANGELOG.md)
+- [DEVELOPMENT-PLAN.md](docs/DEVELOPMENT-PLAN.md)
+- [RESEARCH-PLAN.md](docs/RESEARCH-PLAN.md)
+- [PROJECT-PLAN.md](docs/PROJECT-PLAN.md)
+- [PROJECT-PLAN-GR.md](docs/PROJECT-PLAN-GR.md)
+- [CHANGELOG.md](docs/CHANGELOG.md)
 
-These plans describe the research and product ambitions, but the current implementation should be treated as the working v39 baseline rather than as a fully finished research platform.
+These plans describe the research and product ambitions, but the current implementation should be treated as the working v41 baseline rather than as a fully finished research platform.
 
 ---
 
 ## Technical notes
 
 ### Important observations
-- The workspace contains multiple historical versions, including v35-v39 snapshots.
-- The project plans still describe older intended milestones and should be reconciled with the real v39 baseline.
+- The workspace contains multiple historical versions, including v35-v41 snapshots.
+- The project plans still describe older intended milestones and should be reconciled with the real v41 baseline.
 - The chemistry engine should be validated before expanding into more complex categories.
-- Known engine issues still need explicit testing, especially around ester and tertiary-amine detection paths.
+- Ester detection/naming/highlight paths are implemented in v41; tertiary-amine detection still needs explicit testing.
 
 ---
 
@@ -197,9 +216,9 @@ This makes the platform more pedagogically coherent and more scalable than a str
 
 ## Repository status summary
 
-- Working baseline: **v40**
+- Working baseline: **v41**
 - Main focus: **stable learning app + chemistry expansion**
-- Near-term goal: **ethers completion, esters**
+- Near-term goal: **esters coverage (ethers done for saturated acyclic mono-ethers)**
 - Product model: **homologous series first**
 - Rules: **secondary explanatory layer**
 - Research layer: **deferred**

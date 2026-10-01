@@ -4,6 +4,26 @@ All notable changes to the Οργανική Ονοματολογία MuLERMoC.
 
 ---
 
+## [v41] — 2026-09-30
+
+**Esters: naming + first molecules — plus viewer and menu improvements**
+
+- Added the first two ester molecules, `ethanoic_methyl_ester` (CH3COOCH3) and `propanoic_methyl_ester` (CH3CH2COOCH3), with condensed, expanded (`_2D_E`) and skeletal (`_diagr2D`) representations plus 3D SDFs. They run in algorithmic main-chain mode; stored `mainChain`/`moveto` data remains optional.
+- Ester detection in 2D and 3D: an ether oxygen adjacent to a carbonyl carbon (ketone oxygen) is reclassified as one ester group (`functionalGroupObj.ester = [ketoneO, etherO]`), replacing the buggy v40 2D-only path; full 3D mirror added.
+- Two-fragment ester analysis: `fCalcMainChain[3D]` computes `esterInfo` (`oDouble, oSingle, carbonylC, alcoholAttachC, acidFrag, alcoholFrag`) via BFS on the carbon-only graph; the carbonyl carbon anchors and outranks acid (`terminal = 4`).
+- Ester naming: two-word Greek IUPAC assembly, e.g. `προπανοϊκός μεθυλεστέρας` (acid stem from `acidLen` + `οϊκός`, fused tail `μεθυλ + εστέρας`), with ester-aware euphony (no connector across the acid|alcohol word boundary, blank space instead of `+`, no trailing `+` after the last box).
+- Ester highlight/numbering: alcohol-chain click (`esterAlkyl`, comp10) highlights and numbers only the alcohol fragment; ester-word click (`esterEster`, comp11) highlights the `O-C(=O)-O` triad via `fGetEsterAlcoholChain/Triad/GroupFragment[3D]`; chain-only 3D halos via `skipH`.
+- Teaching layer: new `Εστέρες (R-COO-R')` row in the rule-3 table, `Εστερομάδα` nouns, `r3` table rewritten around the chemical-class taxonomy (drops hydroxy/amino-acid rows); all rule tables carry `data-row` keys and numeric highlights map to keys (`r1-cN`, `r2-single|double|…`, `r3-esters`, …).
+- Chemical-class taxonomy: `ester → esters`, `aldehyde|ketone → carbonylCompounds`, `hydroxyAcids + aminoAcids → carboxylicAcids`; menu labels updated (`Χημικές Τάξεις`, `Αιθέρες`, `Εστέρες`).
+- Molecule menu: new flat `Όλα τα μόρια` grouping mode (all molecules sorted by carbon count via `fSortPropsByCarbonCount`); `crossMenuLi` items toggle shut and clear `selectedRule`/speech/`#ruleTheory` in rule mode.
+- Viewer title bar: new `[2D][3D]` visibility toggle buttons (`#viewerVisBtns`, `fInitViewerSettingsBtn`, `fToggleViewer2D|3D`); legacy `viewFinalJSME`/`viewJSmol` settings commented out.
+- Viewer settings: new `Επισήμανση ατόμων κατά την αρίθμηση` toggle (`#highlightNumberingCheck`, on by default) — main-chain atoms highlight while numbering runs; 2D atom colors on by default (`svgAtomColors2DFlag = true`, `#svgAtomColorCheck` selected).
+- Molecule info button + panel (`molInfoBtn`/`molInfoPanel`, chemical class + series) added but disabled by default (`molInfoEnabled = false`).
+- Note: the symmetric ether example `dimethylether` (CH3OCH3) was added to the v40 data set after the v40 entry below was written; v41 carries both ethers unchanged.
+- Fix: ester name boxes no longer render a trailing `+`/space after the last component.
+
+---
+
 ## [v40] — 2026-09-29
 
 **Ethers: first molecule + systematic and common naming**
