@@ -379,6 +379,7 @@ function fInitNomeclatureMenu() {
     </div><div class='menuNomeclature2Container'>`;
 
   if (moleculeGroupingMode === "all") {
+    let counter = 0;
     fSortPropsByCarbonCount(names).forEach((prop) => {
       let myMolFormula = nameExamples[prop].formula.replace(
         /(\d+)/g,
@@ -392,7 +393,8 @@ function fInitNomeclatureMenu() {
         /(['_'])/g,
         '<span class="bondSymbol">&#9776;</span>',
       );
-      myHTML += `<div id='${prop}' class='menuLi'> ${myMolFormula}</div>`;
+      counter++;
+      myHTML += `<div id='${prop}' class='menuLi'><span class='menuLiCounter' >${counter}.</span>    <span> ${myMolFormula}</span></div>`;
     });
   }
 
