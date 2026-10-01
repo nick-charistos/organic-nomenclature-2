@@ -236,7 +236,7 @@ let nameExamples = {
   },
 
   propanenitrile: {
-    formula: "CH3CH2C_N",
+    formula: "CH3CH2CN",
     mainChain: [3, 2, 1],
     mainChain_E: [3, 2, 1],
     mainChain3D: [4, 2, 3],
@@ -4695,8 +4695,6 @@ let dimethylether_2D_E = "COC\n" +
 	"  2  3  1  0      \n" +
 	"M  END\n";
 
-  
-
   let ethanoic_methyl_ester_2D = "CC(=O)OC\n" +
 	"  ChemDraw09302616322D\n" +
 	"\n" +
@@ -4822,6 +4820,4 @@ let dimethylether_2D_E = "COC\n" +
 	"  5 13  1  0      \n" +
 	"  5 14  1  0      \n" +
 	"M  END\n";
-
-  
 

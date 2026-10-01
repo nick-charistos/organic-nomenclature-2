@@ -179,7 +179,7 @@ function fInitTheory() {
         </div>
         <div class='HFlex ruleRow' data-row="r3-esters">
             <div class='ruleCase'> Εστέρες R-COO-R' </div>
-            <div class='ruleName'> -οϊκός … εστέρας </div>
+            <div class='ruleName'> -ικός … εστέρας </div>
         </div>
         <div class='HFlex ruleRow' data-row="r3-nitro">
             <div class='ruleCase'>Νιτροενώσεις R-NO<sub>2</sub></div>

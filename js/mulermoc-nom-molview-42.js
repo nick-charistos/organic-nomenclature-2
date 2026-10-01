@@ -2841,7 +2841,7 @@ function fShowNameAnalysis() {
 
     // Apply Greek euphony: append connecting vowel to this component's display
     // if it ends with a consonant and the next non-empty component starts with one.
-    // Esters are two words (προπανοϊκός μεθυλεστέρας): no connector from the
+    // Esters are two words (προπανικός μεθυλεστέρας): no connector from the
     // acid part (slots <10) into the fused tail (slots 10+).
     const _isEsterWordBoundary = (typeof nameExamples !== "undefined" && selectedMol &&
       nameExamples[selectedMol]?.classification?.chemicalClass === "esters");
@@ -2886,7 +2886,7 @@ function fShowNameAnalysis() {
 
     compBox = `<div class='${boxClass}' id='comp${i}' >${displayComp}</div>`;
     if (_nextIdx >= 0) {
-      // Esters: two-word name — blank space after οϊκός instead of +.
+      // Esters: two-word name — blank space after ικός instead of +.
       if (_isEsterWordBoundary && i < 10 && _nextIdx >= 10) {
         compBox += `<div class='nameCompSpace'>&nbsp;</div>`;
       } else {

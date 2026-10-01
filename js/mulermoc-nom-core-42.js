@@ -133,7 +133,7 @@ function fInitNamingProps() {
         amine: { suffix: 'αμίνη', substitute: "αμινο" },
         nitro: { suffix: 'ιο', substitute: "νιτρο" },
         ether: { suffix: 'ιο', substitute: "αλκοξυ" },
-        ester: { suffix: 'οϊκός', substitute: "εστερο" }
+        ester: { suffix: 'ικός', substitute: "εστερο" }
     }
 
     alkoxyNames = {}
@@ -1830,14 +1830,14 @@ function fGuessName() {
                 break;
             case "ester": // Εστέρες R-C(=O)-O-R': οξύ-τμήμα + αλκυλ-τμήμα + εστέρας
                 // Scope v41: saturated acyclic mono-esters, comp2 always "αν", no locants.
-                // 5 boxes: comp1 (προπ) | comp2 (αν) | comp4 (οϊκός) | comp10 (μεθυλ) | comp11 (εστέρας)
+                // 5 boxes: comp1 (προπ) | comp2 (αν) | comp4 (ικός) | comp10 (μεθυλ) | comp11 (εστέρας)
                 {
                     const _es = (typeof esterInfo !== "undefined") ? esterInfo : null
                     const _acidLen = (_es && _es.acidLen) ? _es.acidLen : mainChainAtomsList.length
                     const _alcLen = (_es && _es.alcoholLen) ? _es.alcoholLen : 1
                     comp1 = nameMainCompList1[_acidLen - 1]
                     comp2 = "αν"
-                    comp4 = nameMainCompObj3.ester.suffix // "οϊκός"
+                    comp4 = nameMainCompObj3.ester.suffix // "ικός"
                     const _alcFull = (typeof alkylSubstituentNames !== "undefined" && alkylSubstituentNames[_alcLen]) || (nameMainCompList1[_alcLen - 1] || "")
                     compAlcoholEster = String(_alcFull).replace(/ο$/, "") // μεθυλο -> μεθυλ
                     compEsterNoun = "εστέρας"
@@ -1940,7 +1940,7 @@ function fGuessName() {
         return acc + part;
     }, '');
     // Esters: two-word name — acid part + fused tail (no space inside tail,
-    // no connecting vowel across the word boundary: προπανοϊκός μεθυλεστέρας).
+    // no connecting vowel across the word boundary: προπανικός μεθυλεστέρας).
     currentMolName = _isEsterNaming
         ? (_joinEuphony(_acidParts) + (_tailParts.length ? ' ' + _joinEuphony(_tailParts) : ''))
         : _joinEuphony(_parts);
