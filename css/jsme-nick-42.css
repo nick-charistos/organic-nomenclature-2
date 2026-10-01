@@ -579,7 +579,7 @@ max-height: 596px;
   box-sizing: border-box;
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  /* gap: 6px; */
   white-space: nowrap;
   overflow: visible;
   width: max-content;
@@ -1938,11 +1938,14 @@ max-height: 596px;
 
 
 .menuLiCounter {
-  margin-left:-5px;
-  color:var(--darkBlue);
-  font-weight: 500;
-  font-family: "Roboto Condensed", sans-serif;
-   flex: 0 0 auto;
+	margin-left: -10px;
+	margin-right: 5px;
+	color: var(--darkBlue);
+	font-weight: 500;
+	font-family: "Roboto Condensed", sans-serif;
+	flex: 0 0 auto;
+	min-width: 25px;
+	text-align: right;
 }
 
 .menuLiFormula {
