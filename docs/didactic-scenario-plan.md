@@ -1,0 +1,203 @@
+# Didactic Scenarios — plan
+
+Brief proposal for teacher-authored, linear snapshot sequences
+for classroom presentation and student self-learning.
+
+## 1. Goal / non-goals
+
+Goal: let an author save the current SPA state as a snapshot,
+collect several snapshots, and play them as a numbered linear
+sequence of steps.
+
+* Presentation hides the left menu; naming and rule panels are
+  optional per step.
+* v1 persistence is a hand-editable JSON text file (export /
+  import, reusable). No backend in v1.
+* Future: Drupal-hosted scenarios with logged-teacher authoring
+  (see `PROJECT-PLAN.md` Phase 3). v1 reserves fields but does
+  not implement it.
+
+Non-goals for v1: branching scenarios, quiz scoring, student
+progress tracking, PubChem live lookup, server storage.
+
+## 2. Snapshot schema (v1 JSON)
+
+```json
+{
+  "scenarioVersion": 1,
+  "app": "mulermoc-nom-43",
+  "scenario": "esters-intro",
+  "title": "...",
+  "steps": [
+    {
+      "n": 1,
+      "title": "...",
+      "note": "optional teacher text",
+      "selectedMol": "propanoic_methyl_ester",
+      "mode2D": "condensed",
+      "mainChainMode": "algorithmic",
+      "etherNamingMode": "iupac",
+      "nameAnalysisMode": "esterAlkyl",
+      "selectedRule": null,
+      "style2D": {"atomColors": true, "colorMode": "atom", "zigzag": false},
+      "styleName": {"box": true, "cross": false, "etherNaming": "iupac", "panelOpen": true},
+      "audio": {"narrate": false},
+      "view3D": {"style": "ballnstick", "spin": false, "showH": true, "atomSymbols": true,
+                 "moveto": "moveto 0.0 {...} ...;"},
+      "externalLinks": {},
+      "show": {
+        "menu": false,
+        "viewerButtons": false,
+        "viewerSettings": false,
+        "viewers": {"2D": true, "3D": true},
+        "controls": {"2D": false, "3D": false},
+        "save": {"2D": false, "3D": false},
+        "naming": true,
+        "nameSettings": false,
+        "audio": false,
+        "rule": false,
+        "infoHost": false
+      }
+    }
+  ]
+}
+```
+
+State notes (grounded in v42):
+
+* `selectedMol`, `mode2D/modeSuffix`, `mainChainMode`,
+  `etherNamingMode`, `nameAnalysisMode`, `selectedRule` mirror
+  `js/mulermoc-nom-molview-42.js:7-41`,
+  `fSelectMol:489`, `fShowNameAnalysis:2723`,
+  `fExplainNameComp:3124`.
+* 2D style: `svgAtomColors2DFlag`, `atomColorMode2D`,
+  `zigzagCheck` are stored; menu grouping mode is not (menu is
+  hidden in playback).
+* 3D style: JSmol style/spin/H/symbols are stored.
+* 3D camera: `view3D.moveto` stores the verbatim JSmol `moveto`
+  string captured via `show moveto`
+  (`Jmol.getPropertyAsString(applet, "moveto")`, fallback
+  `Jmol.scriptWait(applet, "show moveto")`). `null` means "use
+  the data-file default" (`nameExamples[mol].moveto`, applied in
+  `fLoadMol3D:2418-2429`). Capture with `rotate off`; apply
+  after `load + center`, before `spt/init-3.spt`, then restore
+  the `spin` flag. Validate prefix `moveto`, strip newlines.
+* Never persist transient handles: SVG nodes, JSmol objects,
+  `myNumberingTimeout`, TTS voices.
+* `externalLinks` is a reserved passthrough for the future
+  `PUBCHEM_HYBRID_PLAN.md` lookup; no lookup in v1.
+
+Visibility rules:
+
+* `show.viewers` is the representation mode: 2D-only, 3D-only,
+  or both. A hidden viewer is not rendered at all (skip
+  `fLoadMol2D` / `fLoadMol3D`, `display:none`), reusing the
+  scope of `fToggleViewer2D:231` and `fToggleViewer3D:247`.
+* `show.controls.2D` toggles `#radio2DMode`
+  (`mulermoc-nom-42.html:194-230`: `Έγχρωμα Σύμβολα`,
+  `Συνεπτυγμένος/Ανεπτυγμένος/Σκελετικός`, `Σύμβολα CHn`).
+* `show.controls.3D` toggles `#controls3D` (`:241-274`:
+  `Σύμβολα ατόμων`, `Υδρογόνα C-H`, `#dropMenu` style,
+  `Περιστροφή`). Irrelevant when that viewer is hidden.
+* `show.save` toggles `#save2DBtn` / `#save3DBtn`
+  independently of `controls`. Default `false`.
+* `#viewerVisBtns`, `#viewerSettingsPanel` +
+  `#viewerSettingsBtnDiv`, and the left menu are always hidden
+  in playback. Their values are still captured in the snapshot.
+* `show.naming` / `show.rule` toggle the explanation and rule
+  panels. `show.nameSettings` toggles the naming gear + panel;
+  `show.audio` toggles narration buttons. Playback never
+  auto-plays TTS.
+
+## 3. Authoring UX
+
+* Toolbar: `[Save step]` + `[Scenarios...]`.
+* Step-list drawer: title/rename, reorder up/down, delete,
+  jump-to; step numbers auto-renumber.
+* Step editor: `[Use current 3D view]` re-captures `moveto`
+  without re-saving the whole step; per-step badge shows
+  "custom view" vs "default view".
+* `fCaptureSnapshot()` reads the live state described above.
+
+## 4. Playback UX + URL shape (frozen)
+
+* Canonical URL:
+  `mulermoc-nom-43.html?scenario=scenarios/esters-intro.json&present=1#step=3`
+* `?scenario=path.json`: which file. v1 allows same-origin
+  `scenarios/*.json` only (reject `..`, non-`.json`,
+  cross-origin). Fetched over `http(s)`; `file://` users must
+  use the Import button instead (`fetch()` of local files is
+  blocked by the browser).
+* `?present=1`: playback chrome (hide menu, viewer
+  buttons/settings, apply `show.*`). Absent = author preview
+  with chrome and step list visible.
+* `#step=N`: 1-based step in the hash so Prev/Next can use
+  `history.replaceState` without a full reload (JSME/JSmol init
+  is expensive). Missing/invalid/clamped to 1/last with notice.
+* `Prev [3/8] Next` bar with step title + note.
+* Menu forced shut in playback; panels and control bars follow
+  `show.*`.
+* Student self-learning uses the same playback without a teacher.
+* Import-button flow is the primary v1 path (works offline from
+  USB); `?scenario=` links are for hosted/classroom-server use
+  and future Drupal.
+
+## 5. File format + validation + storage decision
+
+* v1 storage: memory-only plus file (decision A). Steps live in
+  a JS variable; `Export .json` downloads a Blob (same pattern
+  as `fSave2DPng`), `Import .json` reads via file input. Reload
+  without export loses unsaved steps by design.
+* Follow-up (not v1): `localStorage` scratch draft
+  (`mulermoc.scenario.draft.v1`) with resume/discard UI for
+  crash-safe authoring.
+* Unknown `selectedMol` renders a skipped-step notice.
+* Missing 2D representation falls back via the existing
+  `fUpdateDiagr2DButton` logic (condensed > expanded > skeletal).
+* Corrupt JSON is rejected with a readable error; valid prefix
+  steps are never half-applied.
+* Version policy (`validateScenario()`, `SUPPORTED_VERSION = 1`):
+  missing `scenarioVersion` = v0 legacy, best-effort apply with
+  "legacy file" warning; `> 1` = refuse ("needs a newer app");
+  `== 1` = apply; `< 1` = in-memory `migrateScenario()`
+  filling defaults (`moveto: null`,
+  `show.save/audio/infoHost: false`) without overwriting the
+  file — the user Exports to upgrade. Bump `scenarioVersion`
+  only on breaking schema changes; additive optional fields use
+  defaults and need no bump.
+
+## 6. molInfo cleanup (v43)
+
+The v40-v42 `molInfoBtn` / `molInfoPanel` is dead code
+(`molInfoEnabled = false`, see
+`js/mulermoc-nom-molview-42.js:32-33,309-321,2746-2784` and
+`css/jsme-nick-42.css:330-358`):
+
+* Delete the button/panel content and chem-class/series rows.
+* Keep one minimal `<div id="molInfoPanelSlot">` host plus
+  `show.infoHost` for the future PubChem `externalLinksPanel`.
+* Legacy `#molInfo` in `functional-groups.html:80` is a
+  different page and stays untouched.
+
+## 7. v1 build steps (v43, no-build SPA)
+
+1. New `js/mulermoc-nom-scenario-43.js`:
+   capture / validate / apply / export / import.
+2. `mulermoc-nom-43.html`: toolbar, playback bar, import input,
+   info-host slot.
+3. `molview/teaching-43.js`: apply snapshots through
+   `fSelectMol -> fShowNameAnalysis -> fExplainNameComp ->
+   fShowRule`; hide chrome in playback.
+4. `molInfo` cleanup from section 6.
+5. Tests: ester/ether/branched highlight round-trips across
+   modes, corrupt/missing-molecule imports, hidden-chrome
+   assertions.
+6. CHANGELOG v43 entry.
+
+## 8. Open questions for development
+
+* Where the PubChem host panel should live long-term.
+* JSmol `moveto` timing on async `load` (callback/timeout plus
+  stale-step guard like `fFetchAndParse3D`).
+
+Many issues will surface during development; adjust there.
